@@ -17,14 +17,11 @@ public class CadastraRegistroService {
     }
 
     public void novoRegistro(Registro registro){
-
-//        registros.find
-
         br.gov.inmetro.beacon.core.infra.Registro registroBd = new br.gov.inmetro.beacon.core.infra.Registro();
         registroBd.setNumero(registro.getNumero());
         registroBd.setAssinatura(registro.getAssinatura());
         registroBd.setHora(registro.getHora());
-        registroBd.setOrigem(OrigemEnum.BEACON);
+        registroBd.setOrigem(OrigemEnum.AUTO);
 
         registros.save(registroBd);
     }

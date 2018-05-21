@@ -16,11 +16,11 @@ public class RegistrosImpl implements RegistrosQueries {
     private PaginacaoUtil paginacaoUtil;
 
     public Registro ultimo(){
-        return (Registro) manager.createQuery("from Registro order by id desc").getSingleResult();
+        return (Registro) manager.createQuery("from Registro order by id desc").setMaxResults(1).getSingleResult();
     }
 
     public Registro primeiro(){
-        return (Registro) manager.createQuery("from Registro order by id").getSingleResult();
+        return (Registro) manager.createQuery("from Registro order by id").setMaxResults(1).getSingleResult();
     }
 
 }
