@@ -8,6 +8,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Entity
 @Data
@@ -31,4 +33,11 @@ public class Registro {
 
     @Enumerated(EnumType.STRING)
     private OrigemEnum origem;
+
+    @Transient
+    private String dataUnixLike;
+
+    public long getDataUnixLike() {
+        return hora.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
 }
