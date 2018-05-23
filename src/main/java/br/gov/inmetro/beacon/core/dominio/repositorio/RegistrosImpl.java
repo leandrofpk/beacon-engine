@@ -21,35 +21,6 @@ public class RegistrosImpl implements RegistrosQueries {
     @PersistenceContext
     private EntityManager manager;
 
-    @Autowired
-    private PaginacaoUtil paginacaoUtil;
-
-    @SuppressWarnings("unchecked")
-    @Transactional(readOnly = true)
-    public Page<Registro> filtrar(RegistroFilter filtro, Pageable pageable) {
-        Criteria criteria = manager.unwrap(Session.class).createCriteria(Registro.class);
-
-        paginacaoUtil.preparar(criteria, pageable);
-        adicionarFiltro(filtro, criteria);
-
-        return new PageImpl<>(criteria.list(), pageable, total(filtro));
-    }
-
-    private Long total(RegistroFilter filtro) {
-        Criteria criteria = manager.unwrap(Session.class).createCriteria(Registro.class);
-        adicionarFiltro(filtro, criteria);
-        criteria.setProjection(Projections.rowCount());
-        return (Long) criteria.uniqueResult();
-    }
-
-    private void adicionarFiltro(RegistroFilter filtro, Criteria criteria) {
-//        if (filtro != null) {
-//            if (!StringUtils.isEmpty(filtro.getCountry())) {
-//                criteria.add(Restrictions.ilike("country", filtro.getCountry(), MatchMode.ANYWHERE));
-//            }
-//        }
-    }
-
     public Registro ultimo(){
         return (Registro) manager.createQuery("from Registro order by id desc").setMaxResults(1).getSingleResult();
     }

@@ -10,6 +10,5 @@ import java.util.List;
 public interface RegistrosQueries {
     Registro ultimo();
     Registro primeiro();
-    Page<Registro> filtrar(RegistroFilter filtro, Pageable pageable);
     List<Registro> obterTodos();
 }
