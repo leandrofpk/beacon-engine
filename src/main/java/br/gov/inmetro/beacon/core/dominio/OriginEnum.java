@@ -1,5 +1,5 @@
 package br.gov.inmetro.beacon.core.dominio;
 
-public enum OrigemEnum {
+public enum OriginEnum {
     BEACON, AUTO;
 }

@@ -1,12 +1,10 @@
 package br.gov.inmetro.beacon.web;
 
-import br.gov.inmetro.beacon.core.dominio.repositorio.Registros;
-import br.gov.inmetro.beacon.core.infra.PageWrapper;
-import br.gov.inmetro.beacon.core.infra.Registro;
+import br.gov.inmetro.beacon.core.dominio.repositorio.Records;
+import br.gov.inmetro.beacon.core.infra.Record;
 import br.gov.inmetro.beacon.core.infra.RegistroFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/registros")
 public class RegistrosContoller {
 
-    private Registros registros;
+    private Records registros;
 
     @Autowired
-    public RegistrosContoller(Registros registros) {
+    public RegistrosContoller(Records registros) {
         this.registros = registros;
     }
 
@@ -38,7 +36,7 @@ public class RegistrosContoller {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView ver(@PathVariable("id") Registro registro) {
+    public ModelAndView ver(@PathVariable("id") Record registro) {
         ModelAndView mv = new ModelAndView("registros/show");
 
         mv.addObject(registro);

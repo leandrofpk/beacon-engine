@@ -1,22 +1,16 @@
 package br.gov.inmetro.beacon.core.dominio.schedule;
 
-import br.gov.inmetro.beacon.core.dominio.repositorio.Registros;
 import br.gov.inmetro.beacon.core.service.CadastraRegistroService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
 
 @Component
-@EnableScheduling
+//@EnableScheduling
 public class PseudoGeradorSchedule {
 
     private CadastraRegistroService service;
