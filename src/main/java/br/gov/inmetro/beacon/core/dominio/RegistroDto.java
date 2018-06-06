@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
-public class Registro {
+public class RegistroDto {
 
     private String numero;
 
@@ -14,13 +14,13 @@ public class Registro {
 
     private String assinatura;
 
-    public Registro(String numero, String hora, String assinatura) {
+    public RegistroDto(String numero, String hora, String assinatura) {
         this.numero = numero;
         this.assinatura = assinatura;
         this.hora = converterData(hora);
     }
 
-    public Registro(String numero,LocalDateTime hora, String assinatura) {
+    public RegistroDto(String numero, LocalDateTime hora, String assinatura) {
         this.numero = numero;
         this.assinatura = assinatura;
         this.hora = hora;

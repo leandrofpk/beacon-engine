@@ -43,7 +43,7 @@ public class Record {
     private String status;
 
     @Enumerated(EnumType.STRING)
-    @NotNull @Length(max = 20)
+    @NotNull //@Length(max = 20)
     private OriginEnum origin;
 
     @Transient
