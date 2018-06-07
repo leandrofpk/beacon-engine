@@ -1,5 +1,6 @@
 package br.gov.inmetro.beacon.api;
 
+import br.gov.inmetro.beacon.core.service.TimeIsAlreadyRegistered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,6 +81,14 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler  
 
         ApiError apiError =
                 new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler(TimeIsAlreadyRegistered.class)
+    public final ResponseEntity<Object> handleUserNotFoundException(TimeIsAlreadyRegistered ex, WebRequest request) {
+
+        ApiError apiError =
+                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "Already Reported");
         return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 

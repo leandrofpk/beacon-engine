@@ -31,4 +31,12 @@ public class RegistroDto {
         return LocalDateTime.parse(hora, formatter);
     }
 
+    @Override
+    public String toString() {
+        return "RegistroDto{" +
+                "hora=" + hora +
+                ", numero='" + numero + '\'' +
+                ", assinatura='" + assinatura + '\'' +
+                '}';
+    }
 }
