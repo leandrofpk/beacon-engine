@@ -21,7 +21,7 @@ public class RecordsImpl implements RecordsQueries {
 
     public List<Record> obterTodos(){
         return manager
-                .createQuery("from Registro order by id desc")
+                .createQuery("from Record order by id desc")
                     .setMaxResults(20)
                     .getResultList();
     }

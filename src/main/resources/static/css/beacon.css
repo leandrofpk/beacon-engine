@@ -1,0 +1,219 @@
+@charset "utf-8";
+/* CSS Document */
+body {
+    background:#fff;
+    min-width:600px;    /* Minimum width of layout - remove line if not required */
+}
+
+#content p {
+    margin: 1em 0 0 0;
+}
+
+#content li, #content dt, #content dd {
+    margin: 0.5em 0 0.5em 1em;
+}
+
+#content ul, #content ol, #content dl {
+    margin: 1.25em 0 1em 1.25em;
+}
+
+#content a {
+    color:#004C99;
+    background:#fff;
+}
+
+#content a:hover {
+    color:#fff;
+    background:#004C99;
+    text-decoration:none;
+}
+
+#content a:active {
+    color:#FF9932;
+    background:#004C99;
+    text-decoration:none;
+}
+
+/* Definition Lists */
+#content dl {
+    margin: 0 0 0 1em;
+}
+
+#content dt {
+    font-weight: bold;
+    font-size: 1em;
+    margin: 1em 0 0 0;
+}
+
+#content dd {
+    margin: 0.5em 0 0.5em 1em;
+    font-size: 1em;
+}
+
+#content dl.resources dt, #content dl.revisionHistory dt {
+    font-weight:bold;
+    margin-left: 0;
+}
+
+#content dl.resources dt .info {
+    font-size:0.75em;
+}
+
+#content dl.resources dd, #content dl.revisionHistory dd {
+    margin-left: 1em;
+}
+
+#content dl.resources dd .info {
+    font-size:0.75em;
+}
+
+#content dl.listing, #content dl.listing dt, #content dl.listing dd {
+    margin:0;
+}
+
+#content dl.listing p {
+    margin:0 0 1em 0;
+
+}
+
+#content dl.listing dt {
+    font-weight:bold;
+}
+
+#content dl.listing > dt {
+    font-weight:bold;
+    border-bottom:1px solid black;
+    margin-top:0.5em;
+}
+
+#content dl.listing dl.detail {
+    margin:0;
+}
+
+#content dl.listing dl.detail dt {
+    font-weight:bold;
+    margin: 0.5em 0 0 0;
+    padding-bottom:0.75em;
+    color:#004C99;
+    background:#fff;
+    text-align:right;
+    width:22%;
+    display:-moz-inline-stack;
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+    vertical-align:top;
+}
+
+#content dl.listing dl.detail dt .info {
+    font-size:0.75em;
+}
+
+#content dl.listing dl.detail dd {
+    margin: 0.5em 0 0 1em;
+    text-align:left;
+    width:61%;
+    display:-moz-inline-stack;
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+}
+
+#content dl.listing dl.detail dd .info {
+    font-size:0.75em;
+}
+
+/* Footer styles */
+#footer {
+    width:100%;
+    text-align:center;
+}
+#footer p, #footer *.pageDates {
+    margin:0;
+    font-size: 0.625em;
+    line-height: 1.5em;
+}
+
+#footer dl {
+    position: absolute;
+    right: 10px;
+}
+
+#footer dt {
+    text-align:right;
+    width:40%;
+    display:-moz-inline-stack;
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+    vertical-align:top;
+}
+
+#footer dd {
+    text-align:left;
+    width:40%;
+    display:-moz-inline-stack;
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+}
+
+/* beacon data and widget styles */
+#content input#beacon-time { border: solid 1px #aaa; padding: 4px; width: 185px; }
+#content #ui-datepicker-div, .ui-datepicker, .ui-button { font-size: 85%; }
+
+#content h2.beacon { font-size: larger; border-bottom: grey medium groove; width: 40em;}
+
+#content dl.beacon { margin:0; width: 40em;}
+
+#content dl.beacon dt {
+    font-weight:bold;
+    margin: 0.5em 0 0 0;
+    color:#004C99;
+    background:#fff;
+    text-align:right;
+    width: 22%;
+    display:-moz-inline-stack;
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+    vertical-align: top;
+}
+
+#content dl.beacon dd {
+    margin: 0.5em 0 0 1em;
+    text-align:left;
+    width:61%;
+    display:-moz-inline-stack;
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+}
+
+#content .warning {
+    color: red;
+}
+
+#content .notice {
+    margin: 2px;
+    border-color: red;
+    border-width: thin;
+    border-style: solid;
+    padding: 2px
+}
+
+#content .notice,  #content .notice a{
+    color: #CE6700;
+    background-color: #dddddd;
+}
+
+
+#content .notice h3, #content .notice ol {
+    margin: 0;
+    padding: 0;
+}
+
+
+#content .note {
+    font-style: italic;
+}

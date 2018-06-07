@@ -1,6 +1,7 @@
 package br.gov.inmetro.beacon.core.infra;
 
 import br.gov.inmetro.beacon.core.dominio.OriginEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -20,8 +21,6 @@ public class Record {
     private String versionBeacon;
 
     @NotNull
-//    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
-//    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime time;
 
     @NotNull
@@ -43,10 +42,12 @@ public class Record {
     private String status;
 
     @Enumerated(EnumType.STRING)
-    @NotNull //@Length(max = 20)
+    @NotNull
+    @JsonIgnore
     private OriginEnum origin;
 
     @Transient
+    @JsonIgnore
     private String dataUnixLike;
 
     public long getDataUnixLike() {

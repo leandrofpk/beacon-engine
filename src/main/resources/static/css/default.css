@@ -1,0 +1,55 @@
+@charset "utf-8";
+/* CSS Document */
+html {
+    font-size: 100%;
+    line-height: 1.5em;
+}
+
+body {
+    padding:0;
+    margin:5px;
+    font-size: 100%;
+}
+
+html, p, a, h1, h2, h3, h4, h5, h6, div, span, ul, li, ol, dl, dd, dt, form, pre, textarea, input {
+    padding:0;
+    margin:0;
+    font-size: 1em;
+}
+
+img {
+    border:0;
+}
+body {
+    border:0; /* For old versions of IE */
+}
+
+h1 { /* assuming 18px default font size */
+    font-size: 1.5em;
+    line-height: 1.25em;
+    margin: 1em 0;
+    font-weight: 700;
+}
+
+h2 { /* assuming 16px font size */
+    font-size: 1.125em;
+    line-height: 1em;
+    margin: 1em 0;
+    font-weight: 700;
+    text-decoration:underline;
+}
+
+h3 { /* assuming 16px font size */
+    font-size: 1.125em;
+    line-height: 1em;
+    margin: 1em 0;
+    font-weight: 700;
+    font-style:italic;
+    text-decoration:underline;
+}
+
+h4 { /* assuming 14px font size */
+    line-height: 1em;
+    margin: 1em 0;
+    font-weight: 700;
+}

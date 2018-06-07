@@ -3,6 +3,7 @@ package br.gov.inmetro.beacon.core.dominio;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Getter
@@ -31,10 +32,16 @@ public class RegistroDto {
         return LocalDateTime.parse(hora, formatter);
     }
 
+    public long getDataUnixLike() {
+        return hora.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
+
+
     @Override
     public String toString() {
         return "RegistroDto{" +
                 "hora=" + hora +
+                ", hora=" + getDataUnixLike() +
                 ", numero='" + numero + '\'' +
                 ", assinatura='" + assinatura + '\'' +
                 '}';

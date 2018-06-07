@@ -2,7 +2,6 @@ package br.gov.inmetro.beacon.core.service;
 
 import br.gov.inmetro.beacon.api.RecordDto;
 import br.gov.inmetro.beacon.core.dominio.OriginEnum;
-import br.gov.inmetro.beacon.core.dominio.RegistroDto;
 import br.gov.inmetro.beacon.core.dominio.repositorio.Records;
 import br.gov.inmetro.beacon.core.infra.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +29,10 @@ public class CadastraRegistroService {
         Record recordDb = records.findByTime(longToLocalDateTime(record.getTime()).truncatedTo(ChronoUnit.MINUTES));
 
         if (recordDb != null){
-            throw new TimeIsAlreadyRegistered("Already Reported");
+            throw new TimeIsAlreadyRegistered("Time already reported");
         }
 
         Record registroBd = new Record();
-
-//        RegistroDto r = new RegistroDto(gerarNumero512(), LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), assinatura);
 
         registroBd.setTime(longToLocalDateTime(record.getTime()).truncatedTo(ChronoUnit.MINUTES));
         registroBd.setOutputValue(record.getOutputValue());
