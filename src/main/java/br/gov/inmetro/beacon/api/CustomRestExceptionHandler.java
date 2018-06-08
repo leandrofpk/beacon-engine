@@ -1,6 +1,8 @@
 package br.gov.inmetro.beacon.api;
 
 import br.gov.inmetro.beacon.core.service.TimeIsAlreadyRegistered;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +23,13 @@ import java.util.List;
 @ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler  {
 
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
+        logger.error(ex.getLocalizedMessage());
         return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 

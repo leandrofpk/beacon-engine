@@ -24,28 +24,27 @@ public class CadastraRegistroService {
     }
 
     @Transactional
-    public void novoRegistro(RecordDto record){
+    public void novoRegistro(RecordDto recordDto){
 
-        Record recordDb = records.findByTime(longToLocalDateTime(record.getTime()).truncatedTo(ChronoUnit.MINUTES));
-
-        if (recordDb != null){
-            throw new TimeIsAlreadyRegistered("Time already reported");
-        }
+//        Record recordDb = records.findByTime(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
+//
+//        if (recordDb != null){
+//            throw new TimeIsAlreadyRegistered("Time already reported");
+//        }
 
         Record registroBd = new Record();
 
-        registroBd.setTime(longToLocalDateTime(record.getTime()).truncatedTo(ChronoUnit.MINUTES));
-        registroBd.setOutputValue(record.getOutputValue());
-        registroBd.setVersionBeacon(record.getVersionBeacon());
-        registroBd.setSignature(record.getSignature());
-        registroBd.setPreviousOutput(record.getPreviousOutput());
-        registroBd.setStatus(record.getStatus());
-        registroBd.setSeedValue(record.getSeedValue());
-        registroBd.setOrigin(OriginEnum.AUTO);
+        registroBd.setTime(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
+        registroBd.setOutputValue(recordDto.getOutputValue());
+        registroBd.setVersionBeacon(recordDto.getVersion());
+        registroBd.setSignature(recordDto.getSignatureValue());
+        registroBd.setPreviousOutput(recordDto.getPreviousOutputValue());
+        registroBd.setStatus(recordDto.getStatusCode());
+        registroBd.setSeedValue(recordDto.getSeedValue());
+        registroBd.setOrigin(OriginEnum.BEACON);
 
         records.save(registroBd);
     }
-
 
     private LocalDateTime longToLocalDateTime(String data){
         long millis = new Long(data);

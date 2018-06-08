@@ -30,7 +30,6 @@ public class RegistrosContoller {
             , Pageable pageable, HttpServletRequest httpServletRequest) {
 
         ModelAndView mv = new ModelAndView("registros/index");
-
         mv.addObject("registros", registros.obterTodos());
         return mv;
     }
@@ -38,7 +37,6 @@ public class RegistrosContoller {
     @GetMapping("/{id}")
     public ModelAndView ver(@PathVariable("id") Record registro) {
         ModelAndView mv = new ModelAndView("registros/show");
-
         mv.addObject(registro);
         return mv;
     }

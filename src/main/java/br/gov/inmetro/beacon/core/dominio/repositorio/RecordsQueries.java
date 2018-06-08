@@ -1,11 +1,12 @@
 package br.gov.inmetro.beacon.core.dominio.repositorio;
 
+import br.gov.inmetro.beacon.api.RecordDto;
 import br.gov.inmetro.beacon.core.infra.Record;
 
 import java.util.List;
 
 public interface RecordsQueries {
-    Record last();
-    Record startChain();
+    RecordDto last();
+    RecordDto startChain();
     List<Record> obterTodos();
 }

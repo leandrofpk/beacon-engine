@@ -54,7 +54,4 @@ public class Record {
         return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
-//    public String getNumeroTruncado() {
-//        return numero.substring(0,20) + "...";
-//    }
 }
