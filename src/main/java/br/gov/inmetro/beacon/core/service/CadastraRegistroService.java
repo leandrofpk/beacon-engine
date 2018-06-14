@@ -26,15 +26,15 @@ public class CadastraRegistroService {
     @Transactional
     public void novoRegistro(RecordDto recordDto){
 
-//        Record recordDb = records.findByTime(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
+        Record recordDb = records.findByTime(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
 //
-//        if (recordDb != null){
-//            throw new TimeIsAlreadyRegistered("Time already reported");
-//        }
+        if (recordDb != null){
+            throw new TimeIsAlreadyRegistered("Time already reported");
+        }
 
         Record registroBd = new Record();
 
-        registroBd.setTime(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
+        registroBd.setTime(longToLocalDateTime(recordDto.getTimeStamp()));
 
         registroBd.setOutputValue(recordDto.getOutputValue());
         registroBd.setVersionBeacon(recordDto.getVersion());
@@ -48,8 +48,12 @@ public class CadastraRegistroService {
     }
 
     private LocalDateTime longToLocalDateTime(String data){
-//        long millis = new Long(data);
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(new Long(data)), ZoneId.of("America/Sao_Paulo"));
+        Long millis = new Long(data);
+        if (data.length() == 10){
+            millis = millis*1000;
+        }
+
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.of("America/Sao_Paulo"));
         return localDateTime;
     }
 

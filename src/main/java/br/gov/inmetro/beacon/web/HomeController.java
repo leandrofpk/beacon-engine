@@ -8,6 +8,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class HomeController {
 
     @GetMapping("/")
+    public ModelAndView root(){
+        ModelAndView mv = new ModelAndView("redirect:home");
+        return mv;
+    }
+
+    @GetMapping("/home")
     public ModelAndView home(){
         ModelAndView mv = new ModelAndView("home/index");
         return mv;

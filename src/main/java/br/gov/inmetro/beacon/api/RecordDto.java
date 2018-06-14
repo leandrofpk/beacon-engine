@@ -22,9 +22,6 @@ public class RecordDto implements Serializable {
     @NotNull
     private String timeStamp;
 
-//    @NotNull
-//    private String timeStampLong;
-
     @NotNull
     private String seedValue;
 

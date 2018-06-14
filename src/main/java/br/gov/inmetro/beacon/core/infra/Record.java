@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Data
@@ -24,9 +25,8 @@ public class Record {
 
     @NotNull
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm a")
+    @Column
     private LocalDateTime time;
-
-//    private Long timeLong;
 
     @NotNull
     private String seedValue;
@@ -51,33 +51,22 @@ public class Record {
     @JsonIgnore
     private OriginEnum origin;
 
-//    @Transient
-//    @JsonIgnore
-//    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm a")
-//    private String timeData;
+    public Record() {
+    }
 
-//    public LocalDateTime getTimeDate(){
-//        return longToLocalDateTime(this.getTime().toString());
+//    public void setTime(String time) {
+//        this.time = longToLocalDateTime(time);
+////        this.time = longToLocalDateTime(time).truncatedTo(ChronoUnit.MINUTES);
 //    }
 
+
     private LocalDateTime longToLocalDateTime(String data){
-        long millis = new Long(data);
 //        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
         LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(new Long(data)), ZoneId.of("America/Sao_Paulo"));
 
 //        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
         return localDateTime;
     }
-
-//    @Transient
-//    @JsonIgnore
-//    private String dataUnixLike;
-//
-
-//    @Transient
-//    private LocalDateTime timeLong(){
-//
-//    }
 
     public long getUnixTimestamp() {
         return time.atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli();

@@ -40,10 +40,16 @@ public class RegistroTest {
     }
 
     private LocalDateTime longToLocalDateTime(String data){
-        long millis = new Long(data);
+//        long millis = new Long(data);
         LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(new Long(data)), ZoneId.of("America/Sao_Paulo"));
 
         return localDateTime;
     }
+
+
+//    public void teste(){
+//        String date = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date (epoch*1000));
+//    }
+
 
 }

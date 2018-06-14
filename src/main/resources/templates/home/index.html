@@ -90,6 +90,8 @@
                     },
                     error: function( xhr, status, errorThrown ) {
                         // 404 error: assume the record does not exist, otherwise return an error message
+                        console.log(xhr + " " + status + " " + errorThrown)
+
                         if (xhr.status == 404) {
                             alert("Requested value does not exist.");
                         } else {
