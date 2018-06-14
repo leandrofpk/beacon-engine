@@ -20,18 +20,17 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Numero</th>
                     <th>Data</th>
-                    <th>Data Unix</th>
+                    <!--<th>Data - LONG</th>-->
+                    <th>Output Value</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="registro : ${registros}">
                     <td th:text="${registro.id}"></td>
-                    <td th:text="${registro.numeroTruncado}"></td>
-                    <td th:text="${{registro.hora}}"></td>
-                    <td th:text="${registro.dataUnixLike}"></td>
+                    <td th:text="|${{registro.time}} (${registro.unixTimestamp})|"></td>
+                    <td th:text="${registro.outputValue}"></td>
                     <td>
                         <div class="btn-group pull-right">
                             <a class="btn btn-sm btn-primary" th:href="@{/registros/{id}(id=${registro.id})}">Ver</a>

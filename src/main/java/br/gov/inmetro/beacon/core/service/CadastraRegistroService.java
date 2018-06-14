@@ -35,6 +35,7 @@ public class CadastraRegistroService {
         Record registroBd = new Record();
 
         registroBd.setTime(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
+
         registroBd.setOutputValue(recordDto.getOutputValue());
         registroBd.setVersionBeacon(recordDto.getVersion());
         registroBd.setSignature(recordDto.getSignatureValue());
@@ -47,8 +48,8 @@ public class CadastraRegistroService {
     }
 
     private LocalDateTime longToLocalDateTime(String data){
-        long millis = new Long(data);
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
+//        long millis = new Long(data);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(new Long(data)), ZoneId.of("America/Sao_Paulo"));
         return localDateTime;
     }
 

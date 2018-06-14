@@ -16,12 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/registros")
-public class RegistrosContoller {
+public class RegistrosController {
 
     private Records registros;
 
     @Autowired
-    public RegistrosContoller(Records registros) {
+    public RegistrosController(Records registros) {
         this.registros = registros;
     }
 

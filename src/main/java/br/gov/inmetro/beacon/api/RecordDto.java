@@ -22,6 +22,9 @@ public class RecordDto implements Serializable {
     @NotNull
     private String timeStamp;
 
+//    @NotNull
+//    private String timeStampLong;
+
     @NotNull
     private String seedValue;
 
@@ -43,7 +46,8 @@ public class RecordDto implements Serializable {
     public RecordDto(Record record){
         this.version = record.getVersionBeacon();
         this.frequency = "60";
-        this.timeStamp = String.valueOf(record.getTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+//        this.timeStamp = String.valueOf(record.getTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+        this.timeStamp = record.getTime().toString();
         this.seedValue = record.getSeedValue();
         this.previousOutputValue = record.getPreviousOutput();
         this.signatureValue = record.getSignature();

@@ -49,8 +49,7 @@ public class RecordsResource {
     }
 
     private LocalDateTime longToLocalDateTime(String data){
-        long millis = new Long(data);
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(new Long(data)), ZoneId.of("America/Sao_Paulo"));
         return localDateTime;
     }
 
