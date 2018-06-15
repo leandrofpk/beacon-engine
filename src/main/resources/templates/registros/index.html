@@ -14,22 +14,40 @@
     <div class="panel-heading">
         <strong>Números - Mostrando somente os 20 números mais recentes</strong>
     </div>
+
+    <div class="panel-body">
+        <h3>API</h3>
+
+        <label>Current Record:</label>
+        <span>GET: /rest/record/< timestamp > </span>
+        <br>
+        <label>Previous Record:</label>
+        <span>GET: rest/record/previous/< timestamp ></span>
+        <br>
+        <label>Next Record:</label>
+        <span>GET: rest/record/next/< timestamp ></span>
+        <br>
+        <label>Last Record:</label>
+        <span>GET: rest/record/last</span>
+        <br>
+        <label>Start Chain Record:</label>
+        <span>GET: rest/record/start-chain</span>
+
+    </div>
+
     <div class="panel-body">
         <div class="table-responsive">
             <table class="table table-sm table-striped table-hover table-bordered">
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Data</th>
-                    <!--<th>Data - LONG</th>-->
                     <th>Output Value</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="registro : ${registros}">
-                    <td th:text="${registro.id}"></td>
-                    <td th:text="|${{registro.time}} (${registro.unixTimestamp})|"></td>
+                    <td th:text="|${{registro.timeStamp}} (${registro.unixTimestamp})|"></td>
                     <td th:text="${registro.outputValue}"></td>
                     <td>
                         <div class="btn-group pull-right">

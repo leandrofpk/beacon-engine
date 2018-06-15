@@ -4,7 +4,6 @@ import br.gov.inmetro.beacon.core.infra.Record;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Data;
 
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZoneId;
@@ -16,7 +15,7 @@ public class RecordDto implements Serializable {
     @NotNull
     private String version;
 
-    @Transient
+    @NotNull
     private String frequency;
 
     @NotNull
@@ -42,13 +41,12 @@ public class RecordDto implements Serializable {
 
     public RecordDto(Record record){
         this.version = record.getVersionBeacon();
-        this.frequency = "60";
-//        this.timeStamp = String.valueOf(record.getTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-        this.timeStamp = record.getTime().toString();
+        this.frequency = record.getFrequency();
+        this.timeStamp = String.valueOf(record.getTimeStamp().atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
         this.seedValue = record.getSeedValue();
-        this.previousOutputValue = record.getPreviousOutput();
-        this.signatureValue = record.getSignature();
-        this.outputValue = record.getSignature();
-        this.statusCode = record.getStatus();
+        this.previousOutputValue = record.getPreviousOutputValue();
+        this.signatureValue = record.getSignatureValue();
+        this.outputValue = record.getSignatureValue();
+        this.statusCode = record.getStatusCode();
     }
 }

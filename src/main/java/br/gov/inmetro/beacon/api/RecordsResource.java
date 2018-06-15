@@ -1,6 +1,8 @@
 package br.gov.inmetro.beacon.api;
 
 import br.gov.inmetro.beacon.core.dominio.repositorio.Records;
+import br.gov.inmetro.beacon.core.infra.Record;
+import br.gov.inmetro.beacon.core.service.RecordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +13,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/rest/record", produces=MediaType.APPLICATION_XML_VALUE)
@@ -23,9 +26,14 @@ public class RecordsResource {
         this.records = registros;
     }
 
-    @RequestMapping("/{data}")
-    public RecordDto dataFormatoLong(@PathVariable String data){
-        return new RecordDto(records.findByTime(longToLocalDateTime(data)));
+    @RequestMapping("/{timestamp}")
+    public RecordDto dataFormatoLong(@PathVariable String timestamp){
+        Optional<Record> record = records.findByTimeStamp(longToLocalDateTime(timestamp));
+
+        if (!record.isPresent())
+            throw new RecordNotFoundException("TimeStamp:" + timestamp);
+
+        return new RecordDto(record.get());
     }
 
     @RequestMapping("/last")
@@ -38,18 +46,35 @@ public class RecordsResource {
         return records.startChain();
     }
 
-    @RequestMapping("/next/{data}")
-    public RecordDto proximo(@PathVariable String data){
-        return new RecordDto(records.findByTime(longToLocalDateTime(data).plus(1, ChronoUnit.MINUTES)));
+    @RequestMapping("/next/{timestamp}")
+    public RecordDto proximo(@PathVariable String timestamp){
+        Optional<Record> record = records.findByTimeStamp(longToLocalDateTime(timestamp).plus(1, ChronoUnit.MINUTES));
+
+        if (!record.isPresent())
+            throw new RecordNotFoundException("TimeStamp:" + timestamp);
+
+        return new RecordDto(record.get());
     }
 
-    @RequestMapping("/previous/{data}")
-    public RecordDto anterior(@PathVariable String data){
-        return new RecordDto(records.findByTime(longToLocalDateTime(data).minus(1, ChronoUnit.MINUTES)));
+    @RequestMapping("/previous/{timestamp}")
+    public RecordDto anterior(@PathVariable String timestamp){
+        LocalDateTime dateTime = longToLocalDateTime(timestamp).minus(1, ChronoUnit.MINUTES);
+
+        Optional<Record> record = records.findByTimeStamp(dateTime);
+
+        if (!record.isPresent())
+            throw new RecordNotFoundException("TimeStamp:" + timestamp);
+
+        return new RecordDto(record.get());
     }
 
-    private LocalDateTime longToLocalDateTime(String data){
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(new Long(data)), ZoneId.of("America/Sao_Paulo"));
+    private LocalDateTime longToLocalDateTime(String timestamp){
+        Long millis = new Long(timestamp);
+        if (timestamp.length() == 10){
+            millis = millis*1000;
+        }
+
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(new Long(millis)), ZoneId.of("America/Sao_Paulo"));
         return localDateTime;
     }
 

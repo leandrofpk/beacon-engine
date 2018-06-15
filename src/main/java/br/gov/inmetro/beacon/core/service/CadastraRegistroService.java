@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 @Service
 public class CadastraRegistroService {
@@ -25,22 +26,22 @@ public class CadastraRegistroService {
 
     @Transactional
     public void novoRegistro(RecordDto recordDto){
+        Optional<Record> record = records.findByTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
 
-        Record recordDb = records.findByTime(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
-//
-        if (recordDb != null){
-            throw new TimeIsAlreadyRegistered("Time already reported");
+        if (record.isPresent()){
+            throw new TimeIsAlreadyRegisteredException("Time already reported");
         }
 
         Record registroBd = new Record();
 
-        registroBd.setTime(longToLocalDateTime(recordDto.getTimeStamp()));
+        registroBd.setTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()));
 
         registroBd.setOutputValue(recordDto.getOutputValue());
         registroBd.setVersionBeacon(recordDto.getVersion());
-        registroBd.setSignature(recordDto.getSignatureValue());
-        registroBd.setPreviousOutput(recordDto.getPreviousOutputValue());
-        registroBd.setStatus(recordDto.getStatusCode());
+        registroBd.setFrequency(recordDto.getFrequency());
+        registroBd.setSignatureValue(recordDto.getSignatureValue());
+        registroBd.setPreviousOutputValue(recordDto.getPreviousOutputValue());
+        registroBd.setStatusCode(recordDto.getStatusCode());
         registroBd.setSeedValue(recordDto.getSeedValue());
         registroBd.setOrigin(OriginEnum.BEACON);
 

@@ -35,9 +35,9 @@ public class RegistrosController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView ver(@PathVariable("id") Record registro) {
+    public ModelAndView ver(@PathVariable("id") Record record) {
         ModelAndView mv = new ModelAndView("registros/show");
-        mv.addObject(registro);
+        mv.addObject(record);
         return mv;
     }
 

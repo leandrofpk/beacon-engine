@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Lista de números</title>
+    <title>Número</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -15,7 +15,7 @@
         <strong>Número</strong>
     </div>
     <div class="panel-body">
-        <form class="form-horizontal" th:object="${registro}" method="POST" style="margin: 10px">
+        <form class="form-horizontal" th:object="${record}" method="POST" style="margin: 10px">
             <div class="form-group">
                 <fieldset>
 
@@ -25,36 +25,59 @@
                             <input type="text" class="form-control input-sm" id="id" th:field="*{id}" readOnly="readonly"/>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <label>Data</label>
-                            <input type="text" class="form-control input-sm" th:field="*{hora}" maxlength="30" readOnly="readonly"/>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-5">
-                            <label>Número</label>
-                            <textarea class="form-control input-sm" th:field="*{numero}" cols="5" rows="7" readonly="readonly"></textarea>
 
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-5">
-                            <label>Assinatura</label>
-                            <textarea class="form-control input-sm" th:field="*{assinatura}" cols="5" rows="7" readonly="readonly"></textarea>
-                        </div>
-                    </div>
                     <div class="form-group row">
                         <div class="col-md-1">
-                            <label>Origem</label>
-                            <input type="text" class="form-control input-sm" id="id" th:field="*{origem}" readOnly="readonly"/>
+                            <label>Version:</label>
+                            <!--<input type="text" class="form-control input-sm" id="version" th:field="*{versionBeacon}" readOnly="readonly"/>-->
+                            <span th:text="${record.versionBeacon}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label>Frequency:</label>
+                            <span th:text="${record.frequency}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label>Time:</label>
+                            <span th:text="|${{record.timeStamp}} (${record.unixTimestamp})|"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-5">
+                            <label>Seed Value:</label>
+                            <span th:text="${record.seedValue}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-5">
+                            <label>Output Value:</label>
+                            <span th:text="${record.outputValue}"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-5">
+                            <label>Signature:</label>
+                            <span th:text="${record.signatureValue}"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-5">
+                            <label>Status:</label>
+                            <span th:text="${record.statusCode}"></span>
                         </div>
                     </div>
                 </fieldset>
             </div>
             <div class="form-group row">
                 <!--<button type="submit" class="btn btn-sm btn-primary">Anterior</button>-->
-                <!--<a th:href="@{/}" class="btn btn-sm btn-default">Proximo</a>-->
+                <a th:href="@{/registros}" class="btn btn-sm btn-default">Voltar</a>
             </div>
         </form>
     </div>

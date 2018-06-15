@@ -24,19 +24,21 @@ public class Record {
     private String versionBeacon;
 
     @NotNull
+    private String frequency;
+
+    @NotNull
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm a")
-    @Column
-    private LocalDateTime time;
+    private LocalDateTime timeStamp;
 
     @NotNull
     private String seedValue;
 
     @NotNull
-    private String previousOutput;
+    private String previousOutputValue;
 
     @Lob
     @NotNull
-    private String signature;
+    private String signatureValue;
 
     @Lob
     @NotNull
@@ -44,32 +46,18 @@ public class Record {
 
     @Length(max = 20)
     @NotNull
-    private String status;
+    private String statusCode;
 
     @Enumerated(EnumType.STRING)
     @NotNull
     @JsonIgnore
     private OriginEnum origin;
 
-    public Record() {
-    }
-
-//    public void setTime(String time) {
-//        this.time = longToLocalDateTime(time);
-////        this.time = longToLocalDateTime(time).truncatedTo(ChronoUnit.MINUTES);
-//    }
-
-
-    private LocalDateTime longToLocalDateTime(String data){
-//        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(new Long(data)), ZoneId.of("America/Sao_Paulo"));
-
-//        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
-        return localDateTime;
+    public Record(){
     }
 
     public long getUnixTimestamp() {
-        return time.atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli();
+        return timeStamp.atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli();
     }
 
 }
