@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/rest/record", produces=MediaType.APPLICATION_XML_VALUE)
+@RequestMapping(value = "/rest/record", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces=MediaType.APPLICATION_XML_VALUE)
 public class RecordsPostResource {
 
     private CadastraRegistroService cadastraRegistroService;
