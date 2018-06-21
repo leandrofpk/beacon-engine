@@ -22,7 +22,7 @@ public class RecordsPostResource {
     }
 
     @PostMapping
-    public ResponseEntity<?> novo(@Valid @RequestBody RecordDto record){
+    public ResponseEntity<?> novo(@Valid RecordDto record){
         cadastraRegistroService.novoRegistro(record);
         return new ResponseEntity<RecordDto>(HttpStatus.CREATED);
     }
