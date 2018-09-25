@@ -12,31 +12,36 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import org.springframework.core.env.Environment;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("/registros")
-public class RegistrosController {
+@RequestMapping("/")
+public class RecordsController {
 
-    private Records registros;
+    private Records records;
+
+    private Environment env;
 
     @Autowired
-    public RegistrosController(Records registros) {
-        this.registros = registros;
+    public RecordsController(Records records, Environment env) {
+        this.records = records;
+        this.env = env;
     }
 
     @GetMapping
     public ModelAndView pesquisar(RegistroFilter registroFilter, BindingResult result
             , Pageable pageable, HttpServletRequest httpServletRequest) {
 
-        ModelAndView mv = new ModelAndView("registros/index");
-        mv.addObject("registros", registros.obterTodos());
+        ModelAndView mv = new ModelAndView("records/index");
+        mv.addObject("records", records.obterTodos());
+        mv.addObject("url", env.getProperty("beacon.url"));
         return mv;
     }
 
     @GetMapping("/{id}")
     public ModelAndView ver(@PathVariable("id") Record record) {
-        ModelAndView mv = new ModelAndView("registros/show");
+        ModelAndView mv = new ModelAndView("records/show");
         mv.addObject(record);
         return mv;
     }

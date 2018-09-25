@@ -26,6 +26,12 @@ public class CadastraRegistroService {
 
     @Transactional
     public void novoRegistro(RecordDto recordDto){
+
+        System.out.println("---------------------------------");
+        System.out.println(longToLocalDateTime(recordDto.getTimeStamp()));
+
+
+
         Optional<Record> record = records.findByTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
 
         if (record.isPresent()){
@@ -34,7 +40,7 @@ public class CadastraRegistroService {
 
         Record registroBd = new Record();
 
-        registroBd.setTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()));
+        registroBd.setTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
 
         registroBd.setOutputValue(recordDto.getOutputValue());
         registroBd.setVersionBeacon(recordDto.getVersion());

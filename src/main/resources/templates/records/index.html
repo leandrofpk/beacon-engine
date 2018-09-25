@@ -11,12 +11,11 @@
 <body>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
-        <strong>Números - Mostrando somente os 20 números mais recentes</strong>
-    </div>
 
     <div class="panel-body">
         <h3>API</h3>
+
+        <p th:text="${url}"></p>
 
         <label>Current Record:</label>
         <span>GET: /rest/record/< timestamp > </span>
@@ -35,23 +34,31 @@
 
     </div>
 
+    <div class="panel-heading">
+        <strong>Showing the last 20 numbers</strong>
+    </div>
+
     <div class="panel-body">
         <div class="table-responsive">
             <table class="table table-sm table-striped table-hover table-bordered">
                 <thead>
                 <tr>
-                    <th>Data</th>
+                    <th>Pulse Index</th>
+                    <th>Date</th>
+                    <th>Date</th>
                     <th>Output Value</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="registro : ${registros}">
-                    <td th:text="|${{registro.timeStamp}} (${registro.unixTimestamp})|"></td>
-                    <td th:text="${registro.outputValue}"></td>
+                <tr th:each="record : ${records}">
+                    <td th:text="${record.id}"></td>
+                    <td th:text="${{record.timeStamp}}"></td>
+                    <td th:text="${record.unixTimestamp}"></td>
+                    <td th:text="${record.outputValue}"></td>
                     <td>
                         <div class="btn-group pull-right">
-                            <a class="btn btn-sm btn-primary" th:href="@{/registros/{id}(id=${registro.id})}">Ver</a>
+                            <a class="btn btn-sm btn-primary" th:href="@{/records/{id}(id=${record.id})}">Ver</a>
                         </div>
                     </td>
                 </tr>
@@ -60,9 +67,8 @@
         </div>
     </div>
     <div class="panel-footer">
-        <!--<a class="btn btn-sm btn-success" th:href="@{/add/}" >Adicionar</a>-->
         <div class="container-fluid">
-            <span class="aw-footer-disclaimer">&copy; 2018 Inmetro/DMTIC - <b>v0.2.1</b></span>
+            <span class="aw-footer-disclaimer">&copy; 2018 Inmetro/DMTIC - <b>v0.3.1</b></span>
         </div>
     </div>
 </div>
