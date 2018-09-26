@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -79,5 +82,17 @@ public class RecordsResource {
     }
 
 
+    @RequestMapping("/index/{pulseIndex}")
+    public RecordDto index(@PathVariable String pulseIndex){
+
+//        if (Spring pulseIndex)
+
+        Optional<Record> record = records.findById(new Long(pulseIndex));
+
+        if (!record.isPresent())
+            throw new RecordNotFoundException("pulseIndex:" + pulseIndex);
+
+        return new RecordDto(record.get());
+    }
 
 }

@@ -40,9 +40,9 @@ public class CadastraRegistroService {
                 throw new TimeIsAlreadyRegisteredException("Time already reported");
             }
 
-            if (dateTimeNewRecord.isAfter(lastRecord.getTimeStamp().plusMinutes(1))) {
-                throw new TimeIsAlreadyRegisteredException("Invalid time future");
-            }
+//            if (dateTimeNewRecord.isAfter(lastRecord.getTimeStamp().plusMinutes(1))) {
+//                throw new TimeIsAlreadyRegisteredException("Invalid time future");
+//            }
         }
         Record registroBd = new Record();
 
