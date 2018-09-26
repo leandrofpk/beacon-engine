@@ -8,6 +8,6 @@ import java.util.List;
 public interface RecordsQueries {
     RecordDto lastDto();
     Record last();
-    RecordDto startChain();
+    RecordDto first();
     List<Record> obterTodos();
 }

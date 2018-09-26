@@ -41,9 +41,9 @@ public class RecordsResource {
         return records.lastDto();
     }
 
-    @RequestMapping("/start-chain")
-    public RecordDto startChain(){
-        return records.startChain();
+    @RequestMapping("/first")
+    public RecordDto first(){
+        return records.first();
     }
 
     @RequestMapping("/next/{timestamp}")
@@ -77,5 +77,7 @@ public class RecordsResource {
         LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(new Long(millis)), ZoneId.of("America/Sao_Paulo"));
         return localDateTime;
     }
+
+
 
 }

@@ -26,7 +26,7 @@ public class RecordsImpl implements RecordsQueries {
         }
     }
 
-    public RecordDto startChain(){
+    public RecordDto first(){
         Record r = (Record) manager.createQuery("from Record order by id").setMaxResults(1).getSingleResult();
         return new RecordDto(r);
 
