@@ -15,7 +15,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/rest/record")
-//@RequestMapping(value = "/rest/record", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces=MediaType.APPLICATION_XML_VALUE)
 public class RecordsPostResource {
 
     private CadastraRegistroService cadastraRegistroService;
@@ -27,12 +26,7 @@ public class RecordsPostResource {
 
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces=MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> novo(RecordDto record){
-
-
         cadastraRegistroService.novoRegistro(record);
-
-
-
         return new ResponseEntity<RecordDto>(HttpStatus.CREATED);
     }
 

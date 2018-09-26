@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface Records extends JpaRepository<Record, Long>, RecordsQueries {
     Optional<Record> findByTimeStamp(LocalDateTime dataTratada);
+//    Optional<Record> findByUnixTimeStamp(Long longTratado);
 }

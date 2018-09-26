@@ -16,7 +16,7 @@ import org.springframework.core.env.Environment;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/records")
 public class RecordsController {
 
     private Records records;

@@ -30,6 +30,8 @@ public class Record {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm a")
     private LocalDateTime timeStamp;
 
+    private Long unixTimeStamp;
+
     @NotNull
     private String seedValue;
 
@@ -54,10 +56,6 @@ public class Record {
     private OriginEnum origin;
 
     public Record(){
-    }
-
-    public long getUnixTimestamp() {
-        return timeStamp.atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli();
     }
 
 }

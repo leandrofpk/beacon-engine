@@ -44,7 +44,7 @@
                     <div class="form-group row">
                         <div class="col-md-4">
                             <label>Time:</label>
-                            <span th:text="|${{record.timeStamp}} (${record.unixTimestamp})|"></span>
+                            <span th:text="|${{record.timeStamp}} (${record.unixTimeStamp})|"></span>
                         </div>
                     </div>
 
@@ -77,7 +77,7 @@
             </div>
             <div class="form-group row">
                 <!--<button type="submit" class="btn btn-sm btn-primary">Anterior</button>-->
-                <a th:href="@{/registros}" class="btn btn-sm btn-default">Voltar</a>
+                <a th:href="@{/records}" class="btn btn-sm btn-default">Voltar</a>
             </div>
         </form>
     </div>

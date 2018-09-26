@@ -13,6 +13,8 @@ import java.time.ZoneId;
 @JacksonXmlRootElement(localName = "record")
 public class RecordDto implements Serializable {
 
+    private String pulseIndex;
+
     @NotNull
     private String version;
 
@@ -21,6 +23,7 @@ public class RecordDto implements Serializable {
 
     @NotNull
     private String timeStamp;
+
 
     @NotNull
     private String seedValue;
@@ -41,6 +44,7 @@ public class RecordDto implements Serializable {
     }
 
     public RecordDto(Record record){
+        this.pulseIndex = record.getId().toString();
         this.version = record.getVersionBeacon();
         this.frequency = record.getFrequency();
         this.timeStamp = String.valueOf(record.getTimeStamp().atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());

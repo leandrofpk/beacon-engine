@@ -38,7 +38,7 @@ public class RecordsResource {
 
     @RequestMapping("/last")
     public RecordDto last(){
-        return records.last();
+        return records.lastDto();
     }
 
     @RequestMapping("/start-chain")

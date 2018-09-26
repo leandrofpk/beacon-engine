@@ -37,6 +37,12 @@ public class RegistroTest {
         timestamp = "1528932255488";
         System.out.println(longToLocalDateTime(timestamp));
 
+        timestamp = "1537902726";
+        System.out.println(longToLocalDateTime(timestamp));
+
+        timestamp = "1537902726";
+        System.out.println(longToLocalDateTimeTwo(timestamp));
+
     }
 
     private LocalDateTime longToLocalDateTime(String data){
@@ -47,9 +53,21 @@ public class RegistroTest {
     }
 
 
-//    public void teste(){
-//        String date = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date (epoch*1000));
-//    }
+    private LocalDateTime longToLocalDateTimeTwo(String data){
+        Long millis = new Long(data);
+        if (data.length() == 10){
+            millis = millis*1000;
+        }
+
+        // atual
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.of("America/Sao_Paulo"));
+
+        //teste
+//        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(new Long(data)), ZoneId.of("America/Sao_Paulo"));
+
+
+        return localDateTime;
+    }
 
 
 }

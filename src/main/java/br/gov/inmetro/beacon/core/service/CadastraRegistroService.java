@@ -12,7 +12,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 @Service
 public class CadastraRegistroService {
@@ -25,22 +24,31 @@ public class CadastraRegistroService {
     }
 
     @Transactional
-    public void novoRegistro(RecordDto recordDto){
+    public void novoRegistro(RecordDto recordDto) {
 
-        System.out.println("---------------------------------");
-        System.out.println(longToLocalDateTime(recordDto.getTimeStamp()));
+        Record lastRecord = records.last();
 
+        if (lastRecord != null) {
 
+            final LocalDateTime dateTimeNewRecord = longToLocalDateTime(recordDto.getTimeStamp());
 
-        Optional<Record> record = records.findByTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
+            if (dateTimeNewRecord.isBefore(lastRecord.getTimeStamp())) {
+                throw new TimeIsAlreadyRegisteredException("Invalid time before");
+            }
 
-        if (record.isPresent()){
-            throw new TimeIsAlreadyRegisteredException("Time already reported");
+            if (dateTimeNewRecord.isEqual(lastRecord.getTimeStamp())) {
+                throw new TimeIsAlreadyRegisteredException("Time already reported");
+            }
+
+            if (dateTimeNewRecord.isAfter(lastRecord.getTimeStamp().plusMinutes(1))) {
+                throw new TimeIsAlreadyRegisteredException("Invalid time future");
+            }
         }
-
         Record registroBd = new Record();
 
-        registroBd.setTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()).truncatedTo(ChronoUnit.MINUTES));
+        registroBd.setTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()));
+
+        registroBd.setUnixTimeStamp(new Long(recordDto.getTimeStamp()));
 
         registroBd.setOutputValue(recordDto.getOutputValue());
         registroBd.setVersionBeacon(recordDto.getVersion());
@@ -60,8 +68,12 @@ public class CadastraRegistroService {
             millis = millis*1000;
         }
 
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.of("America/Sao_Paulo"));
+        // atual
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis),
+                ZoneId.of("America/Sao_Paulo")).truncatedTo(ChronoUnit.MINUTES);
+
         return localDateTime;
     }
+
 
 }
