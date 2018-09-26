@@ -9,7 +9,7 @@ public class HomeController {
 
     @GetMapping("/")
     public ModelAndView root(){
-        ModelAndView mv = new ModelAndView("records/index");
+        ModelAndView mv = new ModelAndView("redirect:records");
         return mv;
     }
 
