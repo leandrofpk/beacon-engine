@@ -31,7 +31,7 @@ public class RecordsResource {
 
     @RequestMapping("/{timestamp}")
     public RecordDto dataFormatoLong(@PathVariable String timestamp){
-        Optional<Record> record = records.findByTimeStamp(longToLocalDateTime(timestamp));
+        Optional<Record> record = records.findByUnixTimeStamp(new Long(timestamp));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -51,7 +51,7 @@ public class RecordsResource {
 
     @RequestMapping("/next/{timestamp}")
     public RecordDto proximo(@PathVariable String timestamp){
-        Optional<Record> record = records.findByTimeStamp(longToLocalDateTime(timestamp).plus(1, ChronoUnit.MINUTES));
+        Optional<Record> record = records.findByTimeStamp(longToLocalDateTime(timestamp).plus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -61,9 +61,7 @@ public class RecordsResource {
 
     @RequestMapping("/previous/{timestamp}")
     public RecordDto anterior(@PathVariable String timestamp){
-        LocalDateTime dateTime = longToLocalDateTime(timestamp).minus(1, ChronoUnit.MINUTES);
-
-        Optional<Record> record = records.findByTimeStamp(dateTime);
+        Optional<Record> record = records.findByTimeStamp(longToLocalDateTime(timestamp).minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -72,21 +70,13 @@ public class RecordsResource {
     }
 
     private LocalDateTime longToLocalDateTime(String timestamp){
-        Long millis = new Long(timestamp);
-        if (timestamp.length() == 10){
-            millis = millis*1000;
-        }
-
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(new Long(millis)), ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(new Long(timestamp)), ZoneId.of("America/Sao_Paulo"));
         return localDateTime;
     }
 
 
     @RequestMapping("/index/{pulseIndex}")
     public RecordDto index(@PathVariable String pulseIndex){
-
-//        if (Spring pulseIndex)
-
         Optional<Record> record = records.findById(new Long(pulseIndex));
 
         if (!record.isPresent())
