@@ -1,17 +1,12 @@
 package br.gov.inmetro.beacon.api;
 
 import br.gov.inmetro.beacon.core.dominio.repositorio.Records;
-import br.gov.inmetro.beacon.core.infra.Record;
 import br.gov.inmetro.beacon.core.service.CadastraRegistroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/rest/record")

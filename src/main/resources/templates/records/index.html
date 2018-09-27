@@ -28,31 +28,57 @@
 
         <p>The dissemination of random numbers is supported by exposing a set of operations in the beacon's API. The currently implemented calls to this API are listed below. Users submitting a request need to provide the pulse generation time in POSIX format (number of seconds since midnight UTC, January 1, 1970 (see <a href="http://en.wikipedia.org/wiki/Unix_time">http://en.wikipedia.org/wiki/Unix_time</a> for more information and <a href="http://www.epochconverter.com">http://www.epochconverter.com</a> for an online timestamp converter.)</p>
 
+    </div>
+
+    <div class="panel-body">
+            <label>Current Record:</label>
+            <span>GET: /rest/record/{timestamp}</span>
+            <br>
+            Example: <a th:href="@{/rest/record/1537985800000}" th:text="|${url}/rest/record/1537985800000|"></a>
+            <br>
             <br>
 
-            <label>Current Record:</label>
-            <span>GET: /rest/record/<timestamp> </span>
-            <br>
             <label>Previous Record:</label>
-            <span>GET: rest/record/previous/<timestamp></span>
+            <span>GET: rest/record/previous/{timestamp}</span>
+            <br>
+            Example: <a th:href="@{/rest/record/previous/1537985800000}" th:text="|${url}/rest/record/previous/1537985800000|"></a>
+            <br>
             <br>
             <label>Next Record:</label>
-            <span>GET: rest/record/next/< timestamp ></span>
+            <span>GET: rest/record/next/{timestamp}</span>
+            <br>
+            Example: <a th:href="@{/rest/record/next/1537985800000}" th:text="|${url}/rest/record/next/1537985800000|"></a>
+            <br>
             <br>
             <label>Last Record:</label>
             <span>GET: rest/record/last</span>
             <br>
-            Exemplo: <a th:href="@{/rest/record/last}" >@{/rest/record/last}</a>
+            Example: <a th:href="@{/rest/record/last}" th:text="|${url}/rest/record/last|"></a>
             <br>
             <br>
             <label>Index:</label>
-            <span>GET: rest/record/index/<pulseIndex></span>
+            <span>GET: rest/record/index/{pulseIndex}</span>
             <br>
-            Exemplo: <a th:href="@{/rest/record/index/1}" >@{/rest/record/index/1}</a>
+            Example: <a th:href="@{/rest/record/index/25}" th:text="|${url}/rest/record/index/25|"></a>
             <br>
             <br>
         </p>
 
+    </div>
+
+    <div class="panel-heading">
+        <strong>Last random number</strong>
+    </div>
+
+    <div class="panel-body">
+        <p><strong>Pulse index:</strong> <span th:text="${lastRecord.id}"></span></p>
+        <p><strong>Version:</strong> <span th:text="${lastRecord.versionBeacon}"></span></p>
+        <p><strong>Frequency:</strong> <span th:text="${lastRecord.frequency}"></span></p>
+        <p><strong>Time:</strong> <span th:text="|${{lastRecord.timeStamp}} (${lastRecord.unixTimeStamp})|"></span></p>
+        <p><strong>Seed value:</strong><span th:text="${lastRecord.seedValue}"></p>
+        <p><strong>Output value:</strong> <span th:text="${lastRecord.outputValue}"></span></p>
+        <p><strong>Signature:</strong> <span th:text="${lastRecord.signatureValue}"></span></p>
+        <p><strong>Status:</strong> <span th:text="${lastRecord.statusCode}"></span></p>
     </div>
 
     <div class="panel-heading">

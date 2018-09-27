@@ -13,10 +13,4 @@ public class HomeController {
         return mv;
     }
 
-//    @GetMapping("/home")
-//    public ModelAndView home(){
-//        ModelAndView mv = new ModelAndView("home/index");
-//        return mv;
-//    }
-
 }

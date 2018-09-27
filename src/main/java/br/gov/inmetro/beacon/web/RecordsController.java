@@ -36,6 +36,7 @@ public class RecordsController {
         ModelAndView mv = new ModelAndView("records/index");
         mv.addObject("records", records.obterTodos());
         mv.addObject("url", env.getProperty("beacon.url"));
+        mv.addObject("lastRecord", records.last());
         return mv;
     }
 
