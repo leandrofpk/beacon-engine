@@ -2,6 +2,8 @@ package br.gov.inmetro.beacon.api;
 
 import br.gov.inmetro.beacon.core.dominio.repositorio.Records;
 import br.gov.inmetro.beacon.core.service.CadastraRegistroService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +16,8 @@ public class RecordsPostResource {
 
     private CadastraRegistroService cadastraRegistroService;
 
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     public RecordsPostResource(CadastraRegistroService cadastraRegistroService, Records registros) {
         this.cadastraRegistroService = cadastraRegistroService;
@@ -21,6 +25,8 @@ public class RecordsPostResource {
 
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces=MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> novo(RecordDto record){
+        log.error("Post DTO: " + record.toString());
+        System.out.println("Post DTO2:" + record.toString());
         cadastraRegistroService.novoRegistro(record);
         return new ResponseEntity<RecordDto>(HttpStatus.CREATED);
     }

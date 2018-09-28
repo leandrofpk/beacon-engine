@@ -51,7 +51,7 @@ public class RecordDto implements Serializable {
         this.seedValue = record.getSeedValue();
         this.previousOutputValue = record.getPreviousOutputValue();
         this.signatureValue = record.getSignatureValue();
-        this.outputValue = record.getSignatureValue();
+        this.outputValue = record.getOutputValue();
         this.statusCode = record.getStatusCode();
     }
 }

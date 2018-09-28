@@ -10,12 +10,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.ModelAndView;
 
 import org.springframework.core.env.Environment;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@RequestScope
 @RequestMapping("/records")
 public class RecordsController {
 

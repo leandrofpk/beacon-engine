@@ -7,6 +7,7 @@ import br.gov.inmetro.beacon.core.infra.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 @Service
+@RequestScope
 public class CadastraRegistroService {
 
     private Records records;
@@ -40,9 +42,6 @@ public class CadastraRegistroService {
                 throw new TimeIsAlreadyRegisteredException("Time already reported");
             }
 
-//            if (dateTimeNewRecord.isAfter(lastRecord.getTimeStamp().plusMinutes(1))) {
-//                throw new TimeIsAlreadyRegisteredException("Invalid time future");
-//            }
         }
         Record registroBd = new Record();
 
