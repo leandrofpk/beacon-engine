@@ -26,7 +26,6 @@ public class RecordsPostResource {
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces=MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> novo(RecordDto record){
         log.error("Post DTO: " + record.toString());
-        System.out.println("Post DTO2:" + record.toString());
         cadastraRegistroService.novoRegistro(record);
         return new ResponseEntity<RecordDto>(HttpStatus.CREATED);
     }
