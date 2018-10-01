@@ -32,9 +32,11 @@ public class Record {
 
     private Long unixTimeStamp;
 
+    @Lob
     @NotNull
     private String seedValue;
 
+    @Lob
     @NotNull
     private String previousOutputValue;
 
