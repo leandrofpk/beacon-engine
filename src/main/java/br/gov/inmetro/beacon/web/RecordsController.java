@@ -15,6 +15,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import org.springframework.core.env.Environment;
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 @Controller
 @RequestScope
@@ -35,10 +40,15 @@ public class RecordsController {
     public ModelAndView pesquisar(RegistroFilter registroFilter, BindingResult result
             , Pageable pageable, HttpServletRequest httpServletRequest) {
 
+        final Record lastRecord = records.last();
+        final Optional<Record> previousRecord = records.findByTimeStamp(lastRecord.getTimeStamp().minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+
         ModelAndView mv = new ModelAndView("records/index");
         mv.addObject("records", records.obterTodos());
         mv.addObject("url", env.getProperty("beacon.url"));
-        mv.addObject("lastRecord", records.last());
+        mv.addObject("lastRecord", lastRecord);
+        mv.addObject("previousRecord", previousRecord.get());
+
         return mv;
     }
 
@@ -47,6 +57,11 @@ public class RecordsController {
         ModelAndView mv = new ModelAndView("records/show");
         mv.addObject(record);
         return mv;
+    }
+
+    private LocalDateTime longToLocalDateTime(String timestamp){
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(new Long(timestamp)), ZoneId.of("America/Sao_Paulo"));
+        return localDateTime;
     }
 
 }

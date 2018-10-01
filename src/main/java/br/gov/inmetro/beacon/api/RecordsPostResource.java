@@ -23,9 +23,9 @@ public class RecordsPostResource {
         this.cadastraRegistroService = cadastraRegistroService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces=MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> novo(RecordDto record){
-        log.error("Post DTO: " + record.toString());
+        log.warn("Post DTO: " + record.toString());
         cadastraRegistroService.novoRegistro(record);
         return new ResponseEntity<RecordDto>(HttpStatus.CREATED);
     }

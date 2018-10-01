@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestScope
-@RequestMapping(value = "/rest/record", produces=MediaType.APPLICATION_XML_VALUE)
+@RequestMapping(value = "/rest/record", produces=MediaType.APPLICATION_JSON_VALUE)
 public class RecordsResource {
 
     private Records records;

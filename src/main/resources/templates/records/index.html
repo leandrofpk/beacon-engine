@@ -26,7 +26,7 @@
             Notice that this is the first beta release of Inmetro's Beacon Service.
             More details about this project can be seen in <a href="https://siccciber.com.br/">SICCCiber</a> or 
             <a href="mailto:lainf@inmetro.gov.br"> contacting us.</a>
-        </p style="word-break: break-word">
+        </p>
 
         <p style="word-break: break-word; text-align: justify; text-justify: inter-word;">The dissemination of random numbers is supported by exposing a set of operations in the Beacon's API. The currently implemented calls to this API are listed below.
            Users submitting a request need to provide the pulse generation time in POSIX format (number of seconds since midnight UTC, January 1, 1970 (see <a href="http://en.wikipedia.org/wiki/Unix_time">http://en.wikipedia.org/wiki/Unix_time</a> for more information and <a href="http://www.epochconverter.com">http://www.epochconverter.com</a> for an online timestamp converter.)</p>
@@ -37,20 +37,20 @@
             <label>Current Record:</label>
             <span style="word-break: break-word"> GET: /rest/record/{timestamp}</span>
             <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/1537985800000}" th:text="|${url}/rest/record/1537985800000|"></a>
+            Example: <a style="word-break: break-word" th:href="@{/rest/record/} + ${lastRecord.unixTimeStamp}" th:text="|${url}/rest/record/${lastRecord.unixTimeStamp}|"></a>
             <br>
             <br>
 
             <label>Previous Record:</label>
             <span style="word-break: break-word">GET: rest/record/previous/{timestamp}</span>
             <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/previous/1537985870001}" th:text="|${url}/rest/record/previous/1537985870001|"></a>
+            Example: <a style="word-break: break-word" th:href="@{/rest/record/previous/} + ${lastRecord.unixTimeStamp}" th:text="|${url}/rest/record/previous/${lastRecord.unixTimeStamp}|"></a>
             <br>
             <br>
             <label>Next Record:</label>
             <span style="word-break: break-word">GET: rest/record/next/{timestamp}</span>
             <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/next/1537985800000}" th:text="|${url}/rest/record/next/1537985800000|"></a>
+            Example: <a style="word-break: break-word" th:href="@{/rest/record/previous/} + ${previousRecord.unixTimeStamp}" th:text="|${url}/rest/record/previous/${previousRecord.unixTimeStamp}|"></a>
             <br>
             <br>
             <label>Last Record:</label>
@@ -59,12 +59,19 @@
             Example: <a style="word-break: break-word" th:href="@{/rest/record/last}" th:text="|${url}/rest/record/last|"></a>
             <br>
             <br>
+            <label>First:</label>
+            <span style="word-break: break-word">GET: rest/record/first</span>
+            <br>
+            Example: <a style="word-break: break-word" th:href="@{/rest/record/first/}" th:text="|${url}/rest/record/first|"></a>
+            <br>
+            <br>
             <label>Index:</label>
             <span style="word-break: break-word">GET: rest/record/index/{pulseIndex}</span>
             <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/index/25}" th:text="|${url}/rest/record/index/25|"></a>
+            Example: <a style="word-break: break-word" th:href="@{/rest/record/index/} + ${lastRecord.id}" th:text="|${url}/rest/record/index/${lastRecord.id}|"></a>
             <br>
             <br>
+
         </p>
 
     </div>
@@ -118,7 +125,7 @@
     </div>
     <div class="panel-footer">
         <div class="container-fluid">
-            <span class="aw-footer-disclaimer">&copy; 2018 Inmetro/DMTIC - <b>v0.3.6</b></span>
+            <span class="aw-footer-disclaimer">&copy; 2018 Inmetro/DMTIC - <b>v0.3.7</b></span>
         </div>
     </div>
 </div>
