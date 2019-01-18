@@ -23,8 +23,7 @@ import java.util.Optional;
 
 @Controller
 @RequestScope
-//@RequestMapping("/records")
-@RequestMapping("/")
+@RequestMapping("/records")
 public class RecordsController {
 
     private Records records;
