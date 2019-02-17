@@ -67,8 +67,11 @@ public class RecordsController {
     }
 
     private String getAppUrl(HttpServletRequest request) {
-        return request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-//        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        if (request.getServerPort() != 443){
+            return request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        } else {
+            return request.getServerName() + request.getContextPath();
+        }
     }
 
 }
