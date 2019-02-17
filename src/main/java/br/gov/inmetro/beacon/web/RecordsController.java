@@ -45,7 +45,9 @@ public class RecordsController {
 
         ModelAndView mv = new ModelAndView("records/index");
         mv.addObject("records", records.obterTodos());
-        mv.addObject("url", env.getProperty("beacon.url"));
+//        mv.addObject("url", env.getProperty("beacon.url"));
+        mv.addObject("url", getAppUrl(httpServletRequest));
+
         mv.addObject("lastRecord", lastRecord);
         mv.addObject("previousRecord", previousRecord.get());
 
@@ -62,6 +64,11 @@ public class RecordsController {
     private LocalDateTime longToLocalDateTime(String timestamp){
         LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(new Long(timestamp)), ZoneId.of("America/Sao_Paulo"));
         return localDateTime;
+    }
+
+    private String getAppUrl(HttpServletRequest request) {
+        return request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+//        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 
 }
