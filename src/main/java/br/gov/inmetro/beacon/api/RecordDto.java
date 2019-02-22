@@ -4,6 +4,7 @@ import br.gov.inmetro.beacon.core.infra.Record;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Data;
 
+import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -24,7 +25,6 @@ public class RecordDto implements Serializable {
     @NotNull
     private String timeStamp;
 
-
     @NotNull
     private String seedValue;
 
@@ -39,6 +39,11 @@ public class RecordDto implements Serializable {
 
     @NotNull
     private String statusCode;
+
+    @Lob
+    private String rawData;
+
+    private String chain;
 
     public RecordDto() {
     }

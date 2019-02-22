@@ -8,10 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 @Data
@@ -56,6 +53,11 @@ public class Record {
     @NotNull
     @JsonIgnore
     private OriginEnum origin;
+
+    @Lob
+    private String rawData;
+
+    private String chain;
 
     public Record(){
     }
