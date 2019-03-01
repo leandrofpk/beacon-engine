@@ -49,7 +49,8 @@ public class RecordsController {
         mv.addObject("url", getAppUrl(httpServletRequest));
 
         mv.addObject("lastRecord", lastRecord);
-        mv.addObject("previousRecord", previousRecord.get());
+
+        mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
 
         return mv;
     }
