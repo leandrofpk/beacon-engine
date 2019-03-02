@@ -34,10 +34,6 @@ public class CadastraRegistroService {
 
             final LocalDateTime dateTimeNewRecord = longToLocalDateTime(recordDto.getTimeStamp());
 
-            if (dateTimeNewRecord.isBefore(lastRecord.getTimeStamp())) {
-                throw new TimeIsAlreadyRegisteredException("Invalid time before");
-            }
-
             if (dateTimeNewRecord.isEqual(lastRecord.getTimeStamp())) {
                 throw new TimeIsAlreadyRegisteredException("Time already reported");
             }
