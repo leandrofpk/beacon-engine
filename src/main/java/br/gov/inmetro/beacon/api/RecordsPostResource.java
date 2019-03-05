@@ -26,28 +26,10 @@ public class RecordsPostResource {
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> novo(RecordDto record){
         log.warn("Post DTO: " + record.toString());
-        cadastraRegistroService.novoRegistro(record);
+        record.setChain("1");
+        cadastraRegistroService.novoRegistro(record, 1);
         return new ResponseEntity<RecordDto>(HttpStatus.CREATED);
     }
-
-//    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE)
-//    public ResponseEntity<Record> novo(@Valid @RequestBody Record record){
-//        RecordDto dto = new RecordDto();
-//        cadastraRegistroService.novoRegistro(dto);
-//        return new ResponseEntity<Record>(HttpStatus.CREATED);
-//    }
-
-//    @RequestMapping(method = RequestMethod.POST,
-//            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public void handleFormRequest(@RequestBody MultiValueMap<String, String> formParams) {
-//        System.out.println("form params received " + formParams);
-//
-//        final Map<String, String> stringStringMap = formParams.toSingleValueMap();
-//
-//
-//    }
-
 
 
 }

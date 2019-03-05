@@ -45,7 +45,8 @@ public class RecordsPostResourceV2 {
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public  ResponseEntity<?> novo(@Valid @RequestBody RecordDto recordDto){
-        cadastraRegistroService.novoRegistro(recordDto);
+
+        cadastraRegistroService.novoRegistro(recordDto, 2);
         return new ResponseEntity<>(recordDto, HttpStatus.CREATED); //funcionando
     }
 

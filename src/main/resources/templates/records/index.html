@@ -95,7 +95,7 @@
     </div>
 
     <div class="panel-body">
-        <p><strong>Pulse index:</strong> <span th:text="${lastRecord.id}"></span></p>
+        <p><strong>Pulse index:</strong> <span th:text="${lastRecord.idChain}"></span></p>
         <p><strong>Version:</strong> <span th:text="${lastRecord.versionBeacon}"></span></p>
         <p><strong>Frequency:</strong> <span th:text="${lastRecord.frequency}"></span></p>
         <p><strong>Time:</strong> <span th:text="|${{lastRecord.timeStamp}} (${lastRecord.unixTimeStamp})|"></span></p>
@@ -123,13 +123,13 @@
                 </thead>
                 <tbody>
                 <tr th:each="record : ${records}">
-                    <td th:text="${record.id}"></td>
+                    <td th:text="${record.pulseIndex}"></td>
                     <td th:text="${{record.timeStamp}}"></td>
                     <td th:text="${record.unixTimeStamp}"></td>
                     <td><span style="word-break: break-word" th:text="${record.outputValue}"></span> </td>
                     <td>
                         <div class="btn-group pull-right">
-                            <a class="btn btn-sm btn-primary" th:href="@{/records/{id}(id=${record.id})}">Details</a>
+                            <a class="btn btn-sm btn-primary" th:href="@{/records/{id}(id=${record.pulseIndex})}">Details</a>
                         </div>
                     </td>
                 </tr>

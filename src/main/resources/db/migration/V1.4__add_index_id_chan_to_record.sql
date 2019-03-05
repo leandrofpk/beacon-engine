@@ -1,0 +1,1 @@
+ALTER TABLE record ADD INDEX indx_record_id_chain (id_chain ASC);

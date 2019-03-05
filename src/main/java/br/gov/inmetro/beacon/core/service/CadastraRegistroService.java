@@ -26,9 +26,9 @@ public class CadastraRegistroService {
     }
 
     @Transactional
-    public void novoRegistro(RecordDto recordDto) {
+    public void novoRegistro(RecordDto recordDto, Integer chain) {
 
-        Record lastRecord = records.last();
+        Record lastRecord = records.last(chain);
 
         if (lastRecord != null) {
 
@@ -39,11 +39,16 @@ public class CadastraRegistroService {
             }
 
         }
+
+        Long lastChainId = records.maxChain(chain);
+
         Record registroBd = new Record();
 
         registroBd.setTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()));
 
         registroBd.setUnixTimeStamp(new Long(recordDto.getTimeStamp()));
+        registroBd.setChain(lastChainId.toString());
+
 
         registroBd.setOutputValue(recordDto.getOutputValue());
         registroBd.setVersionBeacon(recordDto.getVersion());
@@ -53,6 +58,8 @@ public class CadastraRegistroService {
         registroBd.setStatusCode(recordDto.getStatusCode());
         registroBd.setSeedValue(recordDto.getSeedValue());
         registroBd.setOrigin(OriginEnum.BEACON);
+        registroBd.setChain(chain.toString());
+        registroBd.setIdChain(++lastChainId);
 
         records.save(registroBd);
     }

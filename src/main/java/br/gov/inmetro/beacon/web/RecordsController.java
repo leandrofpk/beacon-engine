@@ -2,22 +2,16 @@ package br.gov.inmetro.beacon.web;
 
 import br.gov.inmetro.beacon.core.dominio.repositorio.Records;
 import br.gov.inmetro.beacon.core.infra.Record;
-import br.gov.inmetro.beacon.core.infra.RegistroFilter;
+import br.gov.inmetro.beacon.core.service.SearchRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.ModelAndView;
 
-import org.springframework.core.env.Environment;
 import javax.servlet.http.HttpServletRequest;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
@@ -28,43 +22,36 @@ public class RecordsController {
 
     private Records records;
 
-    private Environment env;
+    private final SearchRecordService searchRecordService;
 
     @Autowired
-    public RecordsController(Records records, Environment env) {
+    public RecordsController(Records records, SearchRecordService searchRecordService) {
         this.records = records;
-        this.env = env;
+        this.searchRecordService = searchRecordService;
     }
 
     @GetMapping
-    public ModelAndView pesquisar(RegistroFilter registroFilter, BindingResult result
-            , Pageable pageable, HttpServletRequest httpServletRequest) {
+    public ModelAndView pesquisar(HttpServletRequest httpServletRequest) {
 
-        final Record lastRecord = records.last();
+        final Record lastRecord = records.last(1);
+//        final RecordDto lastRecord = searchRecordService.last(1);
         final Optional<Record> previousRecord = records.findByTimeStamp(lastRecord.getTimeStamp().minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         ModelAndView mv = new ModelAndView("records/index");
-        mv.addObject("records", records.obterTodos());
-//        mv.addObject("url", env.getProperty("beacon.url"));
+        mv.addObject("records", searchRecordService.findLast20(1));
         mv.addObject("url", getAppUrl(httpServletRequest));
-
         mv.addObject("lastRecord", lastRecord);
-
         mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
 
         return mv;
     }
 
     @GetMapping("/{id}")
-    public ModelAndView ver(@PathVariable("id") Record record) {
+    public ModelAndView ver(@PathVariable("id") Long idChain) {
         ModelAndView mv = new ModelAndView("records/show");
-        mv.addObject(record);
+        Record byChainAndId = searchRecordService.findByChainAndId(1, idChain);
+        mv.addObject(byChainAndId);
         return mv;
-    }
-
-    private LocalDateTime longToLocalDateTime(String timestamp){
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(new Long(timestamp)), ZoneId.of("America/Sao_Paulo"));
-        return localDateTime;
     }
 
     private String getAppUrl(HttpServletRequest request) {

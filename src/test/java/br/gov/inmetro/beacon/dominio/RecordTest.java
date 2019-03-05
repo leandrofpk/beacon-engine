@@ -3,6 +3,9 @@ package br.gov.inmetro.beacon.dominio;
 import br.gov.inmetro.beacon.core.infra.Record;
 import org.junit.Test;
 
+import java.security.MessageDigest;
+import java.util.UUID;
+
 public class RecordTest {
 
     @Test
@@ -16,5 +19,21 @@ public class RecordTest {
 //        System.out.println(record.getTime());
 
     }
+
+    @Test
+    public void testar2(){
+
+        UUID uuid = UUID.randomUUID();
+        System.out.println(uuid.toString());
+
+
+
+//        MessageDigest salt = MessageDigest.getInstance("SHA-256");
+//        salt.update(UUID.randomUUID().toString().getBytes("UTF-8"));
+//        String digest = bytesToHex(salt.digest());
+
+    }
+
+
 
 }

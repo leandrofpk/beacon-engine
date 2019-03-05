@@ -59,6 +59,9 @@ public class Record {
 
     private String chain;
 
+    @NotNull
+    private Long idChain;
+
     public Record(){
     }
 

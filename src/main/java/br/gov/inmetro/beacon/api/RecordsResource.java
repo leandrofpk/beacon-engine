@@ -39,12 +39,12 @@ public class RecordsResource {
 
     @RequestMapping("/last")
     public RecordDto last(){
-        return records.lastDto();
+        return records.lastDto(1);
     }
 
     @RequestMapping("/first")
     public RecordDto first(){
-        return records.first();
+        return records.first(1);
     }
 
     @RequestMapping("/next/{timestamp}")
