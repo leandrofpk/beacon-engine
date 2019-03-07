@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestScope
-@RequestMapping(value = "beacon/api/v2/chains/{idChain}/records", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "api/v2/chains/{idChain}/records", produces=MediaType.APPLICATION_JSON_VALUE)
 public class ChainsResource {
 
     private final SearchRecordService searchRecordService;

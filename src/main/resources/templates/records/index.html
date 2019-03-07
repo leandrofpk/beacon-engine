@@ -91,40 +91,40 @@
 
     <div class="panel-body" th:if="${!v1}">
         <label>Current Record:</label>
-        <span style="word-break: break-word"> GET: /beacon/api/v2/chains/{idChain}/records/{timestamp}</span>
+        <span style="word-break: break-word"> GET: /api/v2/chains/{idChain}/records/{timestamp}</span>
         <br>
 
-        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records/{id2}(id=${chainId},id2=${lastRecord.unixTimeStamp})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records/${lastRecord.unixTimeStamp}|"></a>
+        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/{id2}(id=${chainId},id2=${lastRecord.unixTimeStamp})}" th:text="|${url}/api/v2/chains/${chainId}/records/${lastRecord.unixTimeStamp}|"></a>
         <br>
         <br>
         <label>Previous Record:</label>
-        <span style="word-break: break-word">GET: /beacon/api/v2/chains/{idChain}/records/{timestamp}/previous</span>
+        <span style="word-break: break-word">GET: /api/v2/chains/{idChain}/records/{timestamp}/previous</span>
         <br>
-        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records/{id2}/previous(id=${chainId},id2=${lastRecord.unixTimeStamp})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records/${lastRecord.unixTimeStamp}/previous|"></a>
+        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/{id2}/previous(id=${chainId},id2=${lastRecord.unixTimeStamp})}" th:text="|${url}/api/v2/chains/${chainId}/records/${lastRecord.unixTimeStamp}/previous|"></a>
         <br>
         <br>
         <label>Next Record:</label>
-        <span style="word-break: break-word">GET: /beacon/api/v2/chains/{idChain}/records/{timestamp}/next</span>
+        <span style="word-break: break-word">GET: /api/v2/chains/{idChain}/records/{timestamp}/next</span>
         <br>
-        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records/{id2}/next(id=${chainId},id2=${previousRecord.unixTimeStamp})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records/${previousRecord.unixTimeStamp}/next|"></a>
+        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/{id2}/next(id=${chainId},id2=${previousRecord.unixTimeStamp})}" th:text="|${url}/api/v2/chains/${chainId}/records/${previousRecord.unixTimeStamp}/next|"></a>
         <br>
         <br>
         <label>Last Record:</label>
         <span style="word-break: break-word">GET: beacon/api/v2/chains/{idChain}/records/last</span>
         <br>
-        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records/last(id=${chainId})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records/last|"></a>
+        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/last(id=${chainId})}" th:text="|${url}/api/v2/chains/${chainId}/records/last|"></a>
         <br>
         <br>
         <label>First:</label>
         <span style="word-break: break-word">GET: beacon/api/v2/chains/{idChain}/records/first</span>
         <br>
-        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records/first(id=${chainId})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records/first|"></a>
+        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/first(id=${chainId})}" th:text="|${url}/api/v2/chains/${chainId}/records/first|"></a>
         <br>
         <br>
         <label>Index:</label>
         <span style="word-break: break-word">GET: beacon/api/v2/chains/{idChain}/records?index={pulseIndex}</span>
         <br>
-        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records?index={id2}(id=${chainId},id2=${lastRecord.idChain})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records?index=${lastRecord.idChain}|"></a>
+        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records?index={id2}(id=${chainId},id2=${lastRecord.idChain})}" th:text="|${url}/api/v2/chains/${chainId}/records?index=${lastRecord.idChain}|"></a>
         <br>
         <br>
         </p>
