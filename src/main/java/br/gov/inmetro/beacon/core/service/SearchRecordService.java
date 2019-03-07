@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequestScope
@@ -21,17 +24,33 @@ public class SearchRecordService {
         this.records = records;
     }
 
-    public List<RecordDto> findLast20(Integer chain){
+    public List<RecordDto> findLast20(Integer chain) {
         List<RecordDto> dtos = new ArrayList<>();
         records.obterTodos(chain).forEach(record -> dtos.add(new RecordDto(record)));
-        return dtos;
+        return Collections.unmodifiableList(dtos);
     }
 
-    public RecordDto last(int chain) {
-        return new RecordDto(records.last(chain));
+    public Record last(int chain) {
+        return records.last(chain);
     }
 
-    public Record findByChainAndId(int chain, Long idChain) {
+    public Optional<Record> findByChainAndId(int chain, Long idChain) {
         return records.findByChainAndId(chain, idChain);
+    }
+
+    public Optional<Record> findByTimestamp(Integer chain, LocalDateTime timestamp) {
+        return records.findByTimestamp(chain, timestamp);
+    }
+
+    public Optional<Record> findByUnixTimeStamp(Integer chain, Long data) {
+        return records.findByUnixTimeStamp(chain, data);
+    }
+
+    public RecordDto lastDto(Integer chain) {
+        return records.lastDto(chain);
+    }
+
+    public RecordDto first(Integer chain) {
+        return records.first(chain);
     }
 }

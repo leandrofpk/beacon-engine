@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -18,19 +19,19 @@ import java.util.Optional;
 
 @RestController
 @RequestScope
-@RequestMapping(value = "/rest/record", produces=MediaType.APPLICATION_JSON_VALUE)
-public class RecordsResource {
+@RequestMapping(value = "beacon/api/v2/chains/{idChain}/records", produces=MediaType.APPLICATION_JSON_VALUE)
+public class ChainsResource {
 
     private final SearchRecordService searchRecordService;
 
     @Autowired
-    public RecordsResource(SearchRecordService searchRecordService) {
+    public ChainsResource(SearchRecordService searchRecordService) {
         this.searchRecordService = searchRecordService;
     }
 
     @RequestMapping("/{timestamp}")
-    public RecordDto dataFormatoLong(@PathVariable String timestamp){
-        Optional<Record> record = searchRecordService.findByUnixTimeStamp(1, new Long(timestamp));
+    public RecordDto dataFormatoLong(@PathVariable Integer idChain, @PathVariable String timestamp){
+        Optional<Record> record = searchRecordService.findByUnixTimeStamp(idChain, new Long(timestamp));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -39,18 +40,18 @@ public class RecordsResource {
     }
 
     @RequestMapping("/last")
-    public RecordDto last(){
-        return searchRecordService.lastDto(1);
+    public RecordDto last(@PathVariable Integer idChain){
+        return searchRecordService.lastDto(idChain);
     }
 
     @RequestMapping("/first")
-    public RecordDto first(){
-        return searchRecordService.first(1);
+    public RecordDto first(@PathVariable Integer idChain){
+        return searchRecordService.first(idChain);
     }
 
-    @RequestMapping("/next/{timestamp}")
-    public RecordDto proximo(@PathVariable String timestamp){
-        Optional<Record> record = searchRecordService.findByTimestamp(1, longToLocalDateTime(timestamp).plus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+    @RequestMapping("/{timestamp}/next")
+    public RecordDto proximo(@PathVariable Integer idChain, @PathVariable String timestamp){
+        Optional<Record> record = searchRecordService.findByTimestamp(idChain, longToLocalDateTime(timestamp).plus(idChain, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -58,9 +59,9 @@ public class RecordsResource {
         return new RecordDto(record.get());
     }
 
-    @RequestMapping("/previous/{timestamp}")
-    public RecordDto anterior(@PathVariable String timestamp){
-        Optional<Record> record = searchRecordService.findByTimestamp(1, longToLocalDateTime(timestamp).minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+    @RequestMapping("/{timestamp}/previous")
+    public RecordDto anterior(@PathVariable Integer idChain, @PathVariable String timestamp){
+        Optional<Record> record = searchRecordService.findByTimestamp(idChain, longToLocalDateTime(timestamp).minus(idChain, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -73,13 +74,12 @@ public class RecordsResource {
         return localDateTime;
     }
 
-
-    @RequestMapping("/index/{pulseIndex}")
-    public RecordDto index(@PathVariable String pulseIndex){
-        Optional<Record> record = searchRecordService.findByChainAndId(1, new Long(pulseIndex));
+    @RequestMapping
+    public RecordDto index(@PathVariable Integer idChain, @RequestParam String index){
+        Optional<Record> record = searchRecordService.findByChainAndId(idChain, new Long(index));
 
         if (!record.isPresent())
-            throw new RecordNotFoundException("pulseIndex:" + pulseIndex);
+            throw new RecordNotFoundException("pulseIndex:" + index);
 
         return new RecordDto(record.get());
     }

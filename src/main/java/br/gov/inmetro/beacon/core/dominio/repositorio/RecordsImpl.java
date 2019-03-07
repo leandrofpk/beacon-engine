@@ -9,7 +9,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class RecordsImpl implements RecordsQueries {
@@ -52,11 +54,11 @@ public class RecordsImpl implements RecordsQueries {
 
     @Transactional(readOnly = true)
     public List<Record> obterTodos(Integer chain){
-        return manager
+        return Collections.unmodifiableList(manager
                 .createQuery("from Record where chain = :chain order by id desc")
                 .setParameter("chain", chain.toString())
                 .setMaxResults(20)
-                .getResultList();
+                .getResultList());
     }
 
     @Transactional(readOnly = true)
@@ -70,25 +72,39 @@ public class RecordsImpl implements RecordsQueries {
     }
 
     @Transactional(readOnly = true)
-    public Record findByTimestamp(Integer chain, LocalDateTime timestamp){
+    public Optional<Record> findByTimestamp(Integer chain, LocalDateTime timeStamp){
 
-        Record record = (Record) manager.createQuery("from Record r where r.chain = :chain and r.timestamp = :timestamp")
+        Record record;
+
+        try {
+
+            record = (Record) manager.createQuery("from br.gov.inmetro.beacon.core.infra.Record r where r.chain = :chain and r.timeStamp = :timeStamp")
+                    .setParameter("chain", chain.toString())
+                    .setParameter("timeStamp", timeStamp).getSingleResult();
+        } catch (NoResultException e){
+            return Optional.empty();
+        }
+
+        return Optional.of(record);
+    }
+
+    @Override
+    public Optional<Record> findByUnixTimeStamp(Integer chain, Long data) {
+        Record record = (Record) manager.createQuery("from Record r where r.chain = :chain and r.unixTimeStamp = :unixTimeStamp")
                 .setParameter("chain", chain.toString())
-                .setParameter("timestamp", timestamp)
-                .getSingleResult();
-
-
-        return record;
-
+                .setParameter("unixTimeStamp", data).getSingleResult();
+        return Optional.of(record);
     }
 
     @Transactional(readOnly = true)
-    public Record findByChainAndId(Integer chain, Long idChain){
-        return (Record) manager
+    public Optional<Record> findByChainAndId(Integer chain, Long idChain){
+        Record record = (Record) manager
                 .createQuery("from Record where chain = :chain and idChain = :idChain order by id desc")
                 .setParameter("chain", chain.toString())
                 .setParameter("idChain", idChain)
                 .getSingleResult();
+
+        return Optional.of(record);
     }
 
 }

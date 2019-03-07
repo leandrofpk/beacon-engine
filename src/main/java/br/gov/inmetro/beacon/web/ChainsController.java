@@ -4,6 +4,7 @@ import br.gov.inmetro.beacon.core.infra.Record;
 import br.gov.inmetro.beacon.core.service.SearchRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,37 +17,45 @@ import java.util.Optional;
 
 @Controller
 @RequestScope
-@RequestMapping("/records")
-public class RecordsController {
+@RequestMapping("/records/chains")
+public class ChainsController {
 
     private final SearchRecordService searchRecordService;
 
     @Autowired
-    public RecordsController(SearchRecordService searchRecordService) {
+    public ChainsController(SearchRecordService searchRecordService) {
         this.searchRecordService = searchRecordService;
     }
 
     @GetMapping
     public ModelAndView pesquisar(HttpServletRequest httpServletRequest) {
+        ModelAndView mv = new ModelAndView("redirect:/records/chains/1");
+        return mv;
+    }
 
-        final Record lastRecord = searchRecordService.last(1);
-        final Optional<Record> previousRecord = searchRecordService.findByTimestamp(1, lastRecord.getTimeStamp().minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+    @GetMapping("/{chainId}")
+    public ModelAndView pesquisar(HttpServletRequest httpServletRequest, @PathVariable("chainId") Integer chainId) {
+
+        final Record lastRecord = searchRecordService.last(chainId);
+        final Optional<Record> previousRecord = searchRecordService.findByTimestamp(chainId, lastRecord.getTimeStamp().minus(chainId, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
         ModelAndView mv = new ModelAndView("records/index");
-        mv.addObject("records", searchRecordService.findLast20(1));
+        mv.addObject("records", searchRecordService.findLast20(chainId));
         mv.addObject("url", getAppUrl(httpServletRequest));
         mv.addObject("lastRecord", lastRecord);
         mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
-        mv.addObject("v1", true);
+        mv.addObject("v1", false);
+        mv.addObject("chain", chainId);
+
 
         return mv;
     }
 
-    @GetMapping("/{id}")
-    public ModelAndView ver(@PathVariable("id") Long idChain) {
+    @GetMapping("/{chainId}/{id}")
+    public ModelAndView ver(@PathVariable("chainId") Integer chainId, @PathVariable("id") Long idChain) {
         ModelAndView mv = new ModelAndView("records/show");
-        Optional<Record> byChainAndId = searchRecordService.findByChainAndId(1, idChain);
+        Optional<Record> byChainAndId = searchRecordService.findByChainAndId(chainId, idChain);
         mv.addObject(byChainAndId.get());
-        mv.addObject("v1", true);
+        mv.addObject("v1", false);
         return mv;
     }
 

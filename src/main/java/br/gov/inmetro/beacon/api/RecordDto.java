@@ -1,13 +1,16 @@
 package br.gov.inmetro.beacon.api;
 
 import br.gov.inmetro.beacon.core.infra.Record;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @Data
@@ -15,6 +18,8 @@ import java.time.ZoneId;
 public class RecordDto implements Serializable {
 
     private Long id;
+
+    private String chain;
 
     private Long pulseIndex;
 
@@ -26,6 +31,10 @@ public class RecordDto implements Serializable {
 
     @NotNull
     private String timeStamp;
+
+    @JsonIgnore
+    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm a")
+    private LocalDateTime timeStampOriginal;
 
     private Long unixTimeStamp;
 
@@ -45,9 +54,8 @@ public class RecordDto implements Serializable {
     private String statusCode;
 
     @Lob
+    @JsonIgnore
     private String rawData;
-
-    private String chain;
 
     public RecordDto() {
     }
@@ -58,6 +66,7 @@ public class RecordDto implements Serializable {
         this.version = record.getVersionBeacon();
         this.frequency = record.getFrequency();
         this.timeStamp = String.valueOf(record.getTimeStamp().atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
+        this.timeStampOriginal = record.getTimeStamp();
         this.unixTimeStamp = record.getUnixTimeStamp();
         this.seedValue = record.getSeedValue();
         this.previousOutputValue = record.getPreviousOutputValue();

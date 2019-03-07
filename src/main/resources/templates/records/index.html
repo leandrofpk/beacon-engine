@@ -47,7 +47,7 @@
 
     </div>
 
-    <div class="panel-body">
+    <div class="panel-body" th:if="${v1}">
             <label>Current Record:</label>
             <span style="word-break: break-word"> GET: /rest/record/{timestamp}</span>
             <br>
@@ -82,19 +82,61 @@
             <label>Index:</label>
             <span style="word-break: break-word">GET: rest/record/index/{pulseIndex}</span>
             <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/index/} + ${lastRecord.id}" th:text="|${url}/rest/record/index/${lastRecord.id}|"></a>
+            Example: <a style="word-break: break-word" th:href="@{/rest/record/index/} + ${lastRecord.idChain}" th:text="|${url}/rest/record/index/${lastRecord.idChain}|"></a>
             <br>
             <br>
-
         </p>
-
     </div>
+
+
+    <div class="panel-body" th:if="${!v1}">
+        <label>Current Record:</label>
+        <span style="word-break: break-word"> GET: /beacon/api/v2/chains/{idChain}/records/{timestamp}</span>
+        <br>
+
+        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records/{id2}(id=${chainId},id2=${lastRecord.unixTimeStamp})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records/${lastRecord.unixTimeStamp}|"></a>
+        <br>
+        <br>
+        <label>Previous Record:</label>
+        <span style="word-break: break-word">GET: /beacon/api/v2/chains/{idChain}/records/{timestamp}/previous</span>
+        <br>
+        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records/{id2}/previous(id=${chainId},id2=${lastRecord.unixTimeStamp})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records/${lastRecord.unixTimeStamp}/previous|"></a>
+        <br>
+        <br>
+        <label>Next Record:</label>
+        <span style="word-break: break-word">GET: /beacon/api/v2/chains/{idChain}/records/{timestamp}/next</span>
+        <br>
+        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records/{id2}/next(id=${chainId},id2=${previousRecord.unixTimeStamp})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records/${previousRecord.unixTimeStamp}/next|"></a>
+        <br>
+        <br>
+        <label>Last Record:</label>
+        <span style="word-break: break-word">GET: beacon/api/v2/chains/{idChain}/records/last</span>
+        <br>
+        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records/last(id=${chainId})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records/last|"></a>
+        <br>
+        <br>
+        <label>First:</label>
+        <span style="word-break: break-word">GET: beacon/api/v2/chains/{idChain}/records/first</span>
+        <br>
+        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records/first(id=${chainId})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records/first|"></a>
+        <br>
+        <br>
+        <label>Index:</label>
+        <span style="word-break: break-word">GET: beacon/api/v2/chains/{idChain}/records?index={pulseIndex}</span>
+        <br>
+        Example: <a style="word-break: break-word" th:href="@{/beacon/api/v2/chains/{id}/records?index={id2}(id=${chainId},id2=${lastRecord.idChain})}" th:text="|${url}beacon/api/v2/chains/${chainId}/records?index=${lastRecord.idChain}|"></a>
+        <br>
+        <br>
+        </p>
+    </div>
+
 
     <div class="panel-heading">
         <strong>Last random number</strong>
     </div>
 
     <div class="panel-body">
+        <p th:if="${!v1}"><strong>Chain:</strong> <span th:text="${lastRecord.chain}"></span></p>
         <p><strong>Pulse index:</strong> <span th:text="${lastRecord.idChain}"></span></p>
         <p><strong>Version:</strong> <span th:text="${lastRecord.versionBeacon}"></span></p>
         <p><strong>Frequency:</strong> <span th:text="${lastRecord.frequency}"></span></p>
@@ -124,12 +166,13 @@
                 <tbody>
                 <tr th:each="record : ${records}">
                     <td th:text="${record.pulseIndex}"></td>
-                    <td th:text="${{record.timeStamp}}"></td>
+                    <td th:text="${{record.timeStampOriginal}}"></td>
                     <td th:text="${record.unixTimeStamp}"></td>
                     <td><span style="word-break: break-word" th:text="${record.outputValue}"></span> </td>
                     <td>
                         <div class="btn-group pull-right">
-                            <a class="btn btn-sm btn-primary" th:href="@{/records/{id}(id=${record.pulseIndex})}">Details</a>
+                            <a class="btn btn-sm btn-primary" th:if="${v1}"  th:href="@{/records/{id}(id=${record.pulseIndex})}">Details</a>
+                            <a class="btn btn-sm btn-primary" th:if="${!v1}" th:href="@{/records/chains/{id}/{id2}(id=${record.chain},id2=${record.pulseIndex})}">Details</a>
                         </div>
                     </td>
                 </tr>
@@ -139,7 +182,7 @@
     </div>
     <div class="panel-footer">
         <div class="container-fluid">
-            <span class="aw-footer-disclaimer">&copy; 2018 Inmetro/DMTIC - <b>v0.3.13-master</b></span>
+            <span class="aw-footer-disclaimer">&copy; 2018 Inmetro/DMTIC - <b>v0.3.14-master</b></span>
         </div>
     </div>
 </div>

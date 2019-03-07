@@ -19,7 +19,7 @@
             <div class="form-group">
                 <fieldset>
 
-                    <div class="form-group row">
+                    <div class="form-group row" th:if="${!v1}">
                         <div class="col-md-1">
                             <label>Chain:</label>
                             <input type="text" class="form-control input-sm" id="chain" th:field="*{chain}" readOnly="readonly"/>
@@ -83,8 +83,8 @@
                 </fieldset>
             </div>
             <div class="form-group row">
-                <!--<button type="submit" class="btn btn-sm btn-primary">Anterior</button>-->
-                <a th:href="@{/records}" class="btn btn-sm btn-default">Back</a>
+                <a th:href="@{/records}" th:if="${v1}" class="btn btn-sm btn-default">Back</a>
+                <a th:href="@{/records/chains/{id}(id=${record.chain})}" th:if="${!v1}" class="btn btn-sm btn-default">Back</a>
             </div>
         </form>
     </div>

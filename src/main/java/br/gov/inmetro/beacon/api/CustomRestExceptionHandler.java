@@ -105,7 +105,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler  
 
         ApiError apiError =
                 new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "Incorret Value");
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
 }
