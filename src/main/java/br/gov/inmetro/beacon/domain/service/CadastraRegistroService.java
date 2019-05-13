@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,9 +27,11 @@ public class CadastraRegistroService {
     }
 
     @Transactional
-    public void novoRegistro(RecordDto recordDto, Integer chain) {
+    public void novoRegistro(RecordDto recordDto, Integer chain) throws NoSuchAlgorithmException {
 
         Record lastRecord = records.last(chain);
+
+        final CriptoUtilService criptoUtilService = new CriptoUtilService();
 
         if (lastRecord != null) {
 
@@ -54,7 +57,9 @@ public class CadastraRegistroService {
         registroBd.setVersionBeacon(recordDto.getVersion());
         registroBd.setFrequency(recordDto.getFrequency());
         registroBd.setSignatureValue(recordDto.getSignatureValue());
-        registroBd.setPreviousOutputValue(recordDto.getPreviousOutputValue());
+
+        registroBd.setPreviousOutputValue(criptoUtilService.hashSha512Hexa(lastRecord.getSeedValue()));
+
         registroBd.setStatusCode(recordDto.getStatusCode());
         registroBd.setSeedValue(recordDto.getSeedValue());
         registroBd.setOrigin(OriginEnum.BEACON);

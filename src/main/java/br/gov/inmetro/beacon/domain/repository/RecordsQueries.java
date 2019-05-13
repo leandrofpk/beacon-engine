@@ -12,6 +12,8 @@ public interface RecordsQueries {
     Record last(Integer chain);
     RecordDto first(Integer chain);
     List<Record> obterTodos(Integer chain);
+
+    @Deprecated
     Long maxChain(Integer chain);
     Optional<Record> findByChainAndId(Integer chain, Long idChain);
     Optional<Record> findByTimestamp(Integer chain, LocalDateTime timeStamp);

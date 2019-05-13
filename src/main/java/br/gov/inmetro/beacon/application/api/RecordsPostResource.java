@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
+
 @RestController
 @RequestMapping(value = "/rest/record")
 public class RecordsPostResource {
@@ -24,12 +26,11 @@ public class RecordsPostResource {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> novo(RecordDto record){
+    public ResponseEntity<?> novo(RecordDto record) throws NoSuchAlgorithmException {
         log.warn("Post DTO: " + record.toString());
         record.setChain("1");
         cadastraRegistroService.novoRegistro(record, 1);
         return new ResponseEntity<RecordDto>(HttpStatus.CREATED);
     }
-
 
 }
