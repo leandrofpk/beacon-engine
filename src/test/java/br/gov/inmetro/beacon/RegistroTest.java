@@ -1,12 +1,11 @@
 package br.gov.inmetro.beacon;
 
-import br.gov.inmetro.beacon.core.dominio.RegistroDto;
+import br.gov.inmetro.beacon.domain.RegistroDto;
 import org.junit.Test;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 
 public class RegistroTest {
 
