@@ -31,7 +31,7 @@ public class CadastraRegistroService {
 
         Record lastRecord = records.last(chain);
 
-        final CriptoUtilService criptoUtilService = new CriptoUtilService();
+//        final CriptoUtilService criptoUtilService = new CriptoUtilService();
 
         if (lastRecord != null) {
 
@@ -50,18 +50,23 @@ public class CadastraRegistroService {
         registroBd.setTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()));
 
         registroBd.setUnixTimeStamp(new Long(recordDto.getTimeStamp()));
-        registroBd.setChain(lastChainId.toString());
-
 
         registroBd.setOutputValue(recordDto.getOutputValue());
         registroBd.setVersionBeacon(recordDto.getVersion());
         registroBd.setFrequency(recordDto.getFrequency());
-        registroBd.setSignatureValue(recordDto.getSignatureValue());
-
-        registroBd.setPreviousOutputValue(criptoUtilService.hashSha512Hexa(lastRecord.getSeedValue()));
-
         registroBd.setStatusCode(recordDto.getStatusCode());
         registroBd.setSeedValue(recordDto.getSeedValue());
+        registroBd.setPreviousOutputValue(CriptoUtilService.hashSha512Hexa(lastRecord.getSeedValue()));
+
+//        A digital signature (RSA) computed over (in order): version, frequency, timeStamp, seedValue,
+//        previousHashValue, errorCode Note: Except for version, the hash is on the byte representations and not the string representations of the data values
+
+        String valueToSign = recordDto.getVersion() + recordDto.getFrequency().getBytes() +
+                recordDto.getTimeStamp().getBytes() + recordDto.getSeedValue().getBytes() +
+                recordDto.getPreviousOutputValue().getBytes() + "0".getBytes();
+
+//        registroBd.setSignatureValue(CriptoUtilService.sign(valueToSign. ) );
+
         registroBd.setOrigin(OriginEnum.BEACON);
         registroBd.setChain(chain.toString());
         registroBd.setIdChain(++lastChainId);

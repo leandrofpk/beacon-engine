@@ -2,8 +2,10 @@ package br.gov.inmetro.beacon.domain.service;
 
 import org.junit.Test;
 
+import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 
+import static br.gov.inmetro.beacon.domain.service.CriptoUtilService.sign;
 import static org.junit.Assert.assertEquals;
 
 public class CriptoUtilServiceTest {
@@ -17,6 +19,22 @@ public class CriptoUtilServiceTest {
         final String actual = cripto.hashSha512Hexa(originalString);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void teste() throws Exception {
+        String originalString = "2BF94CA75B69061C4440C606270AF37F2993782ED52FF80485BE221318465577A10D27AB93BEA19188BEFF14703BD723E356D4D5E9EEC420F1A64412A7A7FE6D";
+//        final String hashSha512Hexa = CriptoUtilService.hashSha512Hexa(originalString);
+
+        System.out.println(originalString);
+
+        KeyPair pair = CriptoUtilService.generateKeyPair();
+
+        String signature = sign(originalString, pair.getPrivate());
+
+        //Let's check the signature
+        boolean isCorrect = CriptoUtilService.verify(originalString, signature, pair.getPublic());
+        System.out.println("Signature correct: " + isCorrect);
     }
 
 }
