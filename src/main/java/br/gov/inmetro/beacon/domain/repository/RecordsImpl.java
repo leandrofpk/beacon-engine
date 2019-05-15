@@ -72,13 +72,14 @@ public class RecordsImpl implements RecordsQueries {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Record> findByTimestamp(Integer chain, LocalDateTime timeStamp){
+    public Optional<Record> findByTimeStamp(Integer chain, LocalDateTime timeStamp){
 
         Record record;
 
         try {
 
-            record = (Record) manager.createQuery("from br.gov.inmetro.beacon.core.infra.Record r where r.chain = :chain and r.timeStamp = :timeStamp")
+            record = (Record) manager.createQuery("from Record r " +
+                    "where r.chain = :chain and r.timeStamp = :timeStamp")
                     .setParameter("chain", chain.toString())
                     .setParameter("timeStamp", timeStamp).getSingleResult();
         } catch (NoResultException e){

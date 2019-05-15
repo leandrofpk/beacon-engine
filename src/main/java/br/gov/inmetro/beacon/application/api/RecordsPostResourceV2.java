@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping(value = "/rest/record/v2")
@@ -27,7 +26,7 @@ public class RecordsPostResourceV2 {
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public  ResponseEntity<?> novo(@Valid @RequestBody RecordDto recordDto) throws NoSuchAlgorithmException {
+    public  ResponseEntity<?> novo(@Valid @RequestBody RecordDto recordDto) throws Exception {
 
         cadastraRegistroService.novoRegistro(recordDto, 2);
         return new ResponseEntity<>(recordDto, HttpStatus.CREATED); //funcionando

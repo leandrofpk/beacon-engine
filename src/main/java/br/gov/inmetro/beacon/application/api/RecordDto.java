@@ -23,9 +23,6 @@ public class RecordDto implements Serializable {
 
     private Long pulseIndex;
 
-    @NotNull
-    private String version;
-
     @NotNull @NotBlank
     private String frequency;
 
@@ -63,7 +60,6 @@ public class RecordDto implements Serializable {
     public RecordDto(Record record){
         this.id = record.getId();
         this.pulseIndex = record.getIdChain();
-        this.version = record.getVersionBeacon();
         this.frequency = record.getFrequency();
         this.timeStamp = String.valueOf(record.getTimeStamp().atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
         this.timeStampOriginal = record.getTimeStamp();

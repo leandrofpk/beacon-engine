@@ -1,13 +1,15 @@
 package br.gov.inmetro.beacon.domain.service;
 
-import br.gov.inmetro.beacon.domain.RsaExample;
-
 import javax.crypto.Cipher;
-import java.io.InputStream;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.commons.io.FileUtils.readFileToString;
 
 public class CriptoUtilService {
 
@@ -20,18 +22,8 @@ public class CriptoUtilService {
         return hex.toUpperCase();
     }
 
-    public static KeyPair generateKeyPair() throws Exception {
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-        generator.initialize(2048, new SecureRandom());
-//        generator.initialize(2048);
-        KeyPair pair = generator.generateKeyPair();
-
-        return pair;
-    }
 
     public static String sign(String plainText, PrivateKey privateKey) throws Exception {
-//        Signature privateSignature = Signature.getInstance("SHA256withRSA");
-//        Signature privateSignature = Signature.getInstance("SHA512withRSA");
         Signature privateSignature = Signature.getInstance("NONEwithRSA");
         privateSignature.initSign(privateKey);
         privateSignature.update(plainText.getBytes(UTF_8));
@@ -42,8 +34,6 @@ public class CriptoUtilService {
     }
 
     public static boolean verify(String plainText, String signature, PublicKey publicKey) throws Exception {
-//        Signature publicSignature = Signature.getInstance("SHA256withRSA");
-//        Signature publicSignature = Signature.getInstance("SHA512withRSA");
         Signature publicSignature = Signature.getInstance("NONEwithRSA");
         publicSignature.initVerify(publicKey);
         publicSignature.update(plainText.getBytes(UTF_8));
@@ -51,26 +41,6 @@ public class CriptoUtilService {
         byte[] signatureBytes = Base64.getDecoder().decode(signature);
 
         return publicSignature.verify(signatureBytes);
-    }
-
-    public static KeyPair getKeyPairFromKeyStore() throws Exception {
-        //Generated with:
-        //  keytool -genkeypair -alias mykey -storepass s3cr3t -keypass s3cr3t -keyalg RSA -keystore keystore.jks
-
-        InputStream ins = RsaExample.class.getResourceAsStream("/keystore.jks");
-
-        KeyStore keyStore = KeyStore.getInstance("JCEKS");
-        keyStore.load(ins, "s3cr3t".toCharArray());   //Keystore password
-        KeyStore.PasswordProtection keyPassword =       //Key password
-                new KeyStore.PasswordProtection("s3cr3t".toCharArray());
-
-        KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry("mykey", keyPassword);
-
-        java.security.cert.Certificate cert = keyStore.getCertificate("mykey");
-        PublicKey publicKey = cert.getPublicKey();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        return new KeyPair(publicKey, privateKey);
     }
 
     public static String encrypt(String plainText, PublicKey publicKey) throws Exception {
@@ -91,6 +61,39 @@ public class CriptoUtilService {
         return new String(decriptCipher.doFinal(bytes), UTF_8);
     }
 
+    public static PrivateKey loadPrivateKey(String file) throws Exception {
+        String privateKeyPEM = readFileToString(new File(file), StandardCharsets.UTF_8);
+
+        // strip of header, footer, newlines, whitespaces
+        privateKeyPEM = privateKeyPEM
+                .replace("-----BEGIN PRIVATE KEY-----", "")
+                .replace("-----END PRIVATE KEY-----", "")
+                .replaceAll("\\s", "");
+
+        // decode to get the binary DER representation
+        byte[] privateKeyDER = org.apache.tomcat.util.codec.binary.Base64.decodeBase64(privateKeyPEM);
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PrivateKey privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(privateKeyDER));
+        return privateKey;
+    }
+
+    public static PublicKey loadPublicKey(String file) throws Exception {
+        String publicKeyPEM = readFileToString(new File(file), StandardCharsets.UTF_8);
+
+        // strip of header, footer, newlines, whitespaces
+        publicKeyPEM = publicKeyPEM
+                .replace("-----BEGIN PUBLIC KEY-----", "")
+                .replace("-----END PUBLIC KEY-----", "")
+                .replaceAll("\\s", "");
+
+        // decode to get the binary DER representation
+        byte[] publicKeyDER = Base64.getDecoder().decode(publicKeyPEM);
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PublicKey publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(publicKeyDER));
+        return publicKey;
+    }
 
 
     public static String bytesToHex(byte[] hash) {

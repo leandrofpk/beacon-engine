@@ -28,15 +28,30 @@ public class RecordsController {
 
     @GetMapping
     public ModelAndView pesquisar(HttpServletRequest httpServletRequest) {
+          ModelAndView mv = new ModelAndView("records/index");
 
-        final Record lastRecord = searchRecordService.last(1);
-        final Optional<Record> previousRecord = searchRecordService.findByTimestamp(1, lastRecord.getTimeStamp().minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
-        ModelAndView mv = new ModelAndView("records/index");
+        Optional<Record> lastRecord = searchRecordService.last(1);
+
+        if (lastRecord.isPresent()) {
+            final Optional<Record> previousRecord = searchRecordService.findByTimestamp(1, lastRecord.get().getTimeStamp().minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+            mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
+            mv.addObject("lastRecord", lastRecord.get());
+        }
+
         mv.addObject("records", searchRecordService.findLast20(1));
         mv.addObject("url", getAppUrl(httpServletRequest));
-        mv.addObject("lastRecord", lastRecord);
-        mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
         mv.addObject("v1", true);
+//        mv.addObject("chain", 1);
+
+
+//        Optional<Record> lastRecord = searchRecordService.last(1);
+//        final Optional<Record> previousRecord = searchRecordService.findByTimestamp(1, lastRecord.get().getTimeStamp().minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+//        ModelAndView mv = new ModelAndView("records/index");
+//        mv.addObject("records", searchRecordService.findLast20(1));
+//        mv.addObject("url", getAppUrl(httpServletRequest));
+//        mv.addObject("lastRecord", lastRecord);
+//        mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
+//        mv.addObject("v1", true);
 
         return mv;
     }

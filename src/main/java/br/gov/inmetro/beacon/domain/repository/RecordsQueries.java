@@ -16,6 +16,6 @@ public interface RecordsQueries {
     @Deprecated
     Long maxChain(Integer chain);
     Optional<Record> findByChainAndId(Integer chain, Long idChain);
-    Optional<Record> findByTimestamp(Integer chain, LocalDateTime timeStamp);
+    Optional<Record> findByTimeStamp(Integer chain, LocalDateTime timeStamp);
     Optional<Record> findByUnixTimeStamp(Integer chain, Long data);
 }

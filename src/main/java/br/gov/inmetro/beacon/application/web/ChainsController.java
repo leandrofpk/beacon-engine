@@ -34,14 +34,18 @@ public class ChainsController {
 
     @GetMapping("/{chainId}")
     public ModelAndView pesquisar(HttpServletRequest httpServletRequest, @PathVariable("chainId") Integer chainId) {
-
-        final Record lastRecord = searchRecordService.last(chainId);
-        final Optional<Record> previousRecord = searchRecordService.findByTimestamp(chainId, lastRecord.getTimeStamp().minus(chainId, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
         ModelAndView mv = new ModelAndView("records/index");
+
+        Optional<Record> lastRecord = searchRecordService.last(chainId);
+
+        if (lastRecord.isPresent()) {
+            final Optional<Record> previousRecord = searchRecordService.findByTimestamp(chainId, lastRecord.get().getTimeStamp().minus(chainId, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+            mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
+            mv.addObject("lastRecord", lastRecord.get());
+        }
+
         mv.addObject("records", searchRecordService.findLast20(chainId));
         mv.addObject("url", getAppUrl(httpServletRequest));
-        mv.addObject("lastRecord", lastRecord);
-        mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
         mv.addObject("v1", false);
         mv.addObject("chain", chainId);
 

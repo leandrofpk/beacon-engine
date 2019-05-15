@@ -30,8 +30,8 @@ public class SearchRecordService {
         return Collections.unmodifiableList(dtos);
     }
 
-    public Record last(int chain) {
-        return records.last(chain);
+    public Optional<Record> last(int chain) {
+        return Optional.ofNullable(records.last(chain));
     }
 
     public Optional<Record> findByChainAndId(int chain, Long idChain) {
@@ -39,7 +39,7 @@ public class SearchRecordService {
     }
 
     public Optional<Record> findByTimestamp(Integer chain, LocalDateTime timestamp) {
-        return records.findByTimestamp(chain, timestamp);
+        return records.findByTimeStamp(chain, timestamp);
     }
 
     public Optional<Record> findByUnixTimeStamp(Integer chain, Long data) {
