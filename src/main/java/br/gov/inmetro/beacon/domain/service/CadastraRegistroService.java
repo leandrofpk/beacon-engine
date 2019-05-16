@@ -56,14 +56,15 @@ public class CadastraRegistroService {
         registroBd.setFrequency(recordDto.getFrequency());
         registroBd.setStatusCode(recordDto.getStatusCode());
         registroBd.setSeedValue(recordDto.getSeedValue());
-        registroBd.setPreviousOutputValue(CriptoUtilService.hashSha512Hexa(lastRecord.getSeedValue()));
+
+        // previous output record
+        final String previousRecordData = lastRecord.getRecordData();
+        registroBd.setPreviousOutputValue(CriptoUtilService.hashSha512Hexa(previousRecordData));
 
 //        A digital signature (RSA) computed over (in order): version, frequency, timeStamp, seedValue,
 //        previousHashValue, errorCode Note: Except for version, the hash is on the byte representations and not the string representations of the data values
 
-        String valueToSign = recordDto.getVersion() + recordDto.getFrequency().getBytes() +
-                recordDto.getTimeStamp().getBytes() + recordDto.getSeedValue().getBytes() +
-                recordDto.getPreviousOutputValue().getBytes() + "0".getBytes();
+        String valueToSign = registroBd.getRecordData();
 
 //        registroBd.setSignatureValue(CriptoUtilService.sign(valueToSign. ) );
 

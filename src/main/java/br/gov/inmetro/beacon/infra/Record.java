@@ -65,4 +65,9 @@ public class Record {
     public Record(){
     }
 
+    public String getRecordData(){
+        return String.format("%s%s%s%s%s%s",this.versionBeacon, this.frequency, this.unixTimeStamp,
+                this.seedValue, this.previousOutputValue, this.statusCode);
+    }
+
 }
