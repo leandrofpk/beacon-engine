@@ -35,19 +35,14 @@ public class RecordDto implements Serializable {
 
     private Long unixTimeStamp;
 
-    @NotNull
     private String seedValue;
 
-    @NotNull
     private String previousOutputValue;
 
-    @NotNull
     private String signatureValue;
 
-    @NotNull
     private String outputValue;
 
-    @NotNull
     private String statusCode;
 
     @Lob

@@ -25,11 +25,19 @@ public class RecordsPostResourceV2 {
         this.cadastraRegistroService = cadastraRegistroService;
     }
 
+    /*
+    *
+    *  DTO em modo simplificado.  Recebe basicamente os dados brutos
+    *
+    */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public  ResponseEntity<?> novo(@Valid @RequestBody RecordDto recordDto) throws Exception {
+    public  ResponseEntity<?> novo(@Valid @RequestBody RecordSimpleDto recordSimpleDto) throws Exception {
+        cadastraRegistroService.novoRegistro(recordSimpleDto);
 
-        cadastraRegistroService.novoRegistro(recordDto, 2);
-        return new ResponseEntity<>(recordDto, HttpStatus.CREATED); //funcionando
+        System.out.println(recordSimpleDto);
+
+//        cadastraRegistroService.novoRegistro(recordDto, 2);
+        return new ResponseEntity<>(recordSimpleDto, HttpStatus.CREATED); //funcionando
     }
 
 }

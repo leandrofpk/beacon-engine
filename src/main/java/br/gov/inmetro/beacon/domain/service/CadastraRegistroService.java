@@ -1,6 +1,7 @@
 package br.gov.inmetro.beacon.domain.service;
 
 import br.gov.inmetro.beacon.application.api.RecordDto;
+import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.domain.OriginEnum;
 import br.gov.inmetro.beacon.domain.repository.Records;
 import br.gov.inmetro.beacon.infra.Record;
@@ -29,6 +30,11 @@ public class CadastraRegistroService {
     public CadastraRegistroService(Records records, Environment env) {
         this.records = records;
         this.env = env;
+    }
+
+    public void novoRegistro(RecordSimpleDto simpleDto){
+
+
     }
 
     @Transactional
