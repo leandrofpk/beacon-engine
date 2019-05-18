@@ -1,7 +1,7 @@
 package br.gov.inmetro.beacon.application.api.infra;
 
 import br.gov.inmetro.beacon.application.api.RecordDto;
-import br.gov.inmetro.beacon.infra.Record;
+import br.gov.inmetro.beacon.infra.RecordEntity;
 import br.gov.inmetro.beacon.domain.service.RecordNotFoundException;
 import br.gov.inmetro.beacon.domain.service.SearchRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class ChainsResource {
 
     @RequestMapping("/{timestamp}")
     public RecordDto dataFormatoLong(@PathVariable Integer idChain, @PathVariable String timestamp){
-        Optional<Record> record = searchRecordService.findByUnixTimeStamp(idChain, new Long(timestamp));
+        Optional<RecordEntity> record = searchRecordService.findByUnixTimeStamp(idChain, new Long(timestamp));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -52,7 +52,7 @@ public class ChainsResource {
 
     @RequestMapping("/{timestamp}/next")
     public RecordDto proximo(@PathVariable Integer idChain, @PathVariable String timestamp){
-        Optional<Record> record = searchRecordService.findByTimestamp(idChain, longToLocalDateTime(timestamp).plus(idChain, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+        Optional<RecordEntity> record = searchRecordService.findByTimestampWork(idChain, longToLocalDateTime(timestamp).plus(idChain, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -62,7 +62,7 @@ public class ChainsResource {
 
     @RequestMapping("/{timestamp}/previous")
     public RecordDto anterior(@PathVariable Integer idChain, @PathVariable String timestamp){
-        Optional<Record> record = searchRecordService.findByTimestamp(idChain, longToLocalDateTime(timestamp).minus(idChain, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+        Optional<RecordEntity> record = searchRecordService.findByTimestampWork(idChain, longToLocalDateTime(timestamp).minus(idChain, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -77,7 +77,7 @@ public class ChainsResource {
 
     @RequestMapping
     public RecordDto index(@PathVariable Integer idChain, @RequestParam String index){
-        Optional<Record> record = searchRecordService.findByChainAndId(idChain, new Long(index));
+        Optional<RecordEntity> record = searchRecordService.findByChainAndId(idChain, new Long(index));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("pulseIndex:" + index);

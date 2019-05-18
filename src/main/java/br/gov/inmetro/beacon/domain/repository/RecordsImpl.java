@@ -1,7 +1,7 @@
 package br.gov.inmetro.beacon.domain.repository;
 
 import br.gov.inmetro.beacon.application.api.RecordDto;
-import br.gov.inmetro.beacon.infra.Record;
+import br.gov.inmetro.beacon.infra.RecordEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +21,7 @@ public class RecordsImpl implements RecordsQueries {
 
     @Transactional
     public RecordDto lastDto(Integer chain){
-        Record r = (Record) manager.createQuery("from Record where chain = :chain order by id desc")
+        RecordEntity r = (RecordEntity) manager.createQuery("from RecordEntity where chain = :chain order by id desc")
                 .setParameter("chain", chain.toString())
                 .setMaxResults(1)
                 .getSingleResult();
@@ -29,9 +29,9 @@ public class RecordsImpl implements RecordsQueries {
     }
 
     @Transactional
-    public Record last(Integer chain){
+    public RecordEntity last(Integer chain){
         try {
-            return (Record) manager.createQuery("from Record where chain = :chain order by id desc")
+            return (RecordEntity) manager.createQuery("from RecordEntity where chain = :chain order by id desc")
                     .setParameter("chain", chain.toString())
                     .setMaxResults(1)
                     .getSingleResult();
@@ -43,7 +43,7 @@ public class RecordsImpl implements RecordsQueries {
 
     @Transactional
     public RecordDto first(Integer chain){
-        Record r = (Record) manager.createQuery("from Record where chain = :chain order by id")
+        RecordEntity r = (RecordEntity) manager.createQuery("from RecordEntity where chain = :chain order by id")
                 .setParameter("chain", chain.toString())
                 .setMaxResults(1)
                 .getSingleResult();
@@ -53,9 +53,9 @@ public class RecordsImpl implements RecordsQueries {
     }
 
     @Transactional(readOnly = true)
-    public List<Record> obterTodos(Integer chain){
+    public List<RecordEntity> obterTodos(Integer chain){
         return Collections.unmodifiableList(manager
-                .createQuery("from Record where chain = :chain order by id desc")
+                .createQuery("from RecordEntity where chain = :chain order by id desc")
                 .setParameter("chain", chain.toString())
                 .setMaxResults(20)
                 .getResultList());
@@ -64,7 +64,7 @@ public class RecordsImpl implements RecordsQueries {
     @Transactional(readOnly = true)
     public Long maxChain(Integer chain){
 
-        Long singleResult = (Long) manager.createQuery(" select max(r.idChain) from Record r where r.chain = :chain ")
+        Long singleResult = (Long) manager.createQuery(" select max(r.idChain) from RecordEntity r where r.chain = :chain ")
                 .setParameter("chain", chain.toString())
                 .getSingleResult();
 
@@ -72,40 +72,40 @@ public class RecordsImpl implements RecordsQueries {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Record> findByTimeStamp(Integer chain, LocalDateTime timeStamp){
+    public Optional<RecordEntity> findByTimeStampWork(Integer chain, LocalDateTime timeStamp){
 
-        Record record;
+        RecordEntity recordEntity;
 
         try {
 
-            record = (Record) manager.createQuery("from Record r " +
-                    "where r.chain = :chain and r.timeStamp = :timeStamp")
+            recordEntity = (RecordEntity) manager.createQuery("from RecordEntity r " +
+                    "where r.chain = :chain and r.timeStampWork = :timeStamp")
                     .setParameter("chain", chain.toString())
                     .setParameter("timeStamp", timeStamp).getSingleResult();
         } catch (NoResultException e){
             return Optional.empty();
         }
 
-        return Optional.of(record);
+        return Optional.of(recordEntity);
     }
 
     @Override
-    public Optional<Record> findByUnixTimeStamp(Integer chain, Long data) {
-        Record record = (Record) manager.createQuery("from Record r where r.chain = :chain and r.unixTimeStamp = :unixTimeStamp")
+    public Optional<RecordEntity> findByTimeStamp(Integer chain, Long data) {
+        RecordEntity recordEntity = (RecordEntity) manager.createQuery("from RecordEntity r where r.chain = :chain and r.unixTimeStamp = :unixTimeStamp")
                 .setParameter("chain", chain.toString())
                 .setParameter("unixTimeStamp", data).getSingleResult();
-        return Optional.of(record);
+        return Optional.of(recordEntity);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Record> findByChainAndId(Integer chain, Long idChain){
-        Record record = (Record) manager
-                .createQuery("from Record where chain = :chain and idChain = :idChain order by id desc")
+    public Optional<RecordEntity> findByChainAndId(Integer chain, Long idChain){
+        RecordEntity recordEntity = (RecordEntity) manager
+                .createQuery("from RecordEntity where chain = :chain and idChain = :idChain order by id desc")
                 .setParameter("chain", chain.toString())
                 .setParameter("idChain", idChain)
                 .getSingleResult();
 
-        return Optional.of(record);
+        return Optional.of(recordEntity);
     }
 
 }

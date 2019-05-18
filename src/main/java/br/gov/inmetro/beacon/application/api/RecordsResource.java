@@ -1,6 +1,6 @@
 package br.gov.inmetro.beacon.application.api;
 
-import br.gov.inmetro.beacon.infra.Record;
+import br.gov.inmetro.beacon.infra.RecordEntity;
 import br.gov.inmetro.beacon.domain.service.RecordNotFoundException;
 import br.gov.inmetro.beacon.domain.service.SearchRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class RecordsResource {
 
     @RequestMapping("/{timestamp}")
     public RecordDto dataFormatoLong(@PathVariable String timestamp){
-        Optional<Record> record = searchRecordService.findByUnixTimeStamp(1, new Long(timestamp));
+        Optional<RecordEntity> record = searchRecordService.findByUnixTimeStamp(1, new Long(timestamp));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -50,7 +50,7 @@ public class RecordsResource {
 
     @RequestMapping("/next/{timestamp}")
     public RecordDto proximo(@PathVariable String timestamp){
-        Optional<Record> record = searchRecordService.findByTimestamp(1, longToLocalDateTime(timestamp).plus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+        Optional<RecordEntity> record = searchRecordService.findByTimestampWork(1, longToLocalDateTime(timestamp).plus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -60,7 +60,7 @@ public class RecordsResource {
 
     @RequestMapping("/previous/{timestamp}")
     public RecordDto anterior(@PathVariable String timestamp){
-        Optional<Record> record = searchRecordService.findByTimestamp(1, longToLocalDateTime(timestamp).minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+        Optional<RecordEntity> record = searchRecordService.findByTimestampWork(1, longToLocalDateTime(timestamp).minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
@@ -76,7 +76,7 @@ public class RecordsResource {
 
     @RequestMapping("/index/{pulseIndex}")
     public RecordDto index(@PathVariable String pulseIndex){
-        Optional<Record> record = searchRecordService.findByChainAndId(1, new Long(pulseIndex));
+        Optional<RecordEntity> record = searchRecordService.findByChainAndId(1, new Long(pulseIndex));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("pulseIndex:" + pulseIndex);

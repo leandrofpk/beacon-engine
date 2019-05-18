@@ -30,7 +30,7 @@ public class CriptoUtilServiceTest {
         //sign
         PrivateKey privateKey = loadPrivateKey("privatekey-pkcs8.pem");
         String signature = sign(hashSha512Hexa, privateKey);
-        System.out.println(signature);
+//        System.out.println(signature);
 
         PublicKey publicKey = loadPublicKey("publickey.pem");
         //Let's check the signature

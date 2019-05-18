@@ -2,7 +2,7 @@ package br.gov.inmetro.beacon.domain.service;
 
 import br.gov.inmetro.beacon.application.api.RecordDto;
 import br.gov.inmetro.beacon.domain.repository.Records;
-import br.gov.inmetro.beacon.infra.Record;
+import br.gov.inmetro.beacon.infra.RecordEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
@@ -30,20 +30,20 @@ public class SearchRecordService {
         return Collections.unmodifiableList(dtos);
     }
 
-    public Optional<Record> last(int chain) {
+    public Optional<RecordEntity> last(int chain) {
         return Optional.ofNullable(records.last(chain));
     }
 
-    public Optional<Record> findByChainAndId(int chain, Long idChain) {
+    public Optional<RecordEntity> findByChainAndId(int chain, Long idChain) {
         return records.findByChainAndId(chain, idChain);
     }
 
-    public Optional<Record> findByTimestamp(Integer chain, LocalDateTime timestamp) {
-        return records.findByTimeStamp(chain, timestamp);
+    public Optional<RecordEntity> findByTimestampWork(Integer chain, LocalDateTime timestamp) {
+        return records.findByTimeStampWork(chain, timestamp);
     }
 
-    public Optional<Record> findByUnixTimeStamp(Integer chain, Long data) {
-        return records.findByUnixTimeStamp(chain, data);
+    public Optional<RecordEntity> findByUnixTimeStamp(Integer chain, Long data) {
+        return records.findByTimeStamp(chain, data);
     }
 
     public RecordDto lastDto(Integer chain) {

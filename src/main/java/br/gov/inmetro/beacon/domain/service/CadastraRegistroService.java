@@ -3,18 +3,18 @@ package br.gov.inmetro.beacon.domain.service;
 import br.gov.inmetro.beacon.application.api.RecordDto;
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.domain.OriginEnum;
+import br.gov.inmetro.beacon.domain.RecordDomain;
 import br.gov.inmetro.beacon.domain.repository.Records;
-import br.gov.inmetro.beacon.infra.Record;
+import br.gov.inmetro.beacon.infra.DateUtil;
+import br.gov.inmetro.beacon.infra.RecordEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.time.Instant;
+import java.security.PrivateKey;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 
 import static br.gov.inmetro.beacon.domain.service.CriptoUtilService.sign;
 
@@ -32,23 +32,44 @@ public class CadastraRegistroService {
         this.env = env;
     }
 
-    public void novoRegistro(RecordSimpleDto simpleDto){
+    @Transactional
+    public void novoRegistro(RecordSimpleDto simpleDto, Integer chain) throws Exception {
+        RecordEntity lastRecordEntity = records.last(chain);
+
+        boolean startNweChain = false;
+        Long id = 0L;
+
+        if (lastRecordEntity == null){ // se o banco estiver vazio
+            startNweChain = true;
+        } else {
+            id = lastRecordEntity.getId();
+        }
 
 
+        PrivateKey privateKey = CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem");
+        RecordDomain recordDomain = new RecordDomain(simpleDto, lastRecordEntity, env.getProperty("beacon.version"), privateKey,startNweChain);
+
+        RecordEntity newRecord = recordDomain.iniciar();
+
+        newRecord.setChain(chain.toString());
+        newRecord.setIdChain(++id);
+        newRecord.setOrigin(OriginEnum.BEACON);
+        records.save(newRecord);
     }
 
+    @Deprecated
     @Transactional
     public void novoRegistro(RecordDto recordDto, Integer chain) throws Exception {
 
-        Record lastRecord = records.last(chain);
+        RecordEntity lastRecordEntity = records.last(chain);
 
         boolean startNewChain = false;
 
-        if (lastRecord != null) {
+        if (lastRecordEntity != null) {
 
-            final LocalDateTime dateTimeNewRecord = longToLocalDateTime(recordDto.getTimeStamp());
+            final LocalDateTime dateTimeNewRecord =  DateUtil.longToLocalDateTime(recordDto.getTimeStamp());
 
-            if (dateTimeNewRecord.isEqual(lastRecord.getTimeStamp())) {
+            if (dateTimeNewRecord.isEqual(lastRecordEntity.getTimeStampWork())) {
                 throw new TimeIsAlreadyRegisteredException("Time already reported");
             }
 
@@ -58,11 +79,10 @@ public class CadastraRegistroService {
 
         Long lastChainId = records.maxChain(chain);
 
-        Record registroBd = new Record();
+        RecordEntity registroBd = new RecordEntity();
 
-        registroBd.setTimeStamp(longToLocalDateTime(recordDto.getTimeStamp()));
-
-        registroBd.setUnixTimeStamp(new Long(recordDto.getTimeStamp()));
+        registroBd.setTimeStampWork(DateUtil.longToLocalDateTime(recordDto.getTimeStamp()));
+        registroBd.setTimeStamp(new Long(recordDto.getTimeStamp()));
 
         registroBd.setOutputValue(recordDto.getOutputValue());
         registroBd.setVersionBeacon(env.getProperty("beacon.version"));
@@ -74,7 +94,7 @@ public class CadastraRegistroService {
             registroBd.setPreviousOutputValue(CriptoUtilService.hashSha512Hexa("0000000000000000000000000000000000000000000000000000000000000000" +
                     "0000000000000000000000000000000000000000000000000000000000000000"));
         } else {
-            registroBd.setPreviousOutputValue(CriptoUtilService.hashSha512Hexa(lastRecord.getSeedValue()));
+            registroBd.setPreviousOutputValue(CriptoUtilService.hashSha512Hexa(lastRecordEntity.getSeedValue()));
         }
 
 //        A digital signature (RSA) computed over (in order): version, frequency, timeStamp, seedValue,
@@ -94,18 +114,19 @@ public class CadastraRegistroService {
         records.save(registroBd);
     }
 
-    private LocalDateTime longToLocalDateTime(String data){
-        Long millis = new Long(data);
-        if (data.length() == 10){
-            millis = millis*1000;
-        }
-
-        // atual
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis),
-                ZoneId.of("America/Sao_Paulo")).truncatedTo(ChronoUnit.MINUTES);
-
-        return localDateTime;
-    }
+//    @Deprecated
+//    private LocalDateTime longToLocalDateTime(String data){
+//        Long millis = new Long(data);
+//        if (data.length() == 10){
+//            millis = millis*1000;
+//        }
+//
+//        // atual
+//        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis),
+//                ZoneId.of("America/Sao_Paulo")).truncatedTo(ChronoUnit.MINUTES);
+//
+//        return localDateTime;
+//    }
 
 
 }

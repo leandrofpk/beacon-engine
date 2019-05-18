@@ -32,10 +32,8 @@ public class RecordsPostResourceV2 {
     */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public  ResponseEntity<?> novo(@Valid @RequestBody RecordSimpleDto recordSimpleDto) throws Exception {
-        cadastraRegistroService.novoRegistro(recordSimpleDto);
-
+        cadastraRegistroService.novoRegistro(recordSimpleDto, 2);
         System.out.println(recordSimpleDto);
-
 //        cadastraRegistroService.novoRegistro(recordDto, 2);
         return new ResponseEntity<>(recordSimpleDto, HttpStatus.CREATED); //funcionando
     }

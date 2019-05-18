@@ -47,46 +47,46 @@
 
     </div>
 
-    <div class="panel-body" th:if="${v1}">
-            <label>Current Record:</label>
-            <span style="word-break: break-word"> GET: /rest/record/{timestamp}</span>
-            <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/} + ${lastRecord.unixTimeStamp}" th:text="|${url}/rest/record/${lastRecord.unixTimeStamp}|"></a>
-            <br>
-            <br>
+<!--    <div class="panel-body" th:if="${v1}">-->
+<!--            <label>Current Record:</label>-->
+<!--            <span style="word-break: break-word"> GET: /rest/record/{timestamp}</span>-->
+<!--            <br>-->
+<!--            Example: <a style="word-break: break-word" th:href="@{/rest/record/} + ${lastRecord.timeStampWork}" th:text="|${url}/rest/record/${lastrecord.timeStampWork}|"></a>-->
+<!--            <br>-->
+<!--            <br>-->
 
-            <label>Previous Record:</label>
-            <span style="word-break: break-word">GET: rest/record/previous/{timestamp}</span>
-            <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/previous/} + ${lastRecord.unixTimeStamp}" th:text="|${url}/rest/record/previous/${lastRecord.unixTimeStamp}|"></a>
-            <br>
-            <br>
-            <label>Next Record:</label>
-            <span style="word-break: break-word">GET: rest/record/next/{timestamp}</span>
-            <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/previous/} + ${previousRecord.unixTimeStamp}" th:text="|${url}/rest/record/previous/${previousRecord.unixTimeStamp}|"></a>
-            <br>
-            <br>
-            <label>Last Record:</label>
-            <span style="word-break: break-word">GET: rest/record/last</span>
-            <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/last}" th:text="|${url}/rest/record/last|"></a>
-            <br>
-            <br>
-            <label>First:</label>
-            <span style="word-break: break-word">GET: rest/record/first</span>
-            <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/first/}" th:text="|${url}/rest/record/first|"></a>
-            <br>
-            <br>
-            <label>Index:</label>
-            <span style="word-break: break-word">GET: rest/record/index/{pulseIndex}</span>
-            <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/index/} + ${lastRecord.idChain}" th:text="|${url}/rest/record/index/${lastRecord.idChain}|"></a>
-            <br>
-            <br>
-        </p>
-    </div>
+<!--            <label>Previous Record:</label>-->
+<!--            <span style="word-break: break-word">GET: rest/record/previous/{timestamp}</span>-->
+<!--            <br>-->
+<!--            Example: <a style="word-break: break-word" th:href="@{/rest/record/previous/} + ${lastrecord.timeStampWork}" th:text="|${url}/rest/record/previous/${lastrecord.timeStampWork}|"></a>-->
+<!--            <br>-->
+<!--            <br>-->
+<!--            <label>Next Record:</label>-->
+<!--            <span style="word-break: break-word">GET: rest/record/next/{timestamp}</span>-->
+<!--            <br>-->
+<!--            Example: <a style="word-break: break-word" th:href="@{/rest/record/previous/} + ${previousRecord.timeStampWork}" th:text="|${url}/rest/record/previous/${previousRecord.timeStampWork}|"></a>-->
+<!--            <br>-->
+<!--            <br>-->
+<!--            <label>Last Record:</label>-->
+<!--            <span style="word-break: break-word">GET: rest/record/last</span>-->
+<!--            <br>-->
+<!--            Example: <a style="word-break: break-word" th:href="@{/rest/record/last}" th:text="|${url}/rest/record/last|"></a>-->
+<!--            <br>-->
+<!--            <br>-->
+<!--            <label>First:</label>-->
+<!--            <span style="word-break: break-word">GET: rest/record/first</span>-->
+<!--            <br>-->
+<!--            Example: <a style="word-break: break-word" th:href="@{/rest/record/first/}" th:text="|${url}/rest/record/first|"></a>-->
+<!--            <br>-->
+<!--            <br>-->
+<!--            <label>Index:</label>-->
+<!--            <span style="word-break: break-word">GET: rest/record/index/{pulseIndex}</span>-->
+<!--            <br>-->
+<!--            Example: <a style="word-break: break-word" th:href="@{/rest/record/index/} + ${lastrecord.idChain}" th:text="|${url}/rest/record/index/${lastrecord.idChain}|"></a>-->
+<!--            <br>-->
+<!--            <br>-->
+<!--        </p>-->
+<!--    </div>-->
 
 
     <div class="panel-body" th:if="${!v1}">
@@ -94,19 +94,19 @@
         <span style="word-break: break-word"> GET: /api/v2/chains/{idChain}/records/{timestamp}</span>
         <br>
 
-        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/{id2}(id=${chainId},id2=${lastRecord.unixTimeStamp})}" th:text="|${url}/api/v2/chains/${chainId}/records/${lastRecord.unixTimeStamp}|"></a>
+        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/{id2}(id=${chainId},id2=${lastRecord.timeStamp})}" th:text="|${url}/api/v2/chains/${chainId}/records/${lastRecord.timeStamp}|"></a>
         <br>
         <br>
         <label>Previous Record:</label>
         <span style="word-break: break-word">GET: /api/v2/chains/{idChain}/records/{timestamp}/previous</span>
         <br>
-        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/{id2}/previous(id=${chainId},id2=${lastRecord.unixTimeStamp})}" th:text="|${url}/api/v2/chains/${chainId}/records/${lastRecord.unixTimeStamp}/previous|"></a>
+        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/{id2}/previous(id=${chainId},id2=${lastRecord.timeStamp})}" th:text="|${url}/api/v2/chains/${chainId}/records/${lastRecord.timeStamp}/previous|"></a>
         <br>
         <br>
         <label>Next Record:</label>
         <span style="word-break: break-word">GET: /api/v2/chains/{idChain}/records/{timestamp}/next</span>
         <br>
-        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/{id2}/next(id=${chainId},id2=${previousRecord.unixTimeStamp})}" th:text="|${url}/api/v2/chains/${chainId}/records/${previousRecord.unixTimeStamp}/next|"></a>
+        Example: <a style="word-break: break-word" th:href="@{/api/v2/chains/{id}/records/{id2}/next(id=${chainId},id2=${previousRecord.timeStamp})}" th:text="|${url}/api/v2/chains/${chainId}/records/${previousRecord.timeStamp}/next|"></a>
         <br>
         <br>
         <label>Last Record:</label>
@@ -140,7 +140,7 @@
         <p><strong>Pulse index:</strong> <span th:text="${lastRecord.idChain}"></span></p>
         <p><strong>Version:</strong> <span th:text="${lastRecord.versionBeacon}"></span></p>
         <p><strong>Frequency:</strong> <span th:text="${lastRecord.frequency}"></span></p>
-        <p><strong>Time:</strong> <span th:text="|${{lastRecord.timeStamp}} (${lastRecord.unixTimeStamp})|"></span></p>
+        <p><strong>Time:</strong> <span th:text="|${{lastRecord.timeStampWork}} (${lastRecord.timeStamp})|"></span></p>
         <p><strong>Seed value:</strong><span style="word-break: break-word" th:text="${lastRecord.seedValue}"></p>
         <p><strong>Output value:</strong> <span style="word-break: break-word" th:text="${lastRecord.outputValue}"></span></p>
         <p><strong>Signature:</strong> <span style="word-break: break-word" th:text="${lastRecord.signatureValue}"></span></p>
@@ -167,7 +167,7 @@
                 <tr th:each="record : ${records}">
                     <td th:text="${record.pulseIndex}"></td>
                     <td th:text="${{record.timeStampOriginal}}"></td>
-                    <td th:text="${record.unixTimeStamp}"></td>
+                    <td th:text="${record.timeStamp}"></td>
                     <td><span style="word-break: break-word" th:text="${record.outputValue}"></span> </td>
                     <td>
                         <div class="btn-group pull-right">

@@ -1,6 +1,6 @@
 package br.gov.inmetro.beacon.application.api;
 
-import br.gov.inmetro.beacon.infra.Record;
+import br.gov.inmetro.beacon.infra.RecordEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Data;
@@ -52,18 +52,18 @@ public class RecordDto implements Serializable {
     public RecordDto() {
     }
 
-    public RecordDto(Record record){
-        this.id = record.getId();
-        this.pulseIndex = record.getIdChain();
-        this.frequency = record.getFrequency();
-        this.timeStamp = String.valueOf(record.getTimeStamp().atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
-        this.timeStampOriginal = record.getTimeStamp();
-        this.unixTimeStamp = record.getUnixTimeStamp();
-        this.seedValue = record.getSeedValue();
-        this.previousOutputValue = record.getPreviousOutputValue();
-        this.signatureValue = record.getSignatureValue();
-        this.outputValue = record.getOutputValue();
-        this.statusCode = record.getStatusCode();
-        this.chain = record.getChain();
+    public RecordDto(RecordEntity recordEntity){
+        this.id = recordEntity.getId();
+        this.pulseIndex = recordEntity.getIdChain();
+        this.frequency = recordEntity.getFrequency();
+        this.timeStamp = String.valueOf(recordEntity.getTimeStampWork().atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
+        this.timeStampOriginal = recordEntity.getTimeStampWork();
+        this.unixTimeStamp = recordEntity.getTimeStamp();
+        this.seedValue = recordEntity.getSeedValue();
+        this.previousOutputValue = recordEntity.getPreviousOutputValue();
+        this.signatureValue = recordEntity.getSignatureValue();
+        this.outputValue = recordEntity.getOutputValue();
+        this.statusCode = recordEntity.getStatusCode();
+        this.chain = recordEntity.getChain();
     }
 }
