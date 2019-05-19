@@ -43,6 +43,28 @@ public class CriptoUtilService {
         return publicSignature.verify(signatureBytes);
     }
 
+    public static String signBytes(byte[] plainTextBytes, PrivateKey privateKey) throws Exception {
+//        Signature privateSignature = Signature.getInstance("NONEwithRSA");
+        Signature privateSignature = Signature.getInstance("SHA512withRSA");
+        privateSignature.initSign(privateKey);
+        privateSignature.update(plainTextBytes);
+
+        byte[] signature = privateSignature.sign();
+
+        return Base64.getEncoder().encodeToString(signature);
+    }
+
+    public static boolean verifyBytes(byte[] plainTextInBytes, String signature, PublicKey publicKey) throws Exception {
+//        Signature publicSignature = Signature.getInstance("NONEwithRSA");
+        Signature publicSignature = Signature.getInstance("SHA512withRSA");
+        publicSignature.initVerify(publicKey);
+        publicSignature.update(plainTextInBytes);
+
+        byte[] signatureBytes = Base64.getDecoder().decode(signature);
+
+        return publicSignature.verify(signatureBytes);
+    }
+
     public static String encrypt(String plainText, PublicKey publicKey) throws Exception {
         Cipher encryptCipher = Cipher.getInstance("RSA");
         encryptCipher.init(Cipher.ENCRYPT_MODE, publicKey);

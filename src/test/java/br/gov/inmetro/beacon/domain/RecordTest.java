@@ -85,9 +85,11 @@ public class RecordTest {
 
         RecordEntity newRecord = record.iniciar();
 
+        System.out.println(newRecord.getRecordDataBytes());
+
         PublicKey publicKey = loadPublicKey("publickey.pem");
 
-        boolean isCorrect = CriptoUtilService.verify(newRecord.getRecordDataBytes(), newRecord.getSignatureValue(), publicKey);
+        boolean isCorrect = CriptoUtilService.verifyBytes(newRecord.getRecordDataBytes(), newRecord.getSignatureValue(), publicKey);
 
         assertEquals(true, isCorrect);
 

@@ -2,12 +2,10 @@ package br.gov.inmetro.beacon.domain;
 
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.domain.service.CriptoUtilService;
+import br.gov.inmetro.beacon.infra.DateUtil;
 import br.gov.inmetro.beacon.infra.RecordEntity;
 
 import java.security.PrivateKey;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 public class RecordDomain {
@@ -41,7 +39,7 @@ public class RecordDomain {
         newRecordEntity.setFrequency("60");
 
         //timestamp
-        newRecordEntity.setTimeStampWork(longToLocalDateTime(recordSimpleDto.getTimeStamp()));
+        newRecordEntity.setTimeStampWork(DateUtil.longToLocalDateTime(recordSimpleDto.getTimeStamp()));
         newRecordEntity.setTimeStamp(new Long(recordSimpleDto.getTimeStamp()));
 
         //A seed value represented as a 64 byte (512-bit) hex string value
@@ -69,7 +67,10 @@ public class RecordDomain {
         // version, frequency, timeStamp, seedValue, previousHashValue, errorCode
         // Note: Except for version, the hash is on the byte representations and not the
         // string representations of the data values
-        newRecordEntity.setSignatureValue(CriptoUtilService.sign(newRecordEntity.getRecordDataBytes(), privateKey));
+
+        System.out.println(newRecordEntity.getRecordDataBytes());
+
+        newRecordEntity.setSignatureValue(CriptoUtilService.signBytes(newRecordEntity.getRecordDataBytes(), privateKey));
 
         System.out.println("Assinatura:" + newRecordEntity.getRecordDataBytes());
 
@@ -95,17 +96,17 @@ public class RecordDomain {
     }
 
 
-    private LocalDateTime longToLocalDateTime(String data){
-        Long millis = new Long(data);
-        if (data.length() == 10){
-            millis = millis*1000;
-        }
-
-        // atual
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis),
-                ZoneId.of("America/Sao_Paulo")).truncatedTo(ChronoUnit.MINUTES);
-
-        return localDateTime;
-    }
+//    private LocalDateTime longToLocalDateTime(String data){
+//        Long millis = new Long(data);
+//        if (data.length() == 10){
+//            millis = millis*1000;
+//        }
+//
+//        // atual
+//        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis),
+//                ZoneId.of("America/Sao_Paulo")).truncatedTo(ChronoUnit.MINUTES);
+//
+//        return localDateTime;
+//    }
 
 }
