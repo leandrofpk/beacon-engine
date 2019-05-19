@@ -60,7 +60,7 @@ public class RecordsController {
     public ModelAndView ver(@PathVariable("id") Long idChain) {
         ModelAndView mv = new ModelAndView("records/show");
         Optional<RecordEntity> byChainAndId = searchRecordService.findByChainAndId(1, idChain);
-        mv.addObject(byChainAndId.get());
+        mv.addObject("record", byChainAndId.get());
         mv.addObject("v1", true);
         return mv;
     }
