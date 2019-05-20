@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/rest/record/v2")
@@ -18,24 +19,29 @@ public class RecordsPostResourceV2 {
 
     private CadastraRegistroService cadastraRegistroService;
 
-//    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     public RecordsPostResourceV2(CadastraRegistroService cadastraRegistroService) {
         this.cadastraRegistroService = cadastraRegistroService;
     }
 
     /*
-    *
     *  DTO em modo simplificado.  Recebe basicamente os dados brutos
-    *
     */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public  ResponseEntity<?> novo(@Valid @RequestBody RecordSimpleDto recordSimpleDto) throws Exception {
-        cadastraRegistroService.novoRegistro(recordSimpleDto, 2);
-        System.out.println(recordSimpleDto);
-//        cadastraRegistroService.novoRegistro(recordDto, 2);
-        return new ResponseEntity<>(recordSimpleDto, HttpStatus.CREATED); //funcionando
+        cadastraRegistroService.novoRegistro(recordSimpleDto);
+        return new ResponseEntity<>(recordSimpleDto, HttpStatus.CREATED);
     }
+
+    @PostMapping(value = "sync", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+    public  ResponseEntity<?> novo(@Valid @RequestBody List<RecordSimpleDto> recordList) {
+        cadastraRegistroService.novoRegistro(recordList);
+//        System.out.println(recordList);
+        return new ResponseEntity<>(recordList, HttpStatus.CREATED); //funcionando
+    }
+
+
+
+
 
 }

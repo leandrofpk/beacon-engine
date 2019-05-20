@@ -67,12 +67,7 @@ public class RecordDomain {
         // version, frequency, timeStamp, seedValue, previousHashValue, errorCode
         // Note: Except for version, the hash is on the byte representations and not the
         // string representations of the data values
-
-        System.out.println(newRecordEntity.getRecordDataBytes());
-
         newRecordEntity.setSignatureValue(CriptoUtilService.signBytes(newRecordEntity.getRecordDataBytes(), privateKey));
-
-        System.out.println("Assinatura:" + newRecordEntity.getRecordDataBytes());
 
         // outputValue
         // The SHA-512 hash of the signatureValue as a 64 byte hex string

@@ -83,11 +83,13 @@ public class RecordEntity {
 //                this.seedValue.trim(), this.previousOutputValue.trim(),
 //                this.statusCode.trim());
 
-        byte[] bytes1 = addAll(frequency.getBytes(UTF_8), Longs.toByteArray(timeStamp));
-        byte[] bytes2 = addAll(seedValue.getBytes(UTF_8), previousOutputValue.getBytes(UTF_8));
-        byte[] bytes3 = addAll(bytes1, bytes2);
+        byte[] bytes0 = addAll(versionBeacon.getBytes(UTF_8), frequency.getBytes(UTF_8));
+        byte[] bytes1 = addAll(Longs.toByteArray(timeStamp), seedValue.getBytes(UTF_8));
+        byte[] bytes2 = addAll(bytes0, bytes1);
+        byte[] bytes3 = addAll(previousOutputValue.getBytes(UTF_8), statusCode.trim().getBytes(UTF_8));
+        byte[] bytes4 = addAll(bytes2, bytes3);
 
-        return bytes3;
+        return bytes4;
     }
 
 //    public byte getRecordDataBytes(){

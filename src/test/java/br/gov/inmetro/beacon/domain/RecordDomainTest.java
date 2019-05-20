@@ -12,10 +12,9 @@ import java.security.PublicKey;
 import java.util.UUID;
 
 import static br.gov.inmetro.beacon.domain.service.CriptoUtilService.loadPublicKey;
-import static br.gov.inmetro.beacon.domain.service.CriptoUtilService.sign;
 import static org.junit.Assert.assertEquals;
 
-public class RecordTest {
+public class RecordDomainTest {
 
     private RecordSimpleDto recordSimpleDto;
 

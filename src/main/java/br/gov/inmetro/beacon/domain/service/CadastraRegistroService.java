@@ -1,6 +1,7 @@
 package br.gov.inmetro.beacon.domain.service;
 
 import br.gov.inmetro.beacon.application.api.RecordDto;
+import br.gov.inmetro.beacon.application.api.RecordListSimpleDto;
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.domain.OriginEnum;
 import br.gov.inmetro.beacon.domain.RecordDomain;
@@ -15,6 +16,7 @@ import org.springframework.web.context.annotation.RequestScope;
 
 import java.security.PrivateKey;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static br.gov.inmetro.beacon.domain.service.CriptoUtilService.sign;
 
@@ -33,8 +35,22 @@ public class CadastraRegistroService {
     }
 
     @Transactional
-    public void novoRegistro(RecordSimpleDto simpleDto, Integer chain) throws Exception {
-        RecordEntity lastRecordEntity = records.last(chain);
+    public void novoRegistro(List<RecordSimpleDto> list) {
+        list.forEach(record -> {
+            try {
+                novoRegistro(record);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+//        records.obterTodos(chain).forEach(record -> dtos.add(new RecordDto(record)));
+
+    }
+
+    @Transactional
+    public void novoRegistro(RecordSimpleDto simpleDto) throws Exception {
+        RecordEntity lastRecordEntity = records.last(new Integer(simpleDto.getChain()));
 
         boolean startNweChain = false;
         Long id = 0L;
@@ -51,7 +67,7 @@ public class CadastraRegistroService {
 
         RecordEntity newRecord = recordDomain.iniciar();
 
-        newRecord.setChain(chain.toString());
+        newRecord.setChain(simpleDto.getChain());
         newRecord.setIdChain(++id);
         newRecord.setOrigin(OriginEnum.BEACON);
         records.save(newRecord);
