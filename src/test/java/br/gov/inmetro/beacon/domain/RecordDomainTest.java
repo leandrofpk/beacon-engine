@@ -2,6 +2,7 @@ package br.gov.inmetro.beacon.domain;
 
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.domain.service.CriptoUtilService;
+import br.gov.inmetro.beacon.domain.service.RecordNew;
 import br.gov.inmetro.beacon.infra.DateUtil;
 import br.gov.inmetro.beacon.infra.RecordEntity;
 import org.junit.Assert;
@@ -41,10 +42,10 @@ public class RecordDomainTest {
 
     @Test
     public void deveRetornarStatuscode0() throws Exception {
-        RecordDomain record = new RecordDomain(recordSimpleDto, lastRecordEntity, "1.0.0",
+        RecordDomainService record = new RecordDomainService(recordSimpleDto, lastRecordEntity, "1.0.0",
                 CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem"), false);
 
-        RecordEntity newRecord = record.iniciar();
+        RecordNew newRecord = record.iniciar();
         Assert.assertEquals("0", newRecord.getStatusCode());
     }
 
@@ -56,39 +57,39 @@ public class RecordDomainTest {
         recordSimpleDto.setRawData("5f19be7d2cb0de7a94c8829c8a4d20f79ccca5a319475ff684e6c8683c1ce93d94d0231cecc3a7e127faf99df4b920eb133f58c28d2375481f3b9929af992006");
         recordSimpleDto.setTimeStamp("1558201860000");  //2019-05-18 14:51:00
 
-        RecordDomain record = new RecordDomain(recordSimpleDto, lastRecordEntity, "1.0.0",
+        RecordDomainService record = new RecordDomainService(recordSimpleDto, lastRecordEntity, "1.0.0",
                 CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem"), false);
 
-        RecordEntity newRecord = record.iniciar();
+        RecordNew newRecord = record.iniciar();
         Assert.assertEquals("2", newRecord.getStatusCode());
     }
 
     @Test
     public void shouldRetursNewChainWithStatusCode1() throws Exception {
         // Start a new chain of values
-        RecordDomain record = new RecordDomain(recordSimpleDto, lastRecordEntity, "1.0.0",
+        RecordDomainService record = new RecordDomainService(recordSimpleDto, lastRecordEntity, "1.0.0",
                 CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem"), true);
 
-        RecordEntity newRecord = record.iniciar();
+        RecordNew newRecord = record.iniciar();
         Assert.assertEquals("1", newRecord.getStatusCode());
 
         Assert.assertEquals("00000000000000000000000000000000000000000000000000000" +
-                "000000000000000000000000000000000000000000000000000000000000000000000000000", newRecord.getPreviousOutputValue());
+                "000000000000000000000000000000000000000000000000000000000000000000000000000", newRecord.getPreviousOutput());
 
     }
 
     @Test
     public void deveValidarAssinatura() throws Exception {
-        RecordDomain record = new RecordDomain(recordSimpleDto, lastRecordEntity, "1.0.0",
+        RecordDomainService record = new RecordDomainService(recordSimpleDto, lastRecordEntity, "1.0.0",
                 CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem"), false);
 
-        RecordEntity newRecord = record.iniciar();
+        RecordNew newRecord = record.iniciar();
 
-        System.out.println(newRecord.getRecordDataBytes());
+//        System.out.println(newRecord.getRecordDataBytes());
 
         PublicKey publicKey = loadPublicKey("publickey.pem");
 
-        boolean isCorrect = CriptoUtilService.verifyBytes(newRecord.getRecordDataBytes(), newRecord.getSignatureValue(), publicKey);
+        boolean isCorrect = CriptoUtilService.verifyBytes(newRecord.getRecordInBytes(), newRecord.getSignature(), publicKey);
 
         assertEquals(true, isCorrect);
 

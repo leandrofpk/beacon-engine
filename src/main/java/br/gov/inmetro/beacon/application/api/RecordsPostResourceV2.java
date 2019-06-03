@@ -36,12 +36,8 @@ public class RecordsPostResourceV2 {
     @PostMapping(value = "sync", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public  ResponseEntity<?> novo(@Valid @RequestBody List<RecordSimpleDto> recordList) {
         cadastraRegistroService.novoRegistro(recordList);
-//        System.out.println(recordList);
-        return new ResponseEntity<>(recordList, HttpStatus.CREATED); //funcionando
+        return new ResponseEntity<>(recordList, HttpStatus.CREATED);
     }
-
-
-
 
 
 }

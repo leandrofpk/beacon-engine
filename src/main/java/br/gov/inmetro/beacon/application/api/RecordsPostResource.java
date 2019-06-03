@@ -1,6 +1,5 @@
 package br.gov.inmetro.beacon.application.api;
 
-import br.gov.inmetro.beacon.domain.repository.Records;
 import br.gov.inmetro.beacon.domain.service.CadastraRegistroService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,7 @@ public class RecordsPostResource {
     public ResponseEntity<?> novo(RecordDto record) throws Exception {
         log.warn("Post DTO: " + record.toString());
         record.setChain("1");
-        cadastraRegistroService.novoRegistro(record, 1);
+//        cadastraRegistroService.novoRegistro(record, 1);
         return new ResponseEntity<RecordDto>(HttpStatus.CREATED);
     }
 
