@@ -32,7 +32,8 @@ public class ValidatorTest {
         Security.addProvider(new BouncyCastleProvider());
 
         NIST_CERT_URL = new URL("https://beacon.nist.gov/certificate/beacon.cer");
-        NIST_RECORD_URL = new URL("https://beacon.nist.gov/rest/record/last");
+//        NIST_RECORD_URL = new URL("https://beacon.nist.gov/rest/record/last");
+        NIST_RECORD_URL = new URL("https://beacon.nist.gov/rest/record/next/1420021860");
 
         RECORD_URL = new URL("https://beacon.nist.gov/rest/record/1420021860");
 
@@ -80,12 +81,11 @@ public class ValidatorTest {
         assertTrue(vlad.isOutputValueValid(RECORD));
     }
 
-//    @Test
-//    public void validSignatureWithHTTPCalls() throws Exception {
-//        vlad.setCertificate(Loader.loadCert(NIST_CERT_URL));
-//
-//        assertTrue(vlad.isSignatureValid(new UnpackedRecord(Loader.loadRecord(NIST_RECORD_URL))));
-//    }
+    @Test
+    public void validSignatureWithHTTPCalls() throws Exception {
+        vlad.setCertificate(Loader.loadCert(NIST_CERT_URL));
+        assertTrue(vlad.isSignatureValid(new UnpackedRecord(Loader.loadRecord(NIST_RECORD_URL))));
+    }
 
     @Test
     public void validChaining() throws Exception {

@@ -33,10 +33,10 @@ public class RecordsPostResourceV2 {
         return new ResponseEntity<>(recordSimpleDto, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "sync", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(value = "/sync", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public  ResponseEntity<?> novo(@Valid @RequestBody List<RecordSimpleDto> recordList) {
         cadastraRegistroService.novoRegistro(recordList);
-        return new ResponseEntity<>(recordList, HttpStatus.CREATED);
+        return new ResponseEntity<>("ok", HttpStatus.CREATED);
     }
 
 

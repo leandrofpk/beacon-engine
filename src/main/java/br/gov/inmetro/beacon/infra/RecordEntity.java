@@ -78,9 +78,13 @@ public class RecordEntity {
         this.seedValue = recordNew.getSeed();
         this.previousOutputValue = recordNew.getPreviousOutput();
         this.signatureValue = recordNew.getSignature();
+        this.statusCode = recordNew.getStatusCode();
+        this.outputValue = recordNew.getOutput();
         this.chain = chain;
         this.idChain = idChain;
         this.origin = OriginEnum.BEACON;
+
+        this.timeStampWork = DateUtil.longToLocalDateTime(String.valueOf(recordNew.getTimeStamp()));
     }
 
 
@@ -89,15 +93,15 @@ public class RecordEntity {
                 this.seedValue.trim(), this.previousOutputValue.trim(), this.statusCode.trim());
     }
 
-    public byte[] getRecordDataBytes(){
-
-        byte[] bytes0 = addAll(versionBeacon.getBytes(UTF_8), frequency.getBytes(UTF_8));
-        byte[] bytes1 = addAll(Longs.toByteArray(timeStamp), seedValue.getBytes(UTF_8));
-        byte[] bytes2 = addAll(bytes0, bytes1);
-        byte[] bytes3 = addAll(previousOutputValue.getBytes(UTF_8), statusCode.trim().getBytes(UTF_8));
-        byte[] bytes4 = addAll(bytes2, bytes3);
-
-        return bytes4;
-    }
+//    public byte[] getRecordDataBytes(){
+//
+//        byte[] bytes0 = addAll(versionBeacon.getBytes(UTF_8), frequency.getBytes(UTF_8));
+//        byte[] bytes1 = addAll(Longs.toByteArray(timeStamp), seedValue.getBytes(UTF_8));
+//        byte[] bytes2 = addAll(bytes0, bytes1);
+//        byte[] bytes3 = addAll(previousOutputValue.getBytes(UTF_8), statusCode.trim().getBytes(UTF_8));
+//        byte[] bytes4 = addAll(bytes2, bytes3);
+//
+//        return bytes4;
+//    }
 
 }
