@@ -17,16 +17,10 @@ import static org.junit.Assert.assertEquals;
 
 public class RecordDomainTest {
 
-    private RecordSimpleDto recordSimpleDto;
-
     private RecordEntity lastRecordEntity;
 
     @Before
     public void initClass(){
-        recordSimpleDto = new RecordSimpleDto();
-        recordSimpleDto.setRawData("31d66e769bcf356ad3cc80bdd6ea592dc7bc5e983ea02f9c1ca3ee165a17f030f658414c4b20ca5c367431824c11e2227c15629fade280020148ce8a5ab9bd32");
-        recordSimpleDto.setTimeStamp("1558201800000"); //2019-05-18 14:50:00
-
         lastRecordEntity = new RecordEntity();
         lastRecordEntity.setVersionBeacon("1.0.0");
         lastRecordEntity.setFrequency("60");
@@ -42,6 +36,8 @@ public class RecordDomainTest {
 
     @Test
     public void deveRetornarStatuscode0() throws Exception {
+        RecordSimpleDto recordSimpleDto = new RecordSimpleDto("1558201800000", "31d66e769bcf356ad3cc80bdd6ea592dc7bc5e983ea02f9c1ca3ee165a17f030f658414c4b20ca5c367431824c11e2227c15629fade280020148ce8a5ab9bd32");
+
         RecordDomainService record = new RecordDomainService(recordSimpleDto, lastRecordEntity, "1.0.0",
                 CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem"), false);
 
@@ -53,9 +49,7 @@ public class RecordDomainTest {
     public void deveRetornarStatusCode2() throws Exception {
 
         // Um minuto de gap - deve mudar o status code para 2
-
-        recordSimpleDto.setRawData("5f19be7d2cb0de7a94c8829c8a4d20f79ccca5a319475ff684e6c8683c1ce93d94d0231cecc3a7e127faf99df4b920eb133f58c28d2375481f3b9929af992006");
-        recordSimpleDto.setTimeStamp("1558201860000");  //2019-05-18 14:51:00
+        RecordSimpleDto recordSimpleDto = new RecordSimpleDto("1558201860000", "5f19be7d2cb0de7a94c8829c8a4d20f79ccca5a319475ff684e6c8683c1ce93d94d0231cecc3a7e127faf99df4b920eb133f58c28d2375481f3b9929af992006");
 
         RecordDomainService record = new RecordDomainService(recordSimpleDto, lastRecordEntity, "1.0.0",
                 CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem"), false);
@@ -67,6 +61,9 @@ public class RecordDomainTest {
     @Test
     public void shouldRetursNewChainWithStatusCode1() throws Exception {
         // Start a new chain of values
+
+        RecordSimpleDto recordSimpleDto = new RecordSimpleDto("1558201860000", "5f19be7d2cb0de7a94c8829c8a4d20f79ccca5a319475ff684e6c8683c1ce93d94d0231cecc3a7e127faf99df4b920eb133f58c28d2375481f3b9929af992006");
+
         RecordDomainService record = new RecordDomainService(recordSimpleDto, lastRecordEntity, "1.0.0",
                 CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem"), true);
 
@@ -80,12 +77,12 @@ public class RecordDomainTest {
 
     @Test
     public void deveValidarAssinatura() throws Exception {
+        RecordSimpleDto recordSimpleDto = new RecordSimpleDto("1558201860000", "5f19be7d2cb0de7a94c8829c8a4d20f79ccca5a319475ff684e6c8683c1ce93d94d0231cecc3a7e127faf99df4b920eb133f58c28d2375481f3b9929af992006");
+
         RecordDomainService record = new RecordDomainService(recordSimpleDto, lastRecordEntity, "1.0.0",
                 CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem"), false);
 
         RecordNew newRecord = record.iniciar();
-
-//        System.out.println(newRecord.getRecordDataBytes());
 
         PublicKey publicKey = loadPublicKey("publickey.pem");
 
@@ -95,12 +92,10 @@ public class RecordDomainTest {
 
     }
 
-
     @Test
     public void testar2(){
         UUID uuid = UUID.randomUUID();
         System.out.println(uuid.toString());
     }
-
 
 }

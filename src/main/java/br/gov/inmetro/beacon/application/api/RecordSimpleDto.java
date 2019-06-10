@@ -26,4 +26,10 @@ public class RecordSimpleDto implements Serializable {
     @NotNull
     private String timeStamp;
 
+    public RecordSimpleDto(String timeStamp, String rawData) {
+        this.timeStamp = timeStamp;
+        this.rawData = rawData;
+    }
+
+
 }
