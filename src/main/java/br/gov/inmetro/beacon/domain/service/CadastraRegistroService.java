@@ -1,7 +1,6 @@
 package br.gov.inmetro.beacon.domain.service;
 
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
-import br.gov.inmetro.beacon.domain.OriginEnum;
 import br.gov.inmetro.beacon.domain.RecordDomainService;
 import br.gov.inmetro.beacon.domain.repository.Records;
 import br.gov.inmetro.beacon.infra.RecordEntity;
@@ -9,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.RequestScope;
 
 import java.security.PrivateKey;
 import java.util.List;
 
 @Service
-@RequestScope
 public class CadastraRegistroService {
 
     private Records records;
@@ -52,7 +49,7 @@ public class CadastraRegistroService {
         if (lastRecordEntity == null){ // se o banco estiver vazio
             startNewChain = true;
         } else {
-            id = lastRecordEntity.getId();
+            id = lastRecordEntity.getIdChain();
         }
 
         PrivateKey privateKey = CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem");

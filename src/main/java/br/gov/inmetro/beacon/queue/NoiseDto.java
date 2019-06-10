@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Objects;
 
 @Getter
 public class NoiseDto implements Serializable {
@@ -24,6 +25,11 @@ public class NoiseDto implements Serializable {
     private Long timeStamp;
 
     public NoiseDto() {
+    }
+
+    public NoiseDto(Long timeStamp, String chain) {
+        this.timeStamp = timeStamp;
+        this.chain = chain;
     }
 
     // TODO Não funciona.  Ver op motivo
@@ -52,5 +58,19 @@ public class NoiseDto implements Serializable {
                 ", timeStampDateTime=" + timeStampDateTime +
                 ", timeStamp=" + timeStamp +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NoiseDto noiseDto = (NoiseDto) o;
+        return Objects.equals(getChain(), noiseDto.getChain()) &&
+                Objects.equals(getTimeStamp(), noiseDto.getTimeStamp());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getChain(), getTimeStamp());
     }
 }

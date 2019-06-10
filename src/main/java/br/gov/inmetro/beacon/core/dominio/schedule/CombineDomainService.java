@@ -32,7 +32,7 @@ public class CombineDomainService {
             List<String> listRawData = new ArrayList<>();
             value.forEach(noiseDto -> listRawData.add(noiseDto.getRawData()));
 
-            this.recordSimpleDtoList.add(new RecordSimpleDto(key.toString(), combine(listRawData)));
+            this.recordSimpleDtoList.add(new RecordSimpleDto(key.toString(), combine(listRawData), "1"));
 
             //tratar erros
             if (value.size() != qtdFontes){
