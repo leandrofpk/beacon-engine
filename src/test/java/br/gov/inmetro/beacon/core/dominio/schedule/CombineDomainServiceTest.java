@@ -109,4 +109,10 @@ public class CombineDomainServiceTest {
         assertEquals("1;3", combineErrorList.get(0).getFontesUtilizadas());
     }
 
+    @Test
+    public void apagarMensagemTest(){
+
+    }
+
+
 }

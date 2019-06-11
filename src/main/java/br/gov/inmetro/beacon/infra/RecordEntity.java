@@ -60,9 +60,6 @@ public class RecordEntity {
     @JsonIgnore
     private OriginEnum origin;
 
-    @Lob
-    private String rawData;
-
     private String chain;
 
     @NotNull
