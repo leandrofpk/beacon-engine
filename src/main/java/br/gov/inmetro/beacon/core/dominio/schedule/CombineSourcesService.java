@@ -1,6 +1,7 @@
 package br.gov.inmetro.beacon.core.dominio.schedule;
 
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
+import br.gov.inmetro.beacon.domain.repository.Records;
 import br.gov.inmetro.beacon.domain.service.CadastraRegistroService;
 import br.gov.inmetro.beacon.queue.NoiseDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,16 @@ public class CombineSourcesService {
 
     private CadastraRegistroService cadastraRegistroService;
 
+    private Records records;
+
     private final int QTD_FONTES = 2;
 
     private List<NoiseDto> regularNoises = new ArrayList<>();
 
     @Autowired
-    public CombineSourcesService(CadastraRegistroService cadastraRegistroService) {
+    public CombineSourcesService(CadastraRegistroService cadastraRegistroService, Records records) {
         this.cadastraRegistroService = cadastraRegistroService;
+        this.records = records;
     }
 
     public void addNoise(NoiseDto noiseDto){

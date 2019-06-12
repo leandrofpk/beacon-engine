@@ -110,8 +110,8 @@ public class CombineDomainServiceTest {
     }
 
     @Test
-    public void apagarMensagemTest(){
-
+    public void deveDescartarPulsosAntigos(){
+        Assert.fail("Não implementado");
     }
 
 
