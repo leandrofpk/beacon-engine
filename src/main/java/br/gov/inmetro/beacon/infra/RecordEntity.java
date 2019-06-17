@@ -3,7 +3,6 @@ package br.gov.inmetro.beacon.infra;
 import br.gov.inmetro.beacon.domain.OriginEnum;
 import br.gov.inmetro.beacon.domain.service.RecordNew;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.primitives.Longs;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,9 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.commons.lang3.ArrayUtils.addAll;
 
 @Entity
 @Table(name = "record")
@@ -89,16 +85,5 @@ public class RecordEntity {
         return String.format("%s%s%s%s%s%s",this.versionBeacon.trim(), this.frequency.trim(), this.timeStamp,
                 this.seedValue.trim(), this.previousOutputValue.trim(), this.statusCode.trim());
     }
-
-//    public byte[] getRecordDataBytes(){
-//
-//        byte[] bytes0 = addAll(versionBeacon.getBytes(UTF_8), frequency.getBytes(UTF_8));
-//        byte[] bytes1 = addAll(Longs.toByteArray(timeStamp), seedValue.getBytes(UTF_8));
-//        byte[] bytes2 = addAll(bytes0, bytes1);
-//        byte[] bytes3 = addAll(previousOutputValue.getBytes(UTF_8), statusCode.trim().getBytes(UTF_8));
-//        byte[] bytes4 = addAll(bytes2, bytes3);
-//
-//        return bytes4;
-//    }
 
 }

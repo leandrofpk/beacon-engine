@@ -9,7 +9,9 @@ import java.time.ZoneId;
 import java.util.Objects;
 
 @Getter
-public class NoiseDto implements Serializable {
+public class EntropyDto implements Serializable {
+
+    private Long id;
 
     private String rawData;
 
@@ -24,20 +26,20 @@ public class NoiseDto implements Serializable {
 
     private Long timeStamp;
 
-    public NoiseDto() {
+    public EntropyDto() {
     }
 
-    public NoiseDto(Long timeStamp, String chain) {
+    public EntropyDto(Long timeStamp, String chain) {
         this.timeStamp = timeStamp;
         this.chain = chain;
     }
 
-    // TODO Não funciona.  Ver op motivo
-    public NoiseDto(LocalDateTime timeStamp,
-                    String rawData,
-                    String chain,
-                    String frequency,
-                    String noiseSource) {
+    // TODO Não funciona.  Ver o motivo
+    public EntropyDto(LocalDateTime timeStamp,
+                      String rawData,
+                      String chain,
+                      String frequency,
+                      String noiseSource) {
         this.timeStampDateTime = timeStamp;
         this.rawData = rawData;
         this.chain = chain;
@@ -46,11 +48,9 @@ public class NoiseDto implements Serializable {
         this.noiseSource = noiseSource;
     }
 
-
-
     @Override
     public String toString() {
-        return "NoiseDto{" +
+        return "EntropyDto{" +
                 "rawData='" + rawData + '\'' +
                 ", chain='" + chain + '\'' +
                 ", frequency='" + frequency + '\'' +
@@ -64,7 +64,7 @@ public class NoiseDto implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        NoiseDto noiseDto = (NoiseDto) o;
+        EntropyDto noiseDto = (EntropyDto) o;
         return Objects.equals(getChain(), noiseDto.getChain()) &&
                 Objects.equals(getTimeStamp(), noiseDto.getTimeStamp());
     }

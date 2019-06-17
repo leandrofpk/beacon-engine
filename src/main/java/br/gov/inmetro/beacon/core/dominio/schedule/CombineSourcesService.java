@@ -1,9 +1,10 @@
 package br.gov.inmetro.beacon.core.dominio.schedule;
 
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
+import br.gov.inmetro.beacon.domain.repository.CombinationErrors;
 import br.gov.inmetro.beacon.domain.repository.Records;
 import br.gov.inmetro.beacon.domain.service.CadastraRegistroService;
-import br.gov.inmetro.beacon.queue.NoiseDto;
+import br.gov.inmetro.beacon.queue.EntropyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,48 +19,66 @@ import java.util.function.Predicate;
 @EnableScheduling
 public class CombineSourcesService {
 
-    private CadastraRegistroService cadastraRegistroService;
+    private final CadastraRegistroService cadastraRegistroService;
 
-    private Records records;
+    private final Records records;
+
+    private final CombinationErrors combinationErrors;
 
     private final int QTD_FONTES = 2;
 
-    private List<NoiseDto> regularNoises = new ArrayList<>();
+    private List<EntropyDto> regularNoisesChainOne = new ArrayList<>();
 
     @Autowired
-    public CombineSourcesService(CadastraRegistroService cadastraRegistroService, Records records) {
+    public CombineSourcesService(CadastraRegistroService cadastraRegistroService, Records records, CombinationErrors combinationErrors) {
         this.cadastraRegistroService = cadastraRegistroService;
         this.records = records;
+        this.combinationErrors = combinationErrors;
     }
 
-    public void addNoise(NoiseDto noiseDto){
-        this.regularNoises.add(noiseDto);
+    public void addNoise(EntropyDto noiseDto){
+        this.regularNoisesChainOne.add(noiseDto);
+    }
+
+    public void addNoise(List<EntropyDto> list){
+        this.regularNoisesChainOne.addAll(list);
     }
 
     @Scheduled(cron = "00 * * * * *")
     private void combine () throws Exception {
-        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, QTD_FONTES);
+
+        // talvez chain of responsabilitty
+
+        // processar sync records
+        // verificar necessidade de condicionamento
+
+        CombineDomainService combineDomainService = new CombineDomainService(regularNoisesChainOne, QTD_FONTES, null);
         combineDomainService.processar();
 
         List<RecordSimpleDto> recordSimpleDtoList = combineDomainService.getRecordSimpleDtoList();
-        List<CombineErroDto> combineErrorList = combineDomainService.getCombineErrorList();
+        List<ProcessingErrorDto> combineErrorList = combineDomainService.getCombineErrorList();
 
-        persistir(recordSimpleDtoList);
-        // gravar os erros de combinação
+        persistir(recordSimpleDtoList, combineErrorList);
 
     }
 
     @Transactional
-    protected void persistir(List<RecordSimpleDto> recordSimpleDtoList) throws Exception {
+    protected void persistir(List<RecordSimpleDto> recordSimpleDtoList,
+                             List<ProcessingErrorDto> combineErrorList) throws Exception {
+
+        // TODO Talvez mudar para um serviço ou repositorio
         for (RecordSimpleDto recordSimpleDto : recordSimpleDtoList){
             cadastraRegistroService.novoRegistro(recordSimpleDto);
 
-            Predicate<NoiseDto> predicado = noiseDto ->
+            Predicate<EntropyDto> predicado = noiseDto ->
                     ((noiseDto.getTimeStamp().toString().equals(recordSimpleDto.getTimeStamp())));
 
-            regularNoises.removeIf(predicado);
+            // TODO Talvez retirar da transação
+            regularNoisesChainOne.removeIf(predicado);
         }
-    }
 
+        combinationErrors.persist(combineErrorList);
+
+    }
 
 }
