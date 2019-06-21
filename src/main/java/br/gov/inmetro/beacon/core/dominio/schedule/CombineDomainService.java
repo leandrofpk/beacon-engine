@@ -1,10 +1,13 @@
 package br.gov.inmetro.beacon.core.dominio.schedule;
 
+import br.gov.inmetro.beacon.application.api.RecordDto;
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.infra.ProcessingErrorTypeEnum;
 import br.gov.inmetro.beacon.queue.EntropyDto;
+import com.sun.istack.NotNull;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,13 +21,13 @@ public class CombineDomainService {
 
     private final int qtdFontes;
 
-    private final EntropyDto lastPersistentNumber;
+    private final Long lastPersistentNumber;
 
     private List<RecordSimpleDto> recordSimpleDtoList = new ArrayList<>();
 
     private List<ProcessingErrorDto> combineErrorList = new ArrayList<>();
 
-    public CombineDomainService(List<EntropyDto> regularNoises, int qtdFontes, EntropyDto lastPersistentNumber) {
+    public CombineDomainService(List<EntropyDto> regularNoises, int qtdFontes, Long lastPersistentNumber) {
         this.regularNoisesChainOne = regularNoises;
         this.qtdFontes = qtdFontes;
         this.lastPersistentNumber = lastPersistentNumber;
@@ -41,7 +44,7 @@ public class CombineDomainService {
 
 //             discarded number
             if (lastPersistentNumber != null){
-                if (key.longValue() <= lastPersistentNumber.getTimeStamp()){
+                if (key.longValue() <= lastPersistentNumber){
                     this.combineErrorList.add(new ProcessingErrorDto(key.longValue(), qtdFontes, sources, "1", LocalDateTime.now(), ProcessingErrorTypeEnum.DISCARDED_NUMBER));
                     return;
                 }

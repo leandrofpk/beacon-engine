@@ -1,5 +1,6 @@
 package br.gov.inmetro.beacon.core.dominio.schedule;
 
+import br.gov.inmetro.beacon.application.api.RecordDto;
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.queue.EntropyDto;
 import org.junit.Assert;
@@ -97,8 +98,13 @@ public class CombineDomainServiceTest {
     public void deveRetornarErroDeDuasFontes(){
         List<EntropyDto> regularNoises = new ArrayList<>();
 
-        EntropyDto lastPersistentNumber = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES),
-                "030b5d4e297262022390977e0d771762ceffd4ef9a79f7f7a0cb0439a347a46a5558969e8ded74de678f1a4d50e33bf68e5b317cbc523893fc987fca13ea84c0", "1", "60", "1");
+        LocalDateTime minus = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES);
+
+        minus.
+
+
+
+
 
         EntropyDto noiseDto1 = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                 "030b5d4e297262022390977e0d771762ceffd4ef9a79f7f7a0cb0439a347a46a5558969e8ded74de678f1a4d50e33bf68e5b317cbc523893fc987fca13ea84c0", "1", "60", "1");

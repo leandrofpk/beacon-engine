@@ -1,11 +1,13 @@
 package br.gov.inmetro.beacon.core.dominio.schedule;
 
+import br.gov.inmetro.beacon.application.api.RecordDto;
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.domain.repository.CombinationErrors;
 import br.gov.inmetro.beacon.domain.repository.Records;
 import br.gov.inmetro.beacon.domain.service.CadastraRegistroService;
 import br.gov.inmetro.beacon.queue.EntropyDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -21,19 +23,20 @@ public class CombineSourcesService {
 
     private final CadastraRegistroService cadastraRegistroService;
 
-    private final Records records;
-
     private final CombinationErrors combinationErrors;
 
-    private final int QTD_FONTES = 2;
+    private Environment env;
+
+    private Records records;
 
     private List<EntropyDto> regularNoisesChainOne = new ArrayList<>();
 
     @Autowired
-    public CombineSourcesService(CadastraRegistroService cadastraRegistroService, Records records, CombinationErrors combinationErrors) {
+    public CombineSourcesService(CadastraRegistroService cadastraRegistroService, CombinationErrors combinationErrors, Environment env, Records records) {
         this.cadastraRegistroService = cadastraRegistroService;
-        this.records = records;
         this.combinationErrors = combinationErrors;
+        this.env = env;
+        this.records = records;
     }
 
     public void addNoise(EntropyDto noiseDto){
@@ -47,12 +50,18 @@ public class CombineSourcesService {
     @Scheduled(cron = "00 * * * * *")
     private void combine () throws Exception {
 
+        if (regularNoisesChainOne.isEmpty()){
+            return;
+        }
+
         // talvez chain of responsabilitty
 
         // processar sync records
         // verificar necessidade de condicionamento
 
-        CombineDomainService combineDomainService = new CombineDomainService(regularNoisesChainOne, QTD_FONTES, null);
+        RecordDto lastRecordDto = records.lastDto(1);
+
+        CombineDomainService combineDomainService = new CombineDomainService(regularNoisesChainOne, Integer.parseInt(env.getProperty("beacon.number-of-sources")), new Long(lastRecordDto.getTimeStamp()));
         combineDomainService.processar();
 
         List<RecordSimpleDto> recordSimpleDtoList = combineDomainService.getRecordSimpleDtoList();

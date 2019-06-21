@@ -1,13 +1,11 @@
 package br.gov.inmetro.beacon.queue;
 
-import br.gov.inmetro.beacon.application.api.RecordDto;
 import br.gov.inmetro.beacon.core.dominio.schedule.CombineSourcesService;
 import br.gov.inmetro.beacon.domain.repository.Records;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Component
