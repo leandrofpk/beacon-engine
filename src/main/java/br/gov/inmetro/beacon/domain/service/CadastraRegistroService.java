@@ -35,8 +35,6 @@ public class CadastraRegistroService {
             }
         });
 
-//        records.obterTodos(chain).forEach(record -> dtos.add(new RecordDto(record)));
-
     }
 
     @Transactional
@@ -59,9 +57,6 @@ public class CadastraRegistroService {
 
         RecordEntity recordEntity = new RecordEntity(newRecord, simpleDto.getChain(), ++id);
 
-//        newRecord.setChain(simpleDto.getChain());
-//        newRecord.setIdChain(++id);
-//        newRecord.setOrigin(OriginEnum.BEACON);
         records.save(recordEntity);
     }
 

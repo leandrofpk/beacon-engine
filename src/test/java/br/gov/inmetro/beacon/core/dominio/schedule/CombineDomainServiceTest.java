@@ -1,12 +1,12 @@
 package br.gov.inmetro.beacon.core.dominio.schedule;
 
-import br.gov.inmetro.beacon.application.api.RecordDto;
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.queue.EntropyDto;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,7 @@ public class CombineDomainServiceTest {
     public void testeCombinacaoDoisValores(){
         List<EntropyDto> regularNoises = new ArrayList<>();
 
-        EntropyDto lastPersistentNumber = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(3, ChronoUnit.MINUTES),
-                "030b5d4e297262022390977e0d771762ceffd4ef9a79f7f7a0cb0439a347a46a5558969e8ded74de678f1a4d50e33bf68e5b317cbc523893fc987fca13ea84c0", "1", "60", "1");
+        long lastTimestamp = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(3, ChronoUnit.MINUTES).atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli();
 
         EntropyDto noiseDto1 = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                 "030b5d4e297262022390977e0d771762ceffd4ef9a79f7f7a0cb0439a347a46a5558969e8ded74de678f1a4d50e33bf68e5b317cbc523893fc987fca13ea84c0", "1", "60", "1");
@@ -44,7 +43,7 @@ public class CombineDomainServiceTest {
         regularNoises.add(noiseDto4);
         regularNoises.add(noiseDto5);
 
-        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, 2, lastPersistentNumber);
+        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, 2, lastTimestamp);
         combineDomainService.processar();
 
         List<RecordSimpleDto> recordSimpleDtoList = combineDomainService.getRecordSimpleDtoList();
@@ -64,8 +63,7 @@ public class CombineDomainServiceTest {
     public void testeCombinacaoTresValores(){
         List<EntropyDto> regularNoises = new ArrayList<>();
 
-        EntropyDto lastPersistentNumber = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES),
-                "030b5d4e297262022390977e0d771762ceffd4ef9a79f7f7a0cb0439a347a46a5558969e8ded74de678f1a4d50e33bf68e5b317cbc523893fc987fca13ea84c0", "1", "60", "1");
+        long lastTimestamp = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES).atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli();
 
         EntropyDto noiseDto1 = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                 "030b5d4e297262022390977e0d771762ceffd4ef9a79f7f7a0cb0439a347a46a5558969e8ded74de678f1a4d50e33bf68e5b317cbc523893fc987fca13ea84c0", "1", "60", "1");
@@ -84,7 +82,7 @@ public class CombineDomainServiceTest {
         regularNoises.add(noiseDto3);
         regularNoises.add(noiseDto4);
 
-        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, 3, lastPersistentNumber);
+        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, 3, lastTimestamp);
         combineDomainService.processar();
 
         List<RecordSimpleDto> recordSimpleDtoList = combineDomainService.getRecordSimpleDtoList();
@@ -98,13 +96,7 @@ public class CombineDomainServiceTest {
     public void deveRetornarErroDeDuasFontes(){
         List<EntropyDto> regularNoises = new ArrayList<>();
 
-        LocalDateTime minus = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES);
-
-        minus.
-
-
-
-
+        long lastTimestamp = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES).atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli();
 
         EntropyDto noiseDto1 = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                 "030b5d4e297262022390977e0d771762ceffd4ef9a79f7f7a0cb0439a347a46a5558969e8ded74de678f1a4d50e33bf68e5b317cbc523893fc987fca13ea84c0", "1", "60", "1");
@@ -115,7 +107,7 @@ public class CombineDomainServiceTest {
         regularNoises.add(noiseDto1);
         regularNoises.add(noiseDto2);
 
-        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, 3, lastPersistentNumber);
+        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, 3, lastTimestamp);
         combineDomainService.processar();
 
         List<ProcessingErrorDto> combineErrorList = combineDomainService.getCombineErrorList();
@@ -128,8 +120,7 @@ public class CombineDomainServiceTest {
     public void deveDescartarPulsosAntigos(){
         List<EntropyDto> regularNoises = new ArrayList<>();
 
-        EntropyDto lastPersistentNumber = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plus(1, ChronoUnit.MINUTES),
-                "030b5d4e297262022390977e0d771762ceffd4ef9a79f7f7a0cb0439a347a46a5558969e8ded74de678f1a4d50e33bf68e5b317cbc523893fc987fca13ea84c0", "1", "60", "1");
+        long lastTimestamp = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plus(1, ChronoUnit.MINUTES).atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli();
 
         // number one
         EntropyDto noiseDto1 = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
@@ -157,7 +148,7 @@ public class CombineDomainServiceTest {
         regularNoises.add(noiseDto4);
         regularNoises.add(noiseDto5);
 
-        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, 3, lastPersistentNumber);
+        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, 3, lastTimestamp);
         combineDomainService.processar();
 
         List<RecordSimpleDto> recordSimpleDtoList = combineDomainService.getRecordSimpleDtoList();

@@ -1,13 +1,10 @@
 package br.gov.inmetro.beacon.core.dominio.schedule;
 
-import br.gov.inmetro.beacon.application.api.RecordDto;
 import br.gov.inmetro.beacon.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.infra.ProcessingErrorTypeEnum;
 import br.gov.inmetro.beacon.queue.EntropyDto;
-import com.sun.istack.NotNull;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -57,15 +54,11 @@ public class CombineDomainService {
 
             // combining errors
             if (value.size() != qtdFontes){
-//                final String sources = value.stream()
-//                        .map(EntropyDto::getNoiseSource)
-//                        .collect(Collectors.joining(";"));
                 this.combineErrorList.add(new ProcessingErrorDto(key.longValue(), qtdFontes, sources, "1", LocalDateTime.now(), ProcessingErrorTypeEnum.COMBINING));
             }
 
         });
 
-//        this.combineErrorList.forEach(processingErrorDto -> recordSimpleDtoList.remove(processingErrorDto));
         this.recordSimpleDtoList.sort(Comparator.comparing(RecordSimpleDto::getTimeStamp));
         this.combineErrorList.sort(Comparator.comparing(ProcessingErrorDto::getTimestamp));
     }
