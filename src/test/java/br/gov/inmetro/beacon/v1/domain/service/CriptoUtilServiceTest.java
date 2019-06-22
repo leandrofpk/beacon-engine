@@ -1,6 +1,5 @@
 package br.gov.inmetro.beacon.v1.domain.service;
 
-import br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -10,6 +9,7 @@ import java.security.PublicKey;
 
 import static br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CriptoUtilServiceTest {
 
@@ -37,7 +37,7 @@ public class CriptoUtilServiceTest {
         //Let's check the signature
         boolean isCorrect = CriptoUtilService.verify(hashSha512Hexa, signature, publicKey);
 
-        assertEquals(true, isCorrect);
+        assertTrue(isCorrect);
     }
 
     @Test

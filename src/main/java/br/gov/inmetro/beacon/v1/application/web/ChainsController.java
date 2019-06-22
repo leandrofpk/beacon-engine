@@ -27,9 +27,8 @@ public class ChainsController {
     }
 
     @GetMapping
-    public ModelAndView pesquisar(HttpServletRequest httpServletRequest) {
-        ModelAndView mv = new ModelAndView("redirect:/records/chains/1");
-        return mv;
+    public ModelAndView pesquisar() {
+        return new ModelAndView("redirect:/records/chains/1");
     }
 
     @GetMapping("/{chainId}")

@@ -21,11 +21,15 @@ public class RecordsImpl implements RecordsQueries {
 
     @Transactional
     public RecordDto lastDto(Integer chain){
-        RecordEntity r = (RecordEntity) manager.createQuery("from RecordEntity where chain = :chain order by id desc")
-                .setParameter("chain", chain.toString())
-                .setMaxResults(1)
-                .getSingleResult();
-        return new RecordDto(r);
+        try {
+            RecordEntity r = (RecordEntity) manager.createQuery("from RecordEntity where chain = :chain order by id desc")
+                    .setParameter("chain", chain.toString())
+                    .setMaxResults(1)
+                    .getSingleResult();
+            return new RecordDto(r);
+        } catch(NoResultException ex){
+            return null;
+        }
     }
 
     @Transactional

@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "record")
+@Table(name = "record", uniqueConstraints = @UniqueConstraint(columnNames = { "timeStamp", "chain" }))
 @Data
 public class RecordEntity {
 

@@ -1,8 +1,9 @@
 package br.gov.inmetro.beacon.v1.domain.schedule;
 
+import br.gov.inmetro.beacon.queue.EntropyDto;
+import br.gov.inmetro.beacon.v1.application.api.RecordDto;
 import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.v1.infra.ProcessingErrorTypeEnum;
-import br.gov.inmetro.beacon.queue.EntropyDto;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 
 import java.time.LocalDateTime;
@@ -15,23 +16,25 @@ import java.util.stream.Collectors;
 public class CombineDomainService {
 
     private List<EntropyDto> regularNoisesChainOne;
-
-    private final int qtdFontes;
-
-    private final Long lastPersistentNumber;
-
+    private final String chain;
+    private final int numberOfSources;
+    private final RecordDto lastRecordDto;
     private List<RecordSimpleDto> recordSimpleDtoList = new ArrayList<>();
-
     private List<ProcessingErrorDto> combineErrorList = new ArrayList<>();
 
-    public CombineDomainService(List<EntropyDto> regularNoises, int qtdFontes, Long lastPersistentNumber) {
+    public CombineDomainService(List<EntropyDto> regularNoises, String chain, int numberOfSources,  RecordDto lastRecordDto) {
         this.regularNoisesChainOne = regularNoises;
-        this.qtdFontes = qtdFontes;
-        this.lastPersistentNumber = lastPersistentNumber;
+        this.chain = chain;
+        this.numberOfSources = numberOfSources;
+
+        this.lastRecordDto = lastRecordDto;
     }
 
     public void processar(){
-        Map<Long, List<EntropyDto>> collect = regularNoisesChainOne.stream().collect(Collectors.groupingBy(EntropyDto::getTimeStamp));
+        Map<Long, List<EntropyDto>> collect = regularNoisesChainOne
+                .stream()
+                .filter(entropyDto -> entropyDto.getChain().equals(chain))
+                .collect(Collectors.groupingBy(EntropyDto::getTimeStamp));
 
         collect.forEach((key, value) -> {
 
@@ -40,9 +43,10 @@ public class CombineDomainService {
                     .collect(Collectors.joining(";"));
 
 //             discarded number
-            if (lastPersistentNumber != null){
-                if (key.longValue() <= lastPersistentNumber){
-                    this.combineErrorList.add(new ProcessingErrorDto(key.longValue(), qtdFontes, sources, "1", LocalDateTime.now(), ProcessingErrorTypeEnum.DISCARDED_NUMBER));
+            if (lastRecordDto != null){
+                if (key <= lastRecordDto.getTimeStamp()){
+                    this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain,
+                            LocalDateTime.now(), ProcessingErrorTypeEnum.DISCARDED_NUMBER));
                     return;
                 }
             }
@@ -50,11 +54,11 @@ public class CombineDomainService {
             List<String> listRawData = new ArrayList<>();
             value.forEach(noiseDto -> listRawData.add(noiseDto.getRawData()));
 
-            this.recordSimpleDtoList.add(new RecordSimpleDto(key.toString(), combine(listRawData), "1"));
+            this.recordSimpleDtoList.add(new RecordSimpleDto(key.toString(), combine(listRawData), chain));
 
             // combining errors
-            if (value.size() != qtdFontes){
-                this.combineErrorList.add(new ProcessingErrorDto(key.longValue(), qtdFontes, sources, "1", LocalDateTime.now(), ProcessingErrorTypeEnum.COMBINING));
+            if (value.size() != numberOfSources){
+                this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain, LocalDateTime.now(), ProcessingErrorTypeEnum.COMBINING));
             }
 
         });

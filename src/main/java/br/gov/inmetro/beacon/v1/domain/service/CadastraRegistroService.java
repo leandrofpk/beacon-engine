@@ -19,6 +19,8 @@ public class CadastraRegistroService {
 
     private Environment env;
 
+    private static String version = "1.0.0";
+
     @Autowired
     public CadastraRegistroService(Records records, Environment env) {
         this.records = records;
@@ -51,7 +53,7 @@ public class CadastraRegistroService {
         }
 
         PrivateKey privateKey = CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem");
-        RecordDomainService recordDomainService = new RecordDomainService(simpleDto, lastRecordEntity, env.getProperty("beacon.version"), privateKey,startNewChain);
+        RecordDomainService recordDomainService = new RecordDomainService(simpleDto, lastRecordEntity, version, privateKey,startNewChain);
 
         RecordNew newRecord = recordDomainService.iniciar();
 

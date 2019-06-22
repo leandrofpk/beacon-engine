@@ -40,7 +40,6 @@ public class RecordDomainService {
         recordNew.setFrequency(60);
 
         //timestamp
-//        recordType.setTimeStampWork(DateUtil.longToLocalDateTime(recordSimpleDto.getTimeStamp()));
         recordNew.setTimeStamp(new Long(recordSimpleDto.getTimeStamp()));
 
         //A seed value represented as a 64 byte (512-bit) hex string value

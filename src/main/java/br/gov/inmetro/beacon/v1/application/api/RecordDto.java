@@ -27,7 +27,7 @@ public class RecordDto implements Serializable {
     private String frequency;
 
     @NotNull
-    private String timeStamp;
+    private Long timeStamp;
 
     @JsonIgnore
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm a")
@@ -56,7 +56,7 @@ public class RecordDto implements Serializable {
         this.id = recordEntity.getId();
         this.pulseIndex = recordEntity.getIdChain();
         this.frequency = recordEntity.getFrequency();
-        this.timeStamp = String.valueOf(recordEntity.getTimeStampWork().atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
+        this.timeStamp = recordEntity.getTimeStampWork().atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli();
         this.timeStampOriginal = recordEntity.getTimeStampWork();
         this.unixTimeStamp = recordEntity.getTimeStamp();
         this.seedValue = recordEntity.getSeedValue();
