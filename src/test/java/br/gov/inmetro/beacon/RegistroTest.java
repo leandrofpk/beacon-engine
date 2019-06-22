@@ -1,6 +1,6 @@
 package br.gov.inmetro.beacon;
 
-import br.gov.inmetro.beacon.domain.RegistroDto;
+import br.gov.inmetro.beacon.v1.domain.RegistroDto;
 import org.junit.Test;
 
 import java.time.Instant;
