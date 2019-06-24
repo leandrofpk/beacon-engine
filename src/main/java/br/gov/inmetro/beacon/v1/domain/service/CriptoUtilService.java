@@ -1,11 +1,14 @@
 package br.gov.inmetro.beacon.v1.domain.service;
 
-import javax.crypto.Cipher;
+import javax.security.cert.CertificateException;
+import javax.security.cert.X509Certificate;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -63,24 +66,6 @@ public class CriptoUtilService {
         return publicSignature.verify(signatureBytes);
     }
 
-    public static String encrypt(String plainText, PublicKey publicKey) throws Exception {
-        Cipher encryptCipher = Cipher.getInstance("RSA");
-        encryptCipher.init(Cipher.ENCRYPT_MODE, publicKey);
-
-        byte[] cipherText = encryptCipher.doFinal(plainText.getBytes(UTF_8));
-
-        return Base64.getEncoder().encodeToString(cipherText);
-    }
-
-    public static String decrypt(String cipherText, PrivateKey privateKey) throws Exception {
-        byte[] bytes = Base64.getDecoder().decode(cipherText);
-
-        Cipher decriptCipher = Cipher.getInstance("RSA");
-        decriptCipher.init(Cipher.DECRYPT_MODE, privateKey);
-
-        return new String(decriptCipher.doFinal(bytes), UTF_8);
-    }
-
     public static PrivateKey loadPrivateKey(String file) throws Exception {
         String privateKeyPEM = readFileToString(new File(file), StandardCharsets.UTF_8);
 
@@ -98,23 +83,13 @@ public class CriptoUtilService {
         return privateKey;
     }
 
-    public static PublicKey loadPublicKey(String file) throws Exception {
-        String publicKeyPEM = readFileToString(new File(file), StandardCharsets.UTF_8);
-
-        // strip of header, footer, newlines, whitespaces
-        publicKeyPEM = publicKeyPEM
-                .replace("-----BEGIN PUBLIC KEY-----", "")
-                .replace("-----END PUBLIC KEY-----", "")
-                .replaceAll("\\s", "");
-
-        // decode to get the binary DER representation
-        byte[] publicKeyDER = Base64.getDecoder().decode(publicKeyPEM);
-
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PublicKey publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(publicKeyDER));
+    public static PublicKey loadPublicKeyFromCertificate(String certificatePath) throws IOException, CertificateException {
+        InputStream inStream = new FileInputStream(certificatePath);
+        X509Certificate cert = X509Certificate.getInstance(inStream);
+        final PublicKey publicKey = cert.getPublicKey();
+        inStream.close();
         return publicKey;
     }
-
 
     public static String bytesToHex(byte[] hash) {
         StringBuffer hexString = new StringBuffer();

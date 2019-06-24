@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.PrivateKey;
-import java.util.List;
 
 @Service
 public class CadastraRegistroService {
@@ -27,17 +26,17 @@ public class CadastraRegistroService {
         this.env = env;
     }
 
-    @Transactional
-    public void novoRegistro(List<RecordSimpleDto> list) {
-        list.forEach(record -> {
-            try {
-                novoRegistro(record);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-    }
+//    @Transactional
+//    public void novoRegistro(List<RecordSimpleDto> list) {
+//        list.forEach(record -> {
+//            try {
+//                novoRegistro(record);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//    }
 
     @Transactional
     public void novoRegistro(RecordSimpleDto simpleDto) throws Exception {
@@ -52,7 +51,9 @@ public class CadastraRegistroService {
             id = lastRecordEntity.getIdChain();
         }
 
-        PrivateKey privateKey = CriptoUtilService.loadPrivateKey("privatekey-pkcs8.pem");
+        String propertyPrivateKey = env.getProperty("beacon.x509.privatekey");
+
+        PrivateKey privateKey = CriptoUtilService.loadPrivateKey(propertyPrivateKey);
         RecordDomainService recordDomainService = new RecordDomainService(simpleDto, lastRecordEntity, version, privateKey,startNewChain);
 
         RecordNew newRecord = recordDomainService.iniciar();

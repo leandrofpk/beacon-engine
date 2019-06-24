@@ -1,8 +1,17 @@
 package br.gov.inmetro.beacon.v1.domain.service;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.nio.charset.StandardCharsets;
+import javax.security.cert.CertificateException;
+import javax.security.cert.X509Certificate;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -11,7 +20,12 @@ import static br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(SpringRunner.class)
+@TestPropertySource("classpath:application-test.properties")
 public class CriptoUtilServiceTest {
+
+    @Autowired
+    private Environment environment;
 
     @Test
     public void testeHashSha512JavaNativo() throws NoSuchAlgorithmException {
@@ -24,39 +38,55 @@ public class CriptoUtilServiceTest {
         assertEquals(expected, actual);
     }
 
-    @Test
+    @Test // FUNCIONA OK
     public void testSignAndVerifyFromPemFiles() throws Exception {
         String hashSha512Hexa = "5C571D1B7641A359DE56A2498D4B972F4AFD6C85752381790E575E70B3BA7CBD7F5D6C646675F48C696884B0381FDC751C6153102EA14023F2719E23FE0C931C";
 
-        //sign
-        PrivateKey privateKey = loadPrivateKey("privatekey-pkcs8.pem");
-        String signature = sign(hashSha512Hexa, privateKey);
-//        System.out.println(signature);
+        String propertyPrivateKey = environment.getProperty("beacon.x509.privatekey");
 
-        PublicKey publicKey = loadPublicKey("publickey.pem");
+        //sign
+        PrivateKey privateKey = loadPrivateKey(propertyPrivateKey);
+        String signature = sign(hashSha512Hexa, privateKey);
+
+        String propertyPublicKey = environment.getProperty("beacon.x509.certificate");
+
+        PublicKey publicKey = loadPublicKeyFromCertificate(propertyPublicKey);
         //Let's check the signature
         boolean isCorrect = CriptoUtilService.verify(hashSha512Hexa, signature, publicKey);
 
         assertTrue(isCorrect);
     }
 
+//    @Test
+//    public void cripto() throws Exception {
+//        String clearText = "Sample plain text";
+//
+//        PublicKey publicKey = loadPublicKey("publickey.pem");
+//
+//        String encrypted = encrypt(clearText, publicKey);
+//
+//        PrivateKey privateKey = loadPrivateKey("privatekey-pkcs8.pem");
+//
+//        String decrypted = decrypt(encrypted, privateKey);
+//
+//        System.out.println("ClearText: " + clearText);
+//        System.out.println("Decrypted: " + decrypted);
+//        System.out.println("ClearText length: " + clearText.getBytes(StandardCharsets.UTF_8).length);
+//        System.out.println("Encrypted length: " + encrypted.length());
+//        System.out.println("Encrypted: " + encrypted);
+//    }
+
     @Test
-    public void cripto() throws Exception {
-        String clearText = "Sample plain text";
+    public void loadX509Certificate() throws IOException, CertificateException {
 
-        PublicKey publicKey = loadPublicKey("publickey.pem");
+        String certificatePath = environment.getProperty("beacon.x509.certificate");
+        InputStream inStream = new FileInputStream(certificatePath);
+        X509Certificate cert = X509Certificate.getInstance(inStream);
+        PublicKey publicKey = cert.getPublicKey();
 
-        String encrypted = encrypt(clearText, publicKey);
+        System.out.println(cert);
 
-        PrivateKey privateKey = loadPrivateKey("privatekey-pkcs8.pem");
-
-        String decrypted = decrypt(encrypted, privateKey);
-
-        System.out.println("ClearText: " + clearText);
-        System.out.println("Decrypted: " + decrypted);
-        System.out.println("ClearText length: " + clearText.getBytes(StandardCharsets.UTF_8).length);
-        System.out.println("Encrypted length: " + encrypted.length());
-        System.out.println("Encrypted: " + encrypted);
+        inStream.close();
     }
 
 }
