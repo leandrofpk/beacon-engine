@@ -1,7 +1,6 @@
 package br.gov.inmetro.beacon.queue;
 
 import br.gov.inmetro.beacon.v1.domain.schedule.CombineSourcesService;
-import br.gov.inmetro.beacon.v1.domain.repository.Records;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,12 +12,9 @@ public class BeaconConsumer {
 
     private final CombineSourcesService combineSourcesService;
 
-    private final Records records;
-
     @Autowired
-    public BeaconConsumer(CombineSourcesService combineSourcesService, Records records) {
+    public BeaconConsumer(CombineSourcesService combineSourcesService) {
         this.combineSourcesService = combineSourcesService;
-        this.records = records;
     }
 
     @RabbitListener(queues = {"pulses_regular_queue"})
