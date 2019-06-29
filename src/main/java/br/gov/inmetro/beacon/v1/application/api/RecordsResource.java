@@ -1,14 +1,13 @@
 package br.gov.inmetro.beacon.v1.application.api;
 
-import br.gov.inmetro.beacon.v1.infra.RecordEntity;
 import br.gov.inmetro.beacon.v1.domain.service.RecordNotFoundException;
 import br.gov.inmetro.beacon.v1.domain.service.SearchRecordService;
+import br.gov.inmetro.beacon.v1.infra.RecordEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -17,7 +16,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @RestController
-@RequestScope
 @RequestMapping(value = "/rest/record", produces=MediaType.APPLICATION_JSON_VALUE)
 public class RecordsResource {
 

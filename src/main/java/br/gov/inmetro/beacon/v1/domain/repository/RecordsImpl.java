@@ -95,9 +95,9 @@ public class RecordsImpl implements RecordsQueries {
 
     @Override
     public Optional<RecordEntity> findByTimeStamp(Integer chain, Long data) {
-        RecordEntity recordEntity = (RecordEntity) manager.createQuery("from RecordEntity r where r.chain = :chain and r.unixTimeStamp = :unixTimeStamp")
+        RecordEntity recordEntity = (RecordEntity) manager.createQuery("from RecordEntity r where r.chain = :chain and r.timeStamp = :timestamp")
                 .setParameter("chain", chain.toString())
-                .setParameter("unixTimeStamp", data).getSingleResult();
+                .setParameter("timestamp", data).getSingleResult();
         return Optional.of(recordEntity);
     }
 
