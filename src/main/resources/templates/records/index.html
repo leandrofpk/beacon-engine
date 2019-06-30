@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Inmetro Randomness Beacon</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -76,7 +77,7 @@
             <label>Next Record:</label>
             <span style="word-break: break-word">GET: rest/record/next/{timestamp}</span>
             <br>
-            Example: <a style="word-break: break-word" th:href="@{/rest/record/previous/} + ${previousRecord.timeStampWork}" th:text="|${url}/rest/record/previous/${previousRecord.timeStamp}|"></a>
+            Example: <a style="word-break: break-word" th:href="@{/rest/record/previous/} + ${previousRecord.timeStamp}" th:text="|${url}/rest/record/previous/${previousRecord.timeStamp}|"></a>
             <br>
             <br>
             <label>Last Record:</label>
@@ -212,7 +213,7 @@
 
     <div class="panel-footer">
         <div class="container-fluid">
-            <span class="aw-footer-disclaimer">&copy; 2019 Inmetro/DMTIC - <b>v1.0.0.0-rc.1</b></span>
+            <span class="aw-footer-disclaimer">&copy; 2019 Inmetro/DMTIC - <b>v1.0.0.0-rc.2</b></span>
         </div>
     </div>
 </div>

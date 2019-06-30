@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -111,8 +112,8 @@ public class RSA {
     public static String sign(PrivateKey privateKey, String message) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, UnsupportedEncodingException {
         Signature sign = Signature.getInstance("SHA1withRSA");
         sign.initSign(privateKey);
-        sign.update(message.getBytes("UTF-8"));
-        return new String(Base64.encodeBase64(sign.sign()), "UTF-8");
+        sign.update(message.getBytes(StandardCharsets.UTF_8));
+        return new String(Base64.encodeBase64(sign.sign()), StandardCharsets.UTF_8);
     }
 
     /**
@@ -128,8 +129,8 @@ public class RSA {
     public static boolean verify(PublicKey publicKey, String message, String signature) throws SignatureException, NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
         Signature sign = Signature.getInstance("SHA1withRSA");
         sign.initVerify(publicKey);
-        sign.update(message.getBytes("UTF-8"));
-        return sign.verify(Base64.decodeBase64(signature.getBytes("UTF-8")));
+        sign.update(message.getBytes(StandardCharsets.UTF_8));
+        return sign.verify(Base64.decodeBase64(signature.getBytes(StandardCharsets.UTF_8)));
     }
 
     /**
@@ -144,7 +145,7 @@ public class RSA {
     public static String encrypt(String rawText, PublicKey publicKey) throws IOException, GeneralSecurityException {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-        return Base64.encodeBase64String(cipher.doFinal(rawText.getBytes("UTF-8")));
+        return Base64.encodeBase64String(cipher.doFinal(rawText.getBytes(StandardCharsets.UTF_8)));
     }
 
     /**
@@ -159,7 +160,7 @@ public class RSA {
     public static String decrypt(String cipherText, PrivateKey privateKey) throws IOException, GeneralSecurityException {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        return new String(cipher.doFinal(Base64.decodeBase64(cipherText)), "UTF-8");
+        return new String(cipher.doFinal(Base64.decodeBase64(cipherText)), StandardCharsets.UTF_8);
     }
 
 }

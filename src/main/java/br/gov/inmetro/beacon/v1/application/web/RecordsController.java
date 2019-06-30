@@ -1,13 +1,12 @@
 package br.gov.inmetro.beacon.v1.application.web;
 
-import br.gov.inmetro.beacon.v1.infra.RecordEntity;
 import br.gov.inmetro.beacon.v1.domain.service.SearchRecordService;
+import br.gov.inmetro.beacon.v1.infra.RecordEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Controller
-@RequestScope
 @RequestMapping("/records")
 public class RecordsController {
 
