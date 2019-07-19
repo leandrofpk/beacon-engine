@@ -20,7 +20,7 @@ public class Pulse {
 
     private LocalDateTime timeStamp;
 
-//    private String localRandomValue;
+    private String localRandomValue;
 
 //    private PulseType.External external;
 //
@@ -34,7 +34,8 @@ public class Pulse {
 //
 //    private String outputValue;
 
-    private Pulse(String uri, String version, int cipherSuite, int period, String certificateId, long chainIndex, long pulseIndex, LocalDateTime timeStamp) {
+    private Pulse(String uri, String version, int cipherSuite, int period, String certificateId,
+                  long chainIndex, long pulseIndex, LocalDateTime timeStamp, String localRandomValue) {
         this.uri = uri;
         this.version = version;
         this.cipherSuite = cipherSuite;
@@ -43,6 +44,8 @@ public class Pulse {
         this.chainIndex = chainIndex;
         this.pulseIndex = pulseIndex;
         this.timeStamp = timeStamp;
+        this.localRandomValue = localRandomValue;
+
     }
 
     public static class Builder{
@@ -55,6 +58,7 @@ public class Pulse {
         private long chainIndex;
         private long pulseIndex;
         private LocalDateTime timeStamp;
+        private String localRandomValue;
 
         public Builder setUri(String uri){
             this.uri = uri;
@@ -96,11 +100,29 @@ public class Pulse {
             return this;
         }
 
-        public Pulse build(){
-            return new Pulse(uri, version, cipherSuite, period, certificateId, chainIndex, pulseIndex, timeStamp);
+        public Builder setLocalRandomValue(String localRandomValue){
+            this.localRandomValue = localRandomValue;
+            return this;
         }
 
+        public Pulse build(){
+            return new Pulse(uri, version, cipherSuite, period, certificateId,
+                    chainIndex, pulseIndex, timeStamp, localRandomValue);
+        }
 
     }
 
+    @Override
+    public String toString() {
+        return "Pulse{" +
+                "uri='" + uri + '\'' +
+                ", version='" + version + '\'' +
+                ", cipherSuite=" + cipherSuite +
+                ", period=" + period +
+                ", certificateId='" + certificateId + '\'' +
+                ", chainIndex=" + chainIndex +
+                ", pulseIndex=" + pulseIndex +
+                ", timeStamp=" + timeStamp +
+                '}';
+    }
 }

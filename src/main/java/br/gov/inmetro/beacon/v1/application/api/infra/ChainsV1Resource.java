@@ -21,12 +21,12 @@ import java.util.Optional;
 @RestController
 @RequestScope
 @RequestMapping(value = "api/v2/chains/{idChain}/records", produces=MediaType.APPLICATION_JSON_VALUE)
-public class ChainsResource {
+public class ChainsV1Resource {
 
     private final SearchRecordService searchRecordService;
 
     @Autowired
-    public ChainsResource(SearchRecordService searchRecordService) {
+    public ChainsV1Resource(SearchRecordService searchRecordService) {
         this.searchRecordService = searchRecordService;
     }
 

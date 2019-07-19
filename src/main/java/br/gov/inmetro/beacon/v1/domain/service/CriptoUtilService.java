@@ -56,6 +56,16 @@ public class CriptoUtilService {
         return Base64.getEncoder().encodeToString(signature);
     }
 
+    public static String signBytes15(byte[] plainTextBytes, PrivateKey privateKey) throws Exception {
+        Signature privateSignature = Signature.getInstance("SHA512withRSA");
+        privateSignature.initSign(privateKey);
+        privateSignature.update(plainTextBytes);
+
+        byte[] signature = privateSignature.sign();
+
+        return Base64.getEncoder().encodeToString(signature);
+    }
+
     public static boolean verifyBytes(byte[] plainTextInBytes, String signature, PublicKey publicKey) throws Exception {
         Signature publicSignature = Signature.getInstance("SHA512withRSA");
         publicSignature.initVerify(publicKey);
