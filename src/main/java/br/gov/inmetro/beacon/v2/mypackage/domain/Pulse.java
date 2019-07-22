@@ -114,7 +114,7 @@ public class Pulse {
 
     @Override
     public String toString() {
-        return "Pulse{" +
+        return "PulseEntity{" +
                 "uri='" + uri + '\'' +
                 ", version='" + version + '\'' +
                 ", cipherSuite=" + cipherSuite +

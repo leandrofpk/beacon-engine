@@ -29,6 +29,9 @@ public class Validator {
     public void setCertificate(X509Certificate certificate) {
         this.certificate = certificate;
         this.publicKey = certificate.getPublicKey();
+
+        System.out.println(publicKey);
+
     }
 
     public X509Certificate getCertificate() {

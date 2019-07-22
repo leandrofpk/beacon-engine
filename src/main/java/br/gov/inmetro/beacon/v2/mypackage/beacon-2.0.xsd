@@ -14,16 +14,16 @@
 <!--
 Proposed REST calls:
 
-Pulse at time <timestamp> (or next closest AFTER the provided <timestamp>):
+PulseEntity at time <timestamp> (or next closest AFTER the provided <timestamp>):
     https://<server name>/<context>/beacon/2.0/pulse/time/<timestamp>
 
-Previous Pulse (the first available Pulse prior to time <timestamp>):
+Previous PulseEntity (the first available PulseEntity prior to time <timestamp>):
     https://<server name>/<context>/beacon/2.0/pulse/time/previous/<timestamp>
 
-Next Pulse (the first available Pulse after time <timestamp>):
+Next PulseEntity (the first available PulseEntity after time <timestamp>):
     https://<server name>/<context>/beacon/2.0/pulse/time/next/<timestamp>
 
-Latest Pulse (the last available pulse on the last chain):
+Latest PulseEntity (the last available pulse on the last chain):
     https://<server name>/<context>/beacon/2.0/pulse/last
 or
     https://<server name>/<context>/beacon/2.0/chain/last/pulse/last
@@ -31,10 +31,10 @@ or
 First pulse of Last Chain (the pulse which starts the last chain):
     https://<server name>/<context>/beacon/2.0/chain/last/pulse/1
 
-Pulse <pulseIndex> in chain <chainIndex> (pulse number <pulseIndex> within chain number <chainIndex>; non-existing pulse with those indices results in a 404 response):
+PulseEntity <pulseIndex> in chain <chainIndex> (pulse number <pulseIndex> within chain number <chainIndex>; non-existing pulse with those indices results in a 404 response):
     https://<server name>/<context>/beacon/2.0/chain/<chainIndex>/pulse/<pulseIndex>
 
-Last Pulse in chain <chainIndex> (last pulse in the chain with index <chainIndex>; if the chain is still active, it returns the latest pulse):
+Last PulseEntity in chain <chainIndex> (last pulse in the chain with index <chainIndex>; if the chain is still active, it returns the latest pulse):
     https://<server name>/<context>/beacon/2.0/chain/<chainIndex>/pulse/last
 
 The prior calls all return a reponse in the form:

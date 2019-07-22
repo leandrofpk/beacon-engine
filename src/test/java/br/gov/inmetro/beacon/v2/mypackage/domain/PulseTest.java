@@ -1,6 +1,9 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain;
 
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -17,11 +20,10 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.*;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.*;
+import java.util.Calendar;
 import java.util.Date;
 
 //@RunWith(SpringRunner.class)
@@ -50,6 +52,31 @@ public class PulseTest {
 //        byte[] cipherText = cipher.doFinal(input);
 //    }
 
+    @Test
+    public void outroTesteDeData(){
+//        ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC));
+//        System.out.println(now);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz");
+
+        ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC).normalized());
+        System.out.println(now);
+
+        ZonedDateTime now2 = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC).normalized());
+        System.out.println(now2);
+
+        String format2 = now2.format(dateTimeFormatter);
+        System.out.println(format2);
+
+
+//        2019-07-21T12:12:00.000Z
+//        2019-07-20T14:15:00.000Z
+
+
+
+//        System.out.println(now.withZoneSameInstant(ZoneId.of("UTC")));
+    }
+
 
     @Test
     public void testarData(){
@@ -62,13 +89,142 @@ public class PulseTest {
 
         // do nist
         Instant instant2 = Instant.parse( "2019-07-19T18:34:00.000Z" );
+        System.out.println("milisegundos");
         System.out.println(instant2);
 
-        final Instant now = Instant.now().truncatedTo(ChronoUnit.MINUTES);
-//        now.atZone(ZoneId.of("America/Sao_Paulo"));
-        System.out.println("teste");
-        System.out.println(now.toString());
-        System.out.println(now.atZone(ZoneId.of("America/Sao_Paulo")).toString());
+        LocalDateTime date = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        String text = date.format(formatter);
+        System.out.println("Formatando sem o Z");
+        System.out.println(text);
+
+//        ---------------------------------------------------
+
+        System.out.println("Instant");
+        Instant now = Instant.now();
+        System.out.println(now);
+
+
+        System.out.println("Instant sertado pra zero");
+        Instant instant1 = now.truncatedTo(ChronoUnit.MINUTES);
+
+        System.out.println(instant1);
+
+
+        Date nearestMinute = DateUtils.round(new Date(), Calendar.SECOND);
+        System.out.println(nearestMinute);
+
+        Instant from = Instant.from(nearestMinute.toInstant());
+
+        System.out.println("from");
+        System.out.println(from);
+
+        LocalDateTime nowT =  LocalDateTime.now(Clock.systemUTC());
+
+        LocalDateTime newTime = nowT.plusMinutes(1).minusNanos(1).withSecond(0).withNano(0000);
+
+        System.out.println(newTime);
+
+
+
+
+
+//        ------------------------------------------------------------
+
+//        final Instant now = Instant.now().truncatedTo(ChronoUnit.MINUTES);
+//        System.out.println("teste");
+//        System.out.println(now.toString());
+//        System.out.println(now.atZone(ZoneId.of("America/Sao_Paulo")).toString());
+    }
+
+    private static void with(Instant d, ChronoField chronoField) {
+        try {
+            Instant d2 = d.with(chronoField, 1);
+            System.out.printf("%15s => %s%n", chronoField.name(), d2);
+        } catch (UnsupportedTemporalTypeException e) {
+            System.out.printf("--%s not supported.%n", chronoField);
+        }
+    }
+
+
+    @Test
+    public void testarData2(){
+        LocalDateTime plus = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plus(1, ChronoUnit.MINUTES);
+        Instant instant = plus.toInstant(ZoneOffset.UTC);
+        System.out.println(instant);
+
+        Date date = new Date();
+        Instant instant1 = date.toInstant();
+        System.out.println(instant1);
+
+
+//        for (ChronoField chronoField : ChronoField.values()) {
+//            with(instant1, chronoField);
+//        }
+
+
+//        System.out.println("milis:" + instant1.get(ChronoField.MILLI_OF_SECOND));
+
+//        System.out.println("truncate: \n" + instant1.truncatedTo(ChronoUnit.SECONDS));
+
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+
+
+
+
+
+
+
+//
+//        LocalDateTime now =  LocalDateTime.now();
+//        LocalDateTime newTime =  now.plusMinutes(1);
+//
+//        System.out.println(newTime.toString());
+//        System.out.println(newTime.format(DateTimeFormatter.ofPattern("yyyy-dd-MM'T'HH:mm:00.000")));
+
+//        LocalDateTime now =  LocalDateTime.now();
+//        LocalDateTime newTime =  now.plusMinutes(1);
+//        String format = newTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.000z"));
+//        System.out.println(format);
+
+
+        Instant agora = Instant.now();
+        System.out.println(agora);
+
+        Instant with = agora.with(ChronoField.MILLI_OF_SECOND, 0);
+        System.out.println(with.get(ChronoField.MILLI_OF_SECOND));
+
+
+
+
+//        System.out.println(with);
+
+
+
+
+        // 2018-07-23T19:26:00.000Z
+
+
+//        Instant instantTruncated = Instant.now().truncatedTo( ChronoUnit.SECONDS );
+//        System.out.println(instantTruncated);
+//
+//        LocalDateTime now =  LocalDateTime.now(Clock.systemUTC());
+//        LocalDateTime newTime =  now.plusMinutes(1).truncatedTo(ChronoUnit.MILLIS);
+//        System.out.println(newTime);
+
+
+//
+//        LocalDateTime plus = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plus(1, ChronoUnit.MINUTES);
+//
+//        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSSSSS Z");
+//        String format = plus.format(FORMATTER);
+//        System.out.println(format);
+//
+
+
+
+//        2018-07-23T19:26:00.000Z
 
 
     }

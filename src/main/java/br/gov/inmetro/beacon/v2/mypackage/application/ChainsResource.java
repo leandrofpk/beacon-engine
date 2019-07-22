@@ -1,6 +1,7 @@
 package br.gov.inmetro.beacon.v2.mypackage.application;
 
 import br.gov.inmetro.beacon.v2.mypackage.PulseType;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,11 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.GregorianCalendar;
 
 @RestController
-@RequestMapping(value = "beacon/2.0/chain/{idChain}/pulse")
+@RequestMapping(value = "beacon/2.0/chain/{idChain}/pulse", produces= MediaType.APPLICATION_JSON_VALUE)
 public class ChainsResource {
 
     @RequestMapping("/last")
@@ -41,6 +43,18 @@ public class ChainsResource {
         pulseType.setExternal(external);
 
         return pulseType;
+    }
+
+    @RequestMapping("/last2")
+    public PulseDto last2(@PathVariable Integer idChain){
+        PulseDto pulseDto = new PulseDto();
+        pulseDto.setTimeStampOriginal(LocalDateTime.now());
+        ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC).normalized());
+        pulseDto.setTimestamp(now);
+
+        pulseDto.setTimestamp2(now.toLocalDateTime());
+
+        return pulseDto;
     }
 
 }
