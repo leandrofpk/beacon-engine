@@ -1,7 +1,7 @@
 package br.gov.inmetro.beacon.v1.domain.repository;
 
-import br.gov.inmetro.beacon.v1.application.api.RecordDto;
-import br.gov.inmetro.beacon.v1.infra.RecordEntity;
+import br.gov.inmetro.beacon.v1.application.api.PulseDto;
+import br.gov.inmetro.beacon.v1.infra.PulseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,28 +14,28 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class RecordsImpl implements RecordsQueries {
+public class PulsesImpl implements PulsesQueries {
 
     @PersistenceContext
     private EntityManager manager;
 
     @Transactional
-    public RecordDto lastDto(Integer chain){
+    public br.gov.inmetro.beacon.v2.mypackage.application.PulseDto lastDto(Integer chain){
         try {
-            RecordEntity r = (RecordEntity) manager.createQuery("from RecordEntity where chain = :chain order by id desc")
+            PulseEntity r = (PulseEntity) manager.createQuery("from PulseEntity where chain = :chain order by id desc")
                     .setParameter("chain", chain.toString())
                     .setMaxResults(1)
                     .getSingleResult();
-            return new RecordDto(r);
+            return new br.gov.inmetro.beacon.v2.mypackage.application.PulseDto(r);
         } catch(NoResultException ex){
             return null;
         }
     }
 
     @Transactional
-    public RecordEntity last(Integer chain){
+    public PulseEntity last(Integer chain){
         try {
-            return (RecordEntity) manager.createQuery("from RecordEntity where chain = :chain order by id desc")
+            return (PulseEntity) manager.createQuery("from RecordEntity where chain = :chain order by id desc")
                     .setParameter("chain", chain.toString())
                     .setMaxResults(1)
                     .getSingleResult();
@@ -46,18 +46,18 @@ public class RecordsImpl implements RecordsQueries {
     }
 
     @Transactional
-    public RecordDto first(Integer chain){
-        RecordEntity r = (RecordEntity) manager.createQuery("from RecordEntity where chain = :chain order by id")
+    public PulseDto first(Integer chain){
+        PulseEntity r = (PulseEntity) manager.createQuery("from RecordEntity where chain = :chain order by id")
                 .setParameter("chain", chain.toString())
                 .setMaxResults(1)
                 .getSingleResult();
 
-        return new RecordDto(r);
+        return new PulseDto(r);
 
     }
 
     @Transactional(readOnly = true)
-    public List<RecordEntity> obterTodos(Integer chain){
+    public List<PulseEntity> obterTodos(Integer chain){
         return Collections.unmodifiableList(manager
                 .createQuery("from RecordEntity where chain = :chain order by id desc")
                 .setParameter("chain", chain.toString())
@@ -76,13 +76,13 @@ public class RecordsImpl implements RecordsQueries {
     }
 
     @Transactional(readOnly = true)
-    public Optional<RecordEntity> findByTimeStampWork(Integer chain, LocalDateTime timeStamp){
+    public Optional<PulseEntity> findByTimeStampWork(Integer chain, LocalDateTime timeStamp){
 
-        RecordEntity recordEntity;
+        PulseEntity recordEntity;
 
         try {
 
-            recordEntity = (RecordEntity) manager.createQuery("from RecordEntity r " +
+            recordEntity = (PulseEntity) manager.createQuery("from RecordEntity r " +
                     "where r.chain = :chain and r.timeStampWork = :timeStamp")
                     .setParameter("chain", chain.toString())
                     .setParameter("timeStamp", timeStamp).getSingleResult();
@@ -94,16 +94,16 @@ public class RecordsImpl implements RecordsQueries {
     }
 
     @Override
-    public Optional<RecordEntity> findByTimeStamp(Integer chain, Long data) {
-        RecordEntity recordEntity = (RecordEntity) manager.createQuery("from RecordEntity r where r.chain = :chain and r.timeStamp = :timestamp")
+    public Optional<PulseEntity> findByTimeStamp(Integer chain, Long data) {
+        PulseEntity recordEntity = (PulseEntity) manager.createQuery("from RecordEntity r where r.chain = :chain and r.timeStamp = :timestamp")
                 .setParameter("chain", chain.toString())
                 .setParameter("timestamp", data).getSingleResult();
         return Optional.of(recordEntity);
     }
 
     @Transactional(readOnly = true)
-    public Optional<RecordEntity> findByChainAndId(Integer chain, Long idChain){
-        RecordEntity recordEntity = (RecordEntity) manager
+    public Optional<PulseEntity> findByChainAndId(Integer chain, Long idChain){
+        PulseEntity recordEntity = (PulseEntity) manager
                 .createQuery("from RecordEntity where chain = :chain and idChain = :idChain order by id desc")
                 .setParameter("chain", chain.toString())
                 .setParameter("idChain", idChain)

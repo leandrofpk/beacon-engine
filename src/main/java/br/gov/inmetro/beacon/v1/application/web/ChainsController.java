@@ -1,7 +1,7 @@
 package br.gov.inmetro.beacon.v1.application.web;
 
 import br.gov.inmetro.beacon.v1.domain.service.SearchRecordService;
-import br.gov.inmetro.beacon.v1.infra.RecordEntity;
+import br.gov.inmetro.beacon.v1.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,10 +33,10 @@ public class ChainsController {
     public ModelAndView pesquisar(HttpServletRequest httpServletRequest, @PathVariable("chainId") Integer chainId) {
         ModelAndView mv = new ModelAndView("records/index");
 
-        Optional<RecordEntity> lastRecord = searchRecordService.last(chainId);
+        Optional<PulseEntity> lastRecord = searchRecordService.last(chainId);
 
         if (lastRecord.isPresent()) {
-            final Optional<RecordEntity> previousRecord = searchRecordService.findByTimestampWork(chainId, lastRecord.get().getTimeStampWork().minus(chainId, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+            final Optional<PulseEntity> previousRecord = searchRecordService.findByTimestampWork(chainId, lastRecord.get().getTimeStampWork().minus(chainId, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
             mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
             mv.addObject("lastRecord", lastRecord.get());
         }
@@ -53,7 +53,7 @@ public class ChainsController {
     @GetMapping("/{chainId}/{id}")
     public ModelAndView ver(@PathVariable("chainId") Integer chainId, @PathVariable("id") Long idChain) {
         ModelAndView mv = new ModelAndView("records/show");
-        Optional<RecordEntity> byChainAndId = searchRecordService.findByChainAndId(chainId, idChain);
+        Optional<PulseEntity> byChainAndId = searchRecordService.findByChainAndId(chainId, idChain);
         mv.addObject("record", byChainAndId.get());
         mv.addObject("v1", false);
         return mv;

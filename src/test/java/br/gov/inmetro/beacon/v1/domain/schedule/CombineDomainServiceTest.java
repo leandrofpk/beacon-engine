@@ -1,6 +1,6 @@
 package br.gov.inmetro.beacon.v1.domain.schedule;
 
-import br.gov.inmetro.beacon.v1.application.api.RecordDto;
+import br.gov.inmetro.beacon.v1.application.api.PulseDto;
 import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.queue.EntropyDto;
 import br.gov.inmetro.beacon.v1.infra.ProcessingErrorTypeEnum;
@@ -21,7 +21,7 @@ public class CombineDomainServiceTest {
     public void testeCombinacaoDoisValores(){
         List<EntropyDto> regularNoises = new ArrayList<>();
 
-        RecordDto recordLastDto = new RecordDto();
+        PulseDto recordLastDto = new PulseDto();
         recordLastDto.setTimeStamp(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(3, ChronoUnit.MINUTES).atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
 
         EntropyDto noiseDto1 = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
@@ -66,7 +66,7 @@ public class CombineDomainServiceTest {
     public void testeCombinacaoTresValores(){
         List<EntropyDto> regularNoises = new ArrayList<>();
 
-        RecordDto recordLastDto = new RecordDto();
+        PulseDto recordLastDto = new PulseDto();
         recordLastDto.setTimeStamp(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES).atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
 
         EntropyDto noiseDto1 = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
@@ -100,7 +100,7 @@ public class CombineDomainServiceTest {
     public void deveRetornarErroDeDuasFontes(){
         List<EntropyDto> regularNoises = new ArrayList<>();
 
-        RecordDto recordLastDto = new RecordDto();
+        PulseDto recordLastDto = new PulseDto();
         recordLastDto.setTimeStamp(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES).atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
 
         EntropyDto noiseDto1 = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
@@ -125,7 +125,7 @@ public class CombineDomainServiceTest {
     public void deveDescartarPulsosAntigos(){
         List<EntropyDto> regularNoises = new ArrayList<>();
 
-        RecordDto recordLastDto = new RecordDto();
+        PulseDto recordLastDto = new PulseDto();
         recordLastDto.setTimeStamp(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plus(1, ChronoUnit.MINUTES).atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
 
         // number one
@@ -202,7 +202,7 @@ public class CombineDomainServiceTest {
         EntropyDto noiseDto9 = new EntropyDto(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES),
                 "accb69840c2426135ff2085ab413d0c7fc3be4b0f9d0d852e0abea8add5c322c00d23dea93bb6c4490445a98e5ecf447a737e1e63235ec0a308afd46ae86eccd", "2", "60", "2");
 
-        RecordDto recordLastDto = new RecordDto();
+        PulseDto recordLastDto = new PulseDto();
         recordLastDto.setTimeStamp(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES).atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli());
 
         List<EntropyDto> regularNoises = new ArrayList<>();

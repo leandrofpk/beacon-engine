@@ -4,7 +4,7 @@ import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService;
 import br.gov.inmetro.beacon.v1.domain.service.RecordNew;
 import br.gov.inmetro.beacon.v1.infra.DateUtil;
-import br.gov.inmetro.beacon.v1.infra.RecordEntity;
+import br.gov.inmetro.beacon.v1.infra.PulseEntity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,11 +26,11 @@ public class RecordDomainTest {
     @Autowired
     private Environment environment;
 
-    private RecordEntity lastRecordEntity;
+    private PulseEntity lastRecordEntity;
 
     @Before
     public void initClass(){
-        lastRecordEntity = new RecordEntity();
+        lastRecordEntity = new PulseEntity();
         lastRecordEntity.setVersionBeacon("1.0.0");
         lastRecordEntity.setFrequency("60");
         lastRecordEntity.setTimeStamp(1558201740000L); //2019-05-18 14:49:00

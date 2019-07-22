@@ -17,12 +17,12 @@ public class BeaconConsumer {
         this.combineSourcesService = combineSourcesService;
     }
 
-    @RabbitListener(queues = {"pulses_regular_queue"})
+    @RabbitListener(queues = {"pulses2_regular_queue"})
     public void receiveRegular(EntropyDto noiseDto) {
         combineSourcesService.addNoise(noiseDto);
     }
 
-    @RabbitListener(queues = {"pulses_sync_queue"})
+    @RabbitListener(queues = {"pulses2_sync_queue"})
     public void receiveSync(List<EntropyDto> list) {
         combineSourcesService.addNoise(list);
     }

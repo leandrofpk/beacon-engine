@@ -1,11 +1,9 @@
 package br.gov.inmetro.beacon.queue;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @Getter
@@ -15,47 +13,37 @@ public class EntropyDto implements Serializable {
 
     private String rawData;
 
-    private String chain;
+    private int period;
 
-    private String frequency;
+    private byte noiseSource;
 
-    private String noiseSource;
-
-    @JsonIgnore
-    private LocalDateTime timeStampDateTime;
-
-    private Long timeStamp;
+    private ZonedDateTime timeStamp;
 
     public EntropyDto() {
     }
 
-    public EntropyDto(Long timeStamp, String chain) {
+    public EntropyDto(ZonedDateTime timeStamp) {
         this.timeStamp = timeStamp;
-        this.chain = chain;
     }
 
     // TODO Não funciona.  Ver o motivo
-    public EntropyDto(LocalDateTime timeStamp,
+    public EntropyDto(ZonedDateTime timeStamp,
                       String rawData,
-                      String chain,
-                      String frequency,
-                      String noiseSource) {
-        this.timeStampDateTime = timeStamp;
+                      int period,
+                      byte noiseSource) {
+        this.timeStamp = timeStamp;
         this.rawData = rawData;
-        this.chain = chain;
-        this.frequency = frequency;
-        this.timeStamp = this.timeStampDateTime.atZone(ZoneId.of("America/Sao_Paulo")).toInstant().toEpochMilli();
+        this.period = period;
         this.noiseSource = noiseSource;
     }
 
     @Override
     public String toString() {
         return "EntropyDto{" +
-                "rawData='" + rawData + '\'' +
-                ", chain='" + chain + '\'' +
-                ", frequency='" + frequency + '\'' +
-                ", noiseSource='" + noiseSource + '\'' +
-                ", timeStampDateTime=" + timeStampDateTime +
+                "id=" + id +
+                ", rawData='" + rawData + '\'' +
+                ", period=" + period +
+                ", noiseSource=" + noiseSource +
                 ", timeStamp=" + timeStamp +
                 '}';
     }
@@ -64,13 +52,12 @@ public class EntropyDto implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EntropyDto noiseDto = (EntropyDto) o;
-        return Objects.equals(getChain(), noiseDto.getChain()) &&
-                Objects.equals(getTimeStamp(), noiseDto.getTimeStamp());
+        EntropyDto that = (EntropyDto) o;
+        return getTimeStamp().equals(that.getTimeStamp());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getChain(), getTimeStamp());
+        return Objects.hash(getTimeStamp());
     }
 }

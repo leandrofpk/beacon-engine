@@ -4,7 +4,7 @@ import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService;
 import br.gov.inmetro.beacon.v1.domain.service.RecordNew;
 import br.gov.inmetro.beacon.v1.infra.DateUtil;
-import br.gov.inmetro.beacon.v1.infra.RecordEntity;
+import br.gov.inmetro.beacon.v1.infra.PulseEntity;
 
 import java.security.PrivateKey;
 import java.time.temporal.ChronoUnit;
@@ -13,7 +13,7 @@ public class RecordDomainService {
 
     private RecordSimpleDto recordSimpleDto;
 
-    private RecordEntity lastRecordEntity;
+    private PulseEntity lastRecordEntity;
 
     private String version;
 
@@ -21,7 +21,7 @@ public class RecordDomainService {
 
     private boolean startNewChain;
 
-    public RecordDomainService(RecordSimpleDto recordSimpleDto, RecordEntity lastRecordEntity,
+    public RecordDomainService(RecordSimpleDto recordSimpleDto, PulseEntity lastRecordEntity,
                                String version, PrivateKey privateKey, boolean startNewChain) {
         this.recordSimpleDto = recordSimpleDto;
         this.lastRecordEntity = lastRecordEntity;

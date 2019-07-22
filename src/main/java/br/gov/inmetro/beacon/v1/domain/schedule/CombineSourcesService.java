@@ -1,10 +1,10 @@
 package br.gov.inmetro.beacon.v1.domain.schedule;
 
 import br.gov.inmetro.beacon.queue.EntropyDto;
-import br.gov.inmetro.beacon.v1.application.api.RecordDto;
+import br.gov.inmetro.beacon.v1.application.api.PulseDto;
 import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.v1.domain.repository.CombinationErrors;
-import br.gov.inmetro.beacon.v1.domain.repository.Records;
+import br.gov.inmetro.beacon.v1.domain.repository.Pulses;
 import br.gov.inmetro.beacon.v1.domain.service.CadastraRegistroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -27,20 +27,20 @@ public class CombineSourcesService {
 
     private Environment env;
 
-    private Records records;
+    private Pulses pulses;
 
     private List<EntropyDto> regularNoises = new ArrayList<>();
 
     @Autowired
-    public CombineSourcesService(CadastraRegistroService cadastraRegistroService, CombinationErrors combinationErrors, Environment env, Records records) {
+    public CombineSourcesService(CadastraRegistroService cadastraRegistroService, CombinationErrors combinationErrors, Environment env, Pulses pulses) {
         this.cadastraRegistroService = cadastraRegistroService;
         this.combinationErrors = combinationErrors;
         this.env = env;
-        this.records = records;
+        this.pulses = pulses;
     }
 
-    public void addNoise(EntropyDto noiseDto){
-        this.regularNoises.add(noiseDto);
+    public void addNoise(EntropyDto entropyDto){
+        this.regularNoises.add(entropyDto);
     }
 
     public void addNoise(List<EntropyDto> list){
@@ -53,34 +53,23 @@ public class CombineSourcesService {
             return;
         }
 
-        // talvez chain of responsability
+        // tem que vir do banco
+        final short activeChain = 1;
         // verificar necessidade de condicionamento
-
-        boolean chain1 = Boolean.parseBoolean(env.getProperty("beacon.chain1-enabled"));
-
-        if (chain1){
-            processing(1, env.getProperty("beacon.chain1-number-of-sources"));
-        }
-
-        boolean chain2 = Boolean.parseBoolean(env.getProperty("beacon.chain2-enabled"));
-
-        if (chain2){
-            processing(2, env.getProperty("beacon.chain2-number-of-sources"));
-        }
-
+        processing(activeChain, env.getProperty("beacon.chain1-number-of-sources"));
     }
 
-    private void processing(int chain, String numberOfSources) throws Exception {
-        RecordDto lastRecordDto = records.lastDto(chain);
+    private void processing(int activeChain, String numberOfSources) throws Exception {
+        PulseDto lastRecordDto = pulses.lastDto(activeChain);
 
-        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, Integer.toString(chain),
+        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, Integer.toString(activeChain),
                 new Integer(numberOfSources), lastRecordDto);
         combineDomainService.processar();
 
         List<RecordSimpleDto> recordSimpleDtoList = combineDomainService.getRecordSimpleDtoList();
         List<ProcessingErrorDto> combineErrorList = combineDomainService.getCombineErrorList();
 
-        persistir(recordSimpleDtoList, combineErrorList, String.valueOf(chain));
+        persistir(recordSimpleDtoList, combineErrorList, String.valueOf(activeChain));
     }
 
     @Transactional

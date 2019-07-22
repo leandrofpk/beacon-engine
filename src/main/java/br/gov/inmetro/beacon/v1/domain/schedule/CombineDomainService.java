@@ -1,7 +1,7 @@
 package br.gov.inmetro.beacon.v1.domain.schedule;
 
 import br.gov.inmetro.beacon.queue.EntropyDto;
-import br.gov.inmetro.beacon.v1.application.api.RecordDto;
+import br.gov.inmetro.beacon.v1.application.api.PulseDto;
 import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.v1.infra.ProcessingErrorTypeEnum;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
@@ -18,11 +18,11 @@ public class CombineDomainService {
     private List<EntropyDto> regularNoisesChainOne;
     private final String chain;
     private final int numberOfSources;
-    private final RecordDto lastRecordDto;
+    private final PulseDto lastRecordDto;
     private List<RecordSimpleDto> recordSimpleDtoList = new ArrayList<>();
     private List<ProcessingErrorDto> combineErrorList = new ArrayList<>();
 
-    public CombineDomainService(List<EntropyDto> regularNoises, String chain, int numberOfSources,  RecordDto lastRecordDto) {
+    public CombineDomainService(List<EntropyDto> regularNoises, String chain, int numberOfSources,  PulseDto lastRecordDto) {
         this.regularNoisesChainOne = regularNoises;
         this.chain = chain;
         this.numberOfSources = numberOfSources;

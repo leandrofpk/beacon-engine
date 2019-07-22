@@ -1,8 +1,8 @@
 package br.gov.inmetro.beacon.v1.domain.service;
 
-import br.gov.inmetro.beacon.v1.application.api.RecordDto;
-import br.gov.inmetro.beacon.v1.domain.repository.Records;
-import br.gov.inmetro.beacon.v1.infra.RecordEntity;
+import br.gov.inmetro.beacon.v1.application.api.PulseDto;
+import br.gov.inmetro.beacon.v1.domain.repository.Pulses;
+import br.gov.inmetro.beacon.v1.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
@@ -17,40 +17,40 @@ import java.util.Optional;
 @RequestScope
 public class SearchRecordService {
 
-    private Records records;
+    private Pulses records;
 
     @Autowired
-    public SearchRecordService(Records records) {
+    public SearchRecordService(Pulses records) {
         this.records = records;
     }
 
-    public List<RecordDto> findLast20(Integer chain) {
-        List<RecordDto> dtos = new ArrayList<>();
-        records.obterTodos(chain).forEach(record -> dtos.add(new RecordDto(record)));
+    public List<PulseDto> findLast20(Integer chain) {
+        List<PulseDto> dtos = new ArrayList<>();
+        records.obterTodos(chain).forEach(record -> dtos.add(new PulseDto(record)));
         return Collections.unmodifiableList(dtos);
     }
 
-    public Optional<RecordEntity> last(int chain) {
+    public Optional<PulseEntity> last(int chain) {
         return Optional.ofNullable(records.last(chain));
     }
 
-    public Optional<RecordEntity> findByChainAndId(int chain, Long idChain) {
+    public Optional<PulseEntity> findByChainAndId(int chain, Long idChain) {
         return records.findByChainAndId(chain, idChain);
     }
 
-    public Optional<RecordEntity> findByTimestampWork(Integer chain, LocalDateTime timestamp) {
+    public Optional<PulseEntity> findByTimestampWork(Integer chain, LocalDateTime timestamp) {
         return records.findByTimeStampWork(chain, timestamp);
     }
 
-    public Optional<RecordEntity> findByUnixTimeStamp(Integer chain, Long data) {
+    public Optional<PulseEntity> findByUnixTimeStamp(Integer chain, Long data) {
         return records.findByTimeStamp(chain, data);
     }
 
-    public RecordDto lastDto(Integer chain) {
+    public PulseDto lastDto(Integer chain) {
         return records.lastDto(chain);
     }
 
-    public RecordDto first(Integer chain) {
+    public PulseDto first(Integer chain) {
         return records.first(chain);
     }
 }

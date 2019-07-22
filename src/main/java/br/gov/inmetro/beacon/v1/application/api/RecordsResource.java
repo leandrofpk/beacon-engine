@@ -2,7 +2,7 @@ package br.gov.inmetro.beacon.v1.application.api;
 
 import br.gov.inmetro.beacon.v1.domain.service.RecordNotFoundException;
 import br.gov.inmetro.beacon.v1.domain.service.SearchRecordService;
-import br.gov.inmetro.beacon.v1.infra.RecordEntity;
+import br.gov.inmetro.beacon.v1.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,43 +27,43 @@ public class RecordsResource {
     }
 
     @RequestMapping("/{timestamp}")
-    public RecordDto dataFormatoLong(@PathVariable String timestamp){
-        Optional<RecordEntity> record = searchRecordService.findByUnixTimeStamp(1, new Long(timestamp));
+    public PulseDto dataFormatoLong(@PathVariable String timestamp){
+        Optional<PulseEntity> record = searchRecordService.findByUnixTimeStamp(1, new Long(timestamp));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
 
-        return new RecordDto(record.get());
+        return new PulseDto(record.get());
     }
 
     @RequestMapping("/last")
-    public RecordDto last(){
+    public PulseDto last(){
         return searchRecordService.lastDto(1);
     }
 
     @RequestMapping("/first")
-    public RecordDto first(){
+    public PulseDto first(){
         return searchRecordService.first(1);
     }
 
     @RequestMapping("/next/{timestamp}")
-    public RecordDto proximo(@PathVariable String timestamp){
-        Optional<RecordEntity> record = searchRecordService.findByTimestampWork(1, longToLocalDateTime(timestamp).plus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+    public PulseDto proximo(@PathVariable String timestamp){
+        Optional<PulseEntity> record = searchRecordService.findByTimestampWork(1, longToLocalDateTime(timestamp).plus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
 
-        return new RecordDto(record.get());
+        return new PulseDto(record.get());
     }
 
     @RequestMapping("/previous/{timestamp}")
-    public RecordDto anterior(@PathVariable String timestamp){
-        Optional<RecordEntity> record = searchRecordService.findByTimestampWork(1, longToLocalDateTime(timestamp).minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+    public PulseDto anterior(@PathVariable String timestamp){
+        Optional<PulseEntity> record = searchRecordService.findByTimestampWork(1, longToLocalDateTime(timestamp).minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("TimeStamp:" + timestamp);
 
-        return new RecordDto(record.get());
+        return new PulseDto(record.get());
     }
 
     private LocalDateTime longToLocalDateTime(String timestamp){
@@ -73,13 +73,13 @@ public class RecordsResource {
 
 
     @RequestMapping("/index/{pulseIndex}")
-    public RecordDto index(@PathVariable String pulseIndex){
-        Optional<RecordEntity> record = searchRecordService.findByChainAndId(1, new Long(pulseIndex));
+    public PulseDto index(@PathVariable String pulseIndex){
+        Optional<PulseEntity> record = searchRecordService.findByChainAndId(1, new Long(pulseIndex));
 
         if (!record.isPresent())
             throw new RecordNotFoundException("pulseIndex:" + pulseIndex);
 
-        return new RecordDto(record.get());
+        return new PulseDto(record.get());
     }
 
 }

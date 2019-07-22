@@ -1,7 +1,7 @@
 package br.gov.inmetro.beacon.v1.application.web;
 
 import br.gov.inmetro.beacon.v1.domain.service.SearchRecordService;
-import br.gov.inmetro.beacon.v1.infra.RecordEntity;
+import br.gov.inmetro.beacon.v1.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,10 +28,10 @@ public class RecordsController {
     public ModelAndView pesquisar(HttpServletRequest httpServletRequest) {
           ModelAndView mv = new ModelAndView("records/index");
 
-        Optional<RecordEntity> lastRecord = searchRecordService.last(1);
+        Optional<PulseEntity> lastRecord = searchRecordService.last(1);
 
         if (lastRecord.isPresent()) {
-            final Optional<RecordEntity> previousRecord = searchRecordService.findByTimestampWork(1, lastRecord.get().getTimeStampWork().minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+            final Optional<PulseEntity> previousRecord = searchRecordService.findByTimestampWork(1, lastRecord.get().getTimeStampWork().minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
             mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
             mv.addObject("lastRecord", lastRecord.get());
         }
@@ -42,8 +42,8 @@ public class RecordsController {
 //        mv.addObject("chain", 1);
 
 
-//        Optional<RecordEntity> lastRecord = searchRecordService.last(1);
-//        final Optional<RecordEntity> previousRecord = searchRecordService.findByTimestamp(1, lastRecord.get().getTimeStamp().minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+//        Optional<PulseEntity> lastRecord = searchRecordService.last(1);
+//        final Optional<PulseEntity> previousRecord = searchRecordService.findByTimestamp(1, lastRecord.get().getTimeStamp().minus(1, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
 //        ModelAndView mv = new ModelAndView("records/index");
 //        mv.addObject("records", searchRecordService.findLast20(1));
 //        mv.addObject("url", getAppUrl(httpServletRequest));
@@ -57,7 +57,7 @@ public class RecordsController {
     @GetMapping("/{id}")
     public ModelAndView ver(@PathVariable("id") Long idChain) {
         ModelAndView mv = new ModelAndView("records/show");
-        Optional<RecordEntity> byChainAndId = searchRecordService.findByChainAndId(1, idChain);
+        Optional<PulseEntity> byChainAndId = searchRecordService.findByChainAndId(1, idChain);
         mv.addObject("record", byChainAndId.get());
         mv.addObject("v1", true);
         return mv;

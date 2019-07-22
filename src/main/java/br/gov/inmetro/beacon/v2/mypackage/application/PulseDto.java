@@ -57,7 +57,7 @@ public class PulseDto implements Serializable {
     public PulseDto() {
     }
 
-//    public PulseDto(RecordEntity recordEntity){
+//    public PulseDto(PulseEntity recordEntity){
 //        this.id = recordEntity.getId();
 //        this.pulseIndex = recordEntity.getIdChain();
 //        this.frequency = recordEntity.getFrequency();

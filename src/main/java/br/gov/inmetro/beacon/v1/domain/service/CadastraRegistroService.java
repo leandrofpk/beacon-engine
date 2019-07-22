@@ -2,8 +2,8 @@ package br.gov.inmetro.beacon.v1.domain.service;
 
 import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.v1.domain.RecordDomainService;
-import br.gov.inmetro.beacon.v1.domain.repository.Records;
-import br.gov.inmetro.beacon.v1.infra.RecordEntity;
+import br.gov.inmetro.beacon.v1.domain.repository.Pulses;
+import br.gov.inmetro.beacon.v1.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -14,33 +14,21 @@ import java.security.PrivateKey;
 @Service
 public class CadastraRegistroService {
 
-    private Records records;
+    private Pulses records;
 
     private Environment env;
 
     private static String version = "1.0.0";
 
     @Autowired
-    public CadastraRegistroService(Records records, Environment env) {
+    public CadastraRegistroService(Pulses records, Environment env) {
         this.records = records;
         this.env = env;
     }
 
-//    @Transactional
-//    public void novoRegistro(List<RecordSimpleDto> list) {
-//        list.forEach(record -> {
-//            try {
-//                novoRegistro(record);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
-//
-//    }
-
     @Transactional
     public void novoRegistro(RecordSimpleDto simpleDto) throws Exception {
-        RecordEntity lastRecordEntity = records.last(new Integer(simpleDto.getChain()));
+        PulseEntity lastRecordEntity = records.last(new Integer(simpleDto.getChain()));
 
         boolean startNewChain = false;
         Long id = 0L;
@@ -58,7 +46,7 @@ public class CadastraRegistroService {
 
         RecordNew newRecord = recordDomainService.iniciar();
 
-        RecordEntity recordEntity = new RecordEntity(newRecord, simpleDto.getChain(), ++id);
+        PulseEntity recordEntity = new PulseEntity(newRecord, simpleDto.getChain(), ++id);
 
         records.save(recordEntity);
     }
