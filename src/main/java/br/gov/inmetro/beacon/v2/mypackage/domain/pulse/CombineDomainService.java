@@ -1,12 +1,12 @@
-package br.gov.inmetro.beacon.v1.domain.schedule;
+package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
-import br.gov.inmetro.beacon.queue.EntropyDto;
-import br.gov.inmetro.beacon.v1.application.api.PulseDto;
 import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.v1.infra.ProcessingErrorTypeEnum;
+import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
+import br.gov.inmetro.beacon.v2.mypackage.queue.EntropyDto;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,25 +16,28 @@ import java.util.stream.Collectors;
 public class CombineDomainService {
 
     private List<EntropyDto> regularNoisesChainOne;
-    private final String chain;
+    private final Long chain;
     private final int numberOfSources;
-    private final PulseDto lastRecordDto;
+    private final PulseDto lastPulseDto;
     private List<RecordSimpleDto> recordSimpleDtoList = new ArrayList<>();
     private List<ProcessingErrorDto> combineErrorList = new ArrayList<>();
 
-    public CombineDomainService(List<EntropyDto> regularNoises, String chain, int numberOfSources,  PulseDto lastRecordDto) {
+    public CombineDomainService(List<EntropyDto> regularNoises, long chain, int numberOfSources,  PulseDto lastRecordDto) {
         this.regularNoisesChainOne = regularNoises;
         this.chain = chain;
         this.numberOfSources = numberOfSources;
-
-        this.lastRecordDto = lastRecordDto;
+        this.lastPulseDto = lastRecordDto;
     }
 
     public void processar(){
-        Map<Long, List<EntropyDto>> collect = regularNoisesChainOne
+        Map<ZonedDateTime, List<EntropyDto>> collect = regularNoisesChainOne
                 .stream()
-                .filter(entropyDto -> entropyDto.getChain().equals(chain))
+//                .filter(entropyDto -> entropyDto.getChain().equals(chain))
                 .collect(Collectors.groupingBy(EntropyDto::getTimeStamp));
+
+
+//        Map<ZonedDateTime, List<EntropyDto>> collect = null;
+
 
         collect.forEach((key, value) -> {
 
@@ -43,10 +46,10 @@ public class CombineDomainService {
                     .collect(Collectors.joining(";"));
 
 //             discarded number
-            if (lastRecordDto != null){
-                if (key <= lastRecordDto.getTimeStamp()){
-                    this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain,
-                            LocalDateTime.now(), ProcessingErrorTypeEnum.DISCARDED_NUMBER));
+            if (lastPulseDto != null){
+                if (key.isBefore(lastPulseDto.getTimeStamp())){
+                    this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain.toString(),
+                            ZonedDateTime.now(), ProcessingErrorTypeEnum.DISCARDED_NUMBER));
                     return;
                 }
             }
@@ -54,17 +57,17 @@ public class CombineDomainService {
             List<String> listRawData = new ArrayList<>();
             value.forEach(noiseDto -> listRawData.add(noiseDto.getRawData()));
 
-            this.recordSimpleDtoList.add(new RecordSimpleDto(key.toString(), combine(listRawData), chain));
+            this.recordSimpleDtoList.add(new RecordSimpleDto(key.toString(), combine(listRawData), chain.toString()));
 
             // combining errors
             if (value.size() != numberOfSources){
-                this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain, LocalDateTime.now(), ProcessingErrorTypeEnum.COMBINING));
+                this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain.toString(), ZonedDateTime.now(), ProcessingErrorTypeEnum.COMBINING));
             }
 
         });
 
         this.recordSimpleDtoList.sort(Comparator.comparing(RecordSimpleDto::getTimeStamp));
-        this.combineErrorList.sort(Comparator.comparing(ProcessingErrorDto::getTimestamp));
+        this.combineErrorList.sort(Comparator.comparing(ProcessingErrorDto::getTimeStamp));
     }
 
     private String combine(List<String> rawDataList) {

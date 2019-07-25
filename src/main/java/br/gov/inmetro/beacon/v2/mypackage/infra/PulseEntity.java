@@ -1,5 +1,6 @@
 package br.gov.inmetro.beacon.v2.mypackage.infra;
 
+import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "pulse", uniqueConstraints = @UniqueConstraint(columnNames = { "timeStamp", "chainIndex" }))
 public class PulseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     protected String uri;
@@ -41,4 +42,18 @@ public class PulseEntity {
     protected String signatureValue;
 
     protected String outputValue;
+
+    public PulseEntity(Pulse newPulse){
+        this.uri = newPulse.getUri();
+        this.version = newPulse.getVersion();
+        this.cipherSuite = newPulse.getCipherSuite();
+        this.period = newPulse.getPeriod();
+        this.certificateId = newPulse.getCertificateId();
+        this.chainIndex = newPulse.getChainIndex();
+        this.pulseIndex = newPulse.getPulseIndex();
+        this.timeStamp = newPulse.getTimeStamp();
+        this.localRandomValue = newPulse.getLocalRandomValue();
+        this.precommitmentValue = newPulse.getPrecommitmentValue();
+    }
+
 }

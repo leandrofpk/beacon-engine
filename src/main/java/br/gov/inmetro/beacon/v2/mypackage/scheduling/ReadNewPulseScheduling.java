@@ -1,11 +1,13 @@
-package br.gov.inmetro.beacon.v1.domain.schedule;
+package br.gov.inmetro.beacon.v2.mypackage.scheduling;
 
-import br.gov.inmetro.beacon.queue.EntropyDto;
-import br.gov.inmetro.beacon.v1.application.api.PulseDto;
 import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
 import br.gov.inmetro.beacon.v1.domain.repository.CombinationErrors;
 import br.gov.inmetro.beacon.v1.domain.repository.Pulses;
 import br.gov.inmetro.beacon.v1.domain.service.CadastraRegistroService;
+import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
+import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.CombineDomainService;
+import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.ProcessingErrorDto;
+import br.gov.inmetro.beacon.v2.mypackage.queue.EntropyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -19,7 +21,7 @@ import java.util.function.Predicate;
 
 @Component
 @EnableScheduling
-public class CombineSourcesService {
+public class ReadNewPulseScheduling {
 
     private final CadastraRegistroService cadastraRegistroService;
 
@@ -32,7 +34,7 @@ public class CombineSourcesService {
     private List<EntropyDto> regularNoises = new ArrayList<>();
 
     @Autowired
-    public CombineSourcesService(CadastraRegistroService cadastraRegistroService, CombinationErrors combinationErrors, Environment env, Pulses pulses) {
+    public ReadNewPulseScheduling(CadastraRegistroService cadastraRegistroService, CombinationErrors combinationErrors, Environment env, Pulses pulses) {
         this.cadastraRegistroService = cadastraRegistroService;
         this.combinationErrors = combinationErrors;
         this.env = env;
@@ -48,33 +50,37 @@ public class CombineSourcesService {
     }
 
     @Scheduled(cron = "00 * * * * *")
-    private void combine () throws Exception {
+    private void getNumber() throws Exception {
         if (regularNoises.isEmpty()){
             return;
         }
 
         // tem que vir do banco
-        final short activeChain = 1;
+
+        final long activeChain = 1L;
         // verificar necessidade de condicionamento
-        processing(activeChain, env.getProperty("beacon.chain1-number-of-sources"));
+        processing(activeChain, env.getProperty("beacon.number-of-entropy-sources"));
     }
 
-    private void processing(int activeChain, String numberOfSources) throws Exception {
+    private void processing(long activeChain, String numberOfSources) throws Exception {
         PulseDto lastRecordDto = pulses.lastDto(activeChain);
 
-        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, Integer.toString(activeChain),
+        CombineDomainService combineDomainService = new CombineDomainService(regularNoises, activeChain,
                 new Integer(numberOfSources), lastRecordDto);
         combineDomainService.processar();
 
         List<RecordSimpleDto> recordSimpleDtoList = combineDomainService.getRecordSimpleDtoList();
         List<ProcessingErrorDto> combineErrorList = combineDomainService.getCombineErrorList();
 
-        persistir(recordSimpleDtoList, combineErrorList, String.valueOf(activeChain));
+        persist(recordSimpleDtoList, combineErrorList, String.valueOf(activeChain));
     }
 
+//    private void generateNewPulse(){
+//    }
+
     @Transactional
-    protected void persistir(List<RecordSimpleDto> recordSimpleDtoList,
-                             List<ProcessingErrorDto> combineErrorList, String chain) throws Exception {
+    protected void persist(List<RecordSimpleDto> recordSimpleDtoList,
+                           List<ProcessingErrorDto> combineErrorList, String chain) throws Exception {
 
         // TODO Talvez mudar para um serviço ou repositorio
         for (RecordSimpleDto recordSimpleDto : recordSimpleDtoList){
@@ -82,7 +88,8 @@ public class CombineSourcesService {
 
             Predicate<EntropyDto> predicado = noiseDto ->
                     ((noiseDto.getTimeStamp().toString().equals(recordSimpleDto.getTimeStamp())
-                            && noiseDto.getChain().equals(chain)));
+//                           0 && noiseDto.getChain().equals(chain)));
+                    ));
 
             // TODO Talvez retirar da transação
             regularNoises.removeIf(predicado);

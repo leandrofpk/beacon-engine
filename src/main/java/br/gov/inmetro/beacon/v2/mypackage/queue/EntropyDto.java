@@ -1,37 +1,30 @@
-package br.gov.inmetro.beacon.queue;
+package br.gov.inmetro.beacon.v2.mypackage.queue;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Getter
-public class EntropyDto implements Serializable {
+public final class EntropyDto implements Serializable {
 
-    private Long id;
+    private final String rawData;
 
-    private String rawData;
+    private final int period;
 
-    private int period;
+    private final String noiseSource;
 
-    private byte noiseSource;
+    private final ZonedDateTime timeStamp;
 
-    private ZonedDateTime timeStamp;
-
-    public EntropyDto() {
-    }
-
-    public EntropyDto(ZonedDateTime timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
-    // TODO Não funciona.  Ver o motivo
-    public EntropyDto(ZonedDateTime timeStamp,
-                      String rawData,
-                      int period,
-                      byte noiseSource) {
-        this.timeStamp = timeStamp;
+    public EntropyDto(@JsonProperty("rawData") String rawData,
+                      @JsonProperty("period") int period,
+                      @JsonProperty("noiseSource") String noiseSource,
+                      @JsonProperty("timeStamp") String timeStamp
+                      ) {
+        this.timeStamp = ZonedDateTime.parse(timeStamp, DateTimeFormatter.ISO_DATE_TIME);
         this.rawData = rawData;
         this.period = period;
         this.noiseSource = noiseSource;
@@ -40,8 +33,7 @@ public class EntropyDto implements Serializable {
     @Override
     public String toString() {
         return "EntropyDto{" +
-                "id=" + id +
-                ", rawData='" + rawData + '\'' +
+                "rawData='" + rawData + '\'' +
                 ", period=" + period +
                 ", noiseSource=" + noiseSource +
                 ", timeStamp=" + timeStamp +

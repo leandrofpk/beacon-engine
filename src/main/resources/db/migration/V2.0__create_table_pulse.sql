@@ -1,5 +1,5 @@
 CREATE TABLE pulse (
-                         id bigint(20) NOT NULL,
+                         id bigint(20) NOT NULL AUTO_INCREMENT,
                          certificate_id varchar(255) DEFAULT NULL,
                          chain_index bigint(20) NOT NULL,
                          cipher_suite int(11) NOT NULL,

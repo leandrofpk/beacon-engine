@@ -1,6 +1,6 @@
-package br.gov.inmetro.beacon.queue;
+package br.gov.inmetro.beacon.v2.mypackage.queue;
 
-import br.gov.inmetro.beacon.v1.domain.schedule.CombineSourcesService;
+import br.gov.inmetro.beacon.v2.mypackage.scheduling.ReadNewPulseScheduling;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,10 +10,10 @@ import java.util.List;
 @Component
 public class BeaconConsumer {
 
-    private final CombineSourcesService combineSourcesService;
+    private final ReadNewPulseScheduling combineSourcesService;
 
     @Autowired
-    public BeaconConsumer(CombineSourcesService combineSourcesService) {
+    public BeaconConsumer(ReadNewPulseScheduling combineSourcesService) {
         this.combineSourcesService = combineSourcesService;
     }
 

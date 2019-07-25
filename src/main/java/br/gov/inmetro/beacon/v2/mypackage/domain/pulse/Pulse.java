@@ -1,7 +1,10 @@
-package br.gov.inmetro.beacon.v2.mypackage.domain;
+package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
-import java.time.LocalDateTime;
+import lombok.Getter;
 
+import java.time.ZonedDateTime;
+
+@Getter
 public class Pulse {
 
     private String uri;
@@ -18,7 +21,7 @@ public class Pulse {
 
     private long pulseIndex;
 
-    private LocalDateTime timeStamp;
+    private ZonedDateTime timeStamp;
 
     private String localRandomValue;
 
@@ -26,7 +29,7 @@ public class Pulse {
 //
 //    private List<PulseType.ListValue> listValue;
 //
-//    private String precommitmentValue;
+    private String precommitmentValue;
 //
 //    private int statusCode;
 //
@@ -35,7 +38,8 @@ public class Pulse {
 //    private String outputValue;
 
     private Pulse(String uri, String version, int cipherSuite, int period, String certificateId,
-                  long chainIndex, long pulseIndex, LocalDateTime timeStamp, String localRandomValue) {
+                  long chainIndex, long pulseIndex, ZonedDateTime timeStamp,
+                  String localRandomValue, String precommitmentValue) {
         this.uri = uri;
         this.version = version;
         this.cipherSuite = cipherSuite;
@@ -45,6 +49,7 @@ public class Pulse {
         this.pulseIndex = pulseIndex;
         this.timeStamp = timeStamp;
         this.localRandomValue = localRandomValue;
+        this.precommitmentValue = precommitmentValue;
 
     }
 
@@ -57,8 +62,9 @@ public class Pulse {
         private String certificateId;
         private long chainIndex;
         private long pulseIndex;
-        private LocalDateTime timeStamp;
+        private ZonedDateTime timeStamp;
         private String localRandomValue;
+        private String precommitmentValue;
 
         public Builder setUri(String uri){
             this.uri = uri;
@@ -95,7 +101,7 @@ public class Pulse {
             return this;
         }
 
-        public Builder setTimeStamp(LocalDateTime timeStamp){
+        public Builder setTimeStamp(ZonedDateTime timeStamp){
             this.timeStamp = timeStamp;
             return this;
         }
@@ -105,16 +111,22 @@ public class Pulse {
             return this;
         }
 
+        public Builder setPrecommitmentValue(String precommitmentValue){
+            this.precommitmentValue = precommitmentValue;
+            return this;
+        }
+
         public Pulse build(){
             return new Pulse(uri, version, cipherSuite, period, certificateId,
-                    chainIndex, pulseIndex, timeStamp, localRandomValue);
+                    chainIndex, pulseIndex, timeStamp, localRandomValue,
+                    precommitmentValue);
         }
 
     }
 
     @Override
     public String toString() {
-        return "PulseEntity{" +
+        return "Pulse{" +
                 "uri='" + uri + '\'' +
                 ", version='" + version + '\'' +
                 ", cipherSuite=" + cipherSuite +
@@ -123,6 +135,8 @@ public class Pulse {
                 ", chainIndex=" + chainIndex +
                 ", pulseIndex=" + pulseIndex +
                 ", timeStamp=" + timeStamp +
+                ", localRandomValue='" + localRandomValue + '\'' +
+                ", precommitmentValue='" + precommitmentValue + '\'' +
                 '}';
     }
 }

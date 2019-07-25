@@ -1,18 +1,16 @@
-package br.gov.inmetro.beacon.v1.domain.schedule;
+package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 import br.gov.inmetro.beacon.v1.infra.ProcessingErrorTypeEnum;
 import lombok.Getter;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 public class ProcessingErrorDto {
 
-    private Long timestamp;
-
-    private LocalDateTime timestampDate;
+    private ZonedDateTime timeStamp;
 
     private int qtdSourcesExpected;
 
@@ -20,20 +18,19 @@ public class ProcessingErrorDto {
 
     private String chain;
 
-    private LocalDateTime timestampError;
+    private ZonedDateTime timeStampError;
 
     @Enumerated(EnumType.STRING)
     private ProcessingErrorTypeEnum processingErrorTypeEnum;
 
-    public ProcessingErrorDto(Long timestamp, int qtdSourcesExpected,
+    public ProcessingErrorDto(ZonedDateTime timeStamp, int qtdSourcesExpected,
                               String usedOrDiscardedFonts, String chain,
-                              LocalDateTime timestampError, ProcessingErrorTypeEnum processingErrorTypeEnum) {
-        this.timestamp = timestamp;
-//        this.timestampDate = timestampDate;
+                              ZonedDateTime timeStampError, ProcessingErrorTypeEnum processingErrorTypeEnum) {
+        this.timeStamp = timeStamp;
         this.qtdSourcesExpected = qtdSourcesExpected;
         this.usedOrDiscardedFonts = usedOrDiscardedFonts;
         this.chain = chain;
-        this.timestampError = timestampError;
+        this.timeStampError = timeStampError;
         this.processingErrorTypeEnum = processingErrorTypeEnum;
     }
 }

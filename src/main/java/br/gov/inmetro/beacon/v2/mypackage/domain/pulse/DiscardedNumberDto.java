@@ -1,4 +1,4 @@
-package br.gov.inmetro.beacon.v1.domain.schedule;
+package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 import lombok.Getter;
 

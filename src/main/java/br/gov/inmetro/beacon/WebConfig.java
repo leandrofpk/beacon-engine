@@ -21,7 +21,6 @@ public class WebConfig implements WebMvcConfigurer {
         return slr;
     }
 
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(

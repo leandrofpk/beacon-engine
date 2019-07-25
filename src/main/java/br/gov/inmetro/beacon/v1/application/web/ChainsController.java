@@ -1,7 +1,7 @@
 package br.gov.inmetro.beacon.v1.application.web;
 
 import br.gov.inmetro.beacon.v1.domain.service.SearchRecordService;
-import br.gov.inmetro.beacon.v1.infra.PulseEntity;
+import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Controller
@@ -33,13 +32,13 @@ public class ChainsController {
     public ModelAndView pesquisar(HttpServletRequest httpServletRequest, @PathVariable("chainId") Integer chainId) {
         ModelAndView mv = new ModelAndView("records/index");
 
-        Optional<PulseEntity> lastRecord = searchRecordService.last(chainId);
+        Optional<PulseEntity> lastRecord = searchRecordService.last(new Long(chainId));
 
-        if (lastRecord.isPresent()) {
-            final Optional<PulseEntity> previousRecord = searchRecordService.findByTimestampWork(chainId, lastRecord.get().getTimeStampWork().minus(chainId, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
-            mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
-            mv.addObject("lastRecord", lastRecord.get());
-        }
+//        if (lastRecord.isPresent()) {
+//            final Optional<PulseEntity> previousRecord = searchRecordService.findByTimestampWork(chainId, lastRecord.get().getTimeStampWork().minus(chainId, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MINUTES));
+//            mv.addObject("previousRecord", previousRecord.isPresent() ? previousRecord.get() : lastRecord);
+//            mv.addObject("lastRecord", lastRecord.get());
+//        }
 
         mv.addObject("records", searchRecordService.findLast20(chainId));
         mv.addObject("url", getAppUrl(httpServletRequest));

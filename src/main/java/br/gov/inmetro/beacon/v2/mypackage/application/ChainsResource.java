@@ -48,11 +48,11 @@ public class ChainsResource {
     @RequestMapping("/last2")
     public PulseDto last2(@PathVariable Integer idChain){
         PulseDto pulseDto = new PulseDto();
-        pulseDto.setTimeStampOriginal(LocalDateTime.now());
+//        pulseDto.setTimeStampOriginal(LocalDateTime.now());
         ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC).normalized());
-        pulseDto.setTimestamp(now);
-
-        pulseDto.setTimestamp2(now.toLocalDateTime());
+//        pulseDto.setTimestamp(now);
+//
+//        pulseDto.setTimestamp2(now.toLocalDateTime());
 
         return pulseDto;
     }

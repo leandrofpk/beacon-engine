@@ -1,15 +1,15 @@
 package br.gov.inmetro.beacon.v1.domain.repository;
 
-import br.gov.inmetro.beacon.v1.application.api.PulseDto;
-import br.gov.inmetro.beacon.v1.infra.PulseEntity;
+import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
+import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface PulsesQueries {
-    br.gov.inmetro.beacon.v2.mypackage.application.PulseDto lastDto(Integer chain);
-    PulseEntity last(Integer chain);
+    PulseDto lastDto(Long chain);
+    PulseEntity last(Long chain);
     PulseDto first(Integer chain);
     List<PulseEntity> obterTodos(Integer chain);
 

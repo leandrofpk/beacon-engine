@@ -1,9 +1,7 @@
-package br.gov.inmetro.beacon.v2.mypackage.domain;
+package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -13,21 +11,18 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.security.*;
-
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.*;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Calendar;
 import java.util.Date;
 
-//@RunWith(SpringRunner.class)
-//@TestPropertySource("classpath:application-test.properties")
+@RunWith(SpringRunner.class)
+@TestPropertySource("classpath:application-test.properties")
 public class PulseTest {
 
 
@@ -76,7 +71,6 @@ public class PulseTest {
 
 //        System.out.println(now.withZoneSameInstant(ZoneId.of("UTC")));
     }
-
 
     @Test
     public void testarData(){
@@ -230,7 +224,7 @@ public class PulseTest {
     }
 
 
-    @Test
+//    @Test
     public void teste(){
         Pulse newPulse = new Pulse.Builder()
                 .setUri("")
@@ -240,7 +234,8 @@ public class PulseTest {
                 .setCertificateId("")
                 .setChainIndex(1)
                 .setPulseIndex(0)
-                .setTimeStamp(LocalDateTime.now())
+                .setTimeStamp(ZonedDateTime.now())
+                .setLocalRandomValue("1212121")
                 .build();
 
         System.out.println(newPulse);
@@ -248,7 +243,7 @@ public class PulseTest {
     }
 
 //    http://www.java2s.com/Tutorial/Java/0490__Security/BasicclassforexploringPKCS1V15Signatures.htm
-    @Test
+//    @Test
     public void teste2() throws Exception{
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
@@ -280,7 +275,7 @@ public class PulseTest {
 
     }
 
-    @Test
+//    @Test
     public void testeCampoStatusCode(){
         int teste = 0;
         System.out.println(teste);

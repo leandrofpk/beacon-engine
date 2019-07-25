@@ -1,14 +1,15 @@
 package br.gov.inmetro.beacon.v1.infra;
 
-import br.gov.inmetro.beacon.v1.domain.schedule.ProcessingErrorDto;
+import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.ProcessingErrorDto;
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
+@Table(name = "processing_error")
 public class ProcessingErrorEntity {
 
     @Id
@@ -16,10 +17,7 @@ public class ProcessingErrorEntity {
     private Long id;
 
     @NotNull
-    private Long timestamp;
-
-    @NotNull
-    private LocalDateTime timestampDate;
+    private ZonedDateTime timeStamp;
 
     @NotNull
     private int qtdSourcesExpected;
@@ -33,10 +31,10 @@ public class ProcessingErrorEntity {
     private String chain;
 
     @NotNull
-    private LocalDateTime timestampError;
+    private ZonedDateTime timeStampError;
 
     @NotNull
-    @Column(length = 20, name = "processing_error_type")
+    @Column(length = 20, name = "processingErrorType")
     @Enumerated(EnumType.STRING)
     private ProcessingErrorTypeEnum processingErrorTypeEnum;
 
@@ -45,13 +43,12 @@ public class ProcessingErrorEntity {
     }
 
     public ProcessingErrorEntity(ProcessingErrorDto dto) {
-        this.timestamp = dto.getTimestamp();
+        this.timeStamp = dto.getTimeStamp();
         this.qtdSourcesExpected = dto.getQtdSourcesExpected();
         this.usedOrDiscardedFonts = dto.getUsedOrDiscardedFonts();
-        this.timestampDate = DateUtil.longToLocalDateTime(String.valueOf(this.timestamp));
         this.qtdSourcesExpected = dto.getQtdSourcesExpected();
         this.chain = dto.getChain();
-        this.timestampError = dto.getTimestampError();
+        this.timeStampError = dto.getTimeStampError();
         this.processingErrorTypeEnum = dto.getProcessingErrorTypeEnum();
     }
 }

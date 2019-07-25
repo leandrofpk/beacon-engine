@@ -1,6 +1,6 @@
 package br.gov.inmetro.beacon.v1.domain.repository;
 
-import br.gov.inmetro.beacon.v1.domain.schedule.ProcessingErrorDto;
+import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.ProcessingErrorDto;
 import br.gov.inmetro.beacon.v1.infra.ProcessingErrorEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
