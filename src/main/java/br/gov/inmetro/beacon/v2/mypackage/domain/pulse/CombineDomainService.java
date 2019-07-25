@@ -6,6 +6,7 @@ import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
 import br.gov.inmetro.beacon.v2.mypackage.queue.EntropyDto;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -49,7 +50,7 @@ public class CombineDomainService {
             if (lastPulseDto != null){
                 if (key.isBefore(lastPulseDto.getTimeStamp())){
                     this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain.toString(),
-                            ZonedDateTime.now(), ProcessingErrorTypeEnum.DISCARDED_NUMBER));
+                            ZonedDateTime.now().withZoneSameInstant((ZoneOffset.UTC).normalized()), ProcessingErrorTypeEnum.DISCARDED_NUMBER));
                     return;
                 }
             }
@@ -61,7 +62,7 @@ public class CombineDomainService {
 
             // combining errors
             if (value.size() != numberOfSources){
-                this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain.toString(), ZonedDateTime.now(), ProcessingErrorTypeEnum.COMBINING));
+                this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain.toString(), ZonedDateTime.now().withZoneSameInstant((ZoneOffset.UTC).normalized()), ProcessingErrorTypeEnum.COMBINING));
             }
 
         });

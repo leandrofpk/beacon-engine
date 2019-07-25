@@ -43,6 +43,9 @@ public class PulseEntity {
 
     protected String outputValue;
 
+    public PulseEntity(){
+    }
+
     public PulseEntity(Pulse newPulse){
         this.uri = newPulse.getUri();
         this.version = newPulse.getVersion();

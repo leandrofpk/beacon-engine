@@ -1,6 +1,6 @@
 package br.gov.inmetro.beacon.v1.application.web;
 
-import br.gov.inmetro.beacon.v1.domain.service.SearchRecordService;
+import br.gov.inmetro.beacon.v1.domain.service.QuerySinglePulsesService;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,10 +16,10 @@ import java.util.Optional;
 @RequestMapping("/records/chains")
 public class ChainsController {
 
-    private final SearchRecordService searchRecordService;
+    private final QuerySinglePulsesService searchRecordService;
 
     @Autowired
-    public ChainsController(SearchRecordService searchRecordService) {
+    public ChainsController(QuerySinglePulsesService searchRecordService) {
         this.searchRecordService = searchRecordService;
     }
 

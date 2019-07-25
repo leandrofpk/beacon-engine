@@ -15,12 +15,12 @@ import java.util.Optional;
 
 @Component
 @RequestScope
-public class SearchRecordService {
+public class QuerySinglePulsesService {
 
     private final Pulses pulses;
 
     @Autowired
-    public SearchRecordService(Pulses records) {
+    public QuerySinglePulsesService(Pulses records) {
         this.pulses = records;
     }
 

@@ -15,7 +15,8 @@ import java.util.GregorianCalendar;
 
 @RestController
 @RequestMapping(value = "beacon/2.0/chain/{idChain}/pulse", produces= MediaType.APPLICATION_JSON_VALUE)
-public class ChainsResource {
+public class SinglePulseResource {
+
 
     @RequestMapping("/last")
     public PulseType last(@PathVariable Integer idChain) throws DatatypeConfigurationException {
