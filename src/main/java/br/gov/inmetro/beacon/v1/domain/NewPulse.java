@@ -1,6 +1,6 @@
 package br.gov.inmetro.beacon.v1.domain;
 
-import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
+import br.gov.inmetro.beacon.v1.application.api.LocalRandomValueDto;
 import br.gov.inmetro.beacon.v1.domain.service.RecordNew;
 import br.gov.inmetro.beacon.v1.infra.DateUtil;
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainDomainService;
@@ -9,12 +9,11 @@ import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 
 import java.security.PrivateKey;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
-public class NewPulseDomainService {
+public class NewPulse {
 
-    private RecordSimpleDto recordSimpleDto;
+    private LocalRandomValueDto localRandomValue;
 
     private PulseEntity lastRecordEntity;
 
@@ -22,32 +21,32 @@ public class NewPulseDomainService {
 
     private boolean startNewChain;
 
-    public NewPulseDomainService(RecordSimpleDto recordSimpleDto, PulseEntity lastRecordEntity,
-                                 PrivateKey privateKey, boolean startNewChain) {
-        this.recordSimpleDto = recordSimpleDto;
-        this.lastRecordEntity = lastRecordEntity;
-        this.privateKey = privateKey;
-        this.startNewChain = startNewChain;
-    }
+//    public NewPulse(LocalRandomValueDto localRandomValue, PulseEntity lastRecordEntity,
+//                    PrivateKey privateKey, boolean startNewChain) {
+//        this.localRandomValue = localRandomValue;
+//        this.lastRecordEntity = lastRecordEntity;
+//        this.privateKey = privateKey;
+//        this.startNewChain = startNewChain;
+//    }
 
-    public Pulse newPulse(){
-        ChainValueObject activeChain = ChainDomainService.getActiveChain();
+//    public Pulse newPulse(){
+//        ChainValueObject activeChain = ChainDomainService.getActiveChain();
+//
+//        Pulse newPulse = new Pulse.Builder()
+//                .setUri("")
+//                .setVersion(activeChain.getVersion())
+//                .setCipherSuite(activeChain.getCipherSuite())
+//                .setPeriod(activeChain.getPeriod())
+//                .setChainIndex(activeChain.getChainIndex())
+//                .setCertificateId("")
+//                .setPulseIndex(0)
+//                .setTimeStamp(localRandomValue.getTimeStamp())
+//                .setLocalRandomValue(localRandomValue.getValue())
+//                .build();
 
-        Pulse newPulse = new Pulse.Builder()
-                .setUri("")
-                .setVersion(activeChain.getVersion())
-                .setCipherSuite(activeChain.getCipherSuite())
-                .setPeriod(activeChain.getPeriod())
-                .setChainIndex(activeChain.getChainIndex())
-                .setCertificateId("")
-                .setPulseIndex(0)
-                .setTimeStamp(ZonedDateTime.now())
-                .setLocalRandomValue("2131313123")
-                .build();
 
-
-        return newPulse;
-    }
+//        return newPulse;
+//    }
 
 
 //    public RecordNew iniciar() throws Exception {
@@ -60,10 +59,10 @@ public class NewPulseDomainService {
 //        recordNew.setFrequency(60);
 //
 //        //timestamp
-//        recordNew.setTimeStamp(new Long(recordSimpleDto.getTimeStamp()));
+//        recordNew.setTimeStamp(new Long(combinedNumber.getTimeStamp()));
 //
 //        //A seed value represented as a 64 byte (512-bit) hex string value
-//        recordNew.setSeedValue(recordSimpleDto.getRawData());
+//        recordNew.setSeedValue(combinedNumber.getValue());
 //
 //        // previousOutputValue
 //        // The SHA-512 hash value for the previous record - 64 byte hex string

@@ -1,6 +1,9 @@
 package br.gov.inmetro.beacon.v2.mypackage.application;
 
+import br.gov.inmetro.beacon.v1.domain.service.QuerySinglePulsesService;
 import br.gov.inmetro.beacon.v2.mypackage.PulseType;
+import br.gov.inmetro.beacon.v2.mypackage.infra.AppUri;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +20,23 @@ import java.util.GregorianCalendar;
 @RequestMapping(value = "beacon/2.0/chain/{idChain}/pulse", produces= MediaType.APPLICATION_JSON_VALUE)
 public class SinglePulseResource {
 
+    private final QuerySinglePulsesService singlePulsesService;
 
-    @RequestMapping("/last")
+    private final AppUri appUri;
+
+    @Autowired
+    public SinglePulseResource(QuerySinglePulsesService singlePulsesService, AppUri appUri) {
+        this.singlePulsesService = singlePulsesService;
+        this.appUri = appUri;
+    }
+
+    @RequestMapping("/lastTest")
     public PulseType last(@PathVariable Integer idChain) throws DatatypeConfigurationException {
         final PulseType pulseType = new PulseType();
-        pulseType.setUri("https://beacon.nist.gov/beacon/2.0/chain/1/pulse/460459");
+
+        pulseType.setUri(appUri.getUri());
+//        pulseType.setUri("https://beacon.nist.gov/beacon/2.0/chain/1/pulse/460459");
+
         pulseType.setVersion("Version 2.0");
         pulseType.setCipherSuite(0);
         pulseType.setPeriod(60000);
@@ -46,16 +61,24 @@ public class SinglePulseResource {
         return pulseType;
     }
 
-    @RequestMapping("/last2")
+    @RequestMapping("/last")
     public PulseDto last2(@PathVariable Integer idChain){
-        PulseDto pulseDto = new PulseDto();
-//        pulseDto.setTimeStampOriginal(LocalDateTime.now());
+
+        PulseDto pulseDto = singlePulsesService.lastDto(1L);
+
+        PulseDto pulseDto1 = new PulseDto();
+
+        pulseDto1.setUri(appUri.getUri());
         ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC).normalized());
-//        pulseDto.setTimestamp(now);
-//
+        pulseDto1.setTimeStamp(now);
+
+//        PulseDto pulseDto = new PulseDto();
+//        pulseDto.setTimeStampOriginal(LocalDateTime.now());
+//        ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC).normalized());
+//        pulseDto.setTimestamp(now);//
 //        pulseDto.setTimestamp2(now.toLocalDateTime());
 
-        return pulseDto;
+        return pulseDto1;
     }
 
 }

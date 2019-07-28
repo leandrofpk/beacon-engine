@@ -4,6 +4,8 @@ import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -25,9 +27,9 @@ public class PulseEntity {
 
     protected long chainIndex;
 
-    protected long pulseIndex;
+    private long pulseIndex;
 
-    private java.time.ZonedDateTime timeStamp;
+    private ZonedDateTime timeStamp;
 
     protected String localRandomValue;
 

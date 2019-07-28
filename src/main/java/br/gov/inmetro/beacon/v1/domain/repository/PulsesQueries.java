@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PulsesQueries {
-    PulseDto lastDto(Long chain);
+    Optional<PulseDto> lastDto(Long chain);
     PulseEntity last(Long chain);
     PulseDto first(Integer chain);
     List<PulseEntity> obterTodos(Integer chain);

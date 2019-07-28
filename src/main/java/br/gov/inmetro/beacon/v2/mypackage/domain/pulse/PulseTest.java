@@ -17,13 +17,44 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Calendar;
 import java.util.Date;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application-test.properties")
 public class PulseTest {
+
+    /**
+     * Should build a pulse for the first chain
+     */
+    @Test
+    public void shouldBuildTheFirstPulseTest(){
+
+//        ChainValueObject
+
+//        Pulse.
+
+    }
+
+    /**
+     *
+     * Should build the last pulse of the chain
+     */
+    @Test
+    public void shouldBuildTheLastPulseOfTheChain(){
+
+    }
+
+    /**
+     * Must Should a pulse for the start of a new chain
+     */
+    @Test
+    public void shouldBuildTheFirstPuseNewChain(){
+
+    }
+
+
+
 
 
 //    private String uri;
@@ -63,11 +94,8 @@ public class PulseTest {
         String format2 = now2.format(dateTimeFormatter);
         System.out.println(format2);
 
-
 //        2019-07-21T12:12:00.000Z
 //        2019-07-20T14:15:00.000Z
-
-
 
 //        System.out.println(now.withZoneSameInstant(ZoneId.of("UTC")));
     }
@@ -131,16 +159,6 @@ public class PulseTest {
 //        System.out.println(now.atZone(ZoneId.of("America/Sao_Paulo")).toString());
     }
 
-    private static void with(Instant d, ChronoField chronoField) {
-        try {
-            Instant d2 = d.with(chronoField, 1);
-            System.out.printf("%15s => %s%n", chronoField.name(), d2);
-        } catch (UnsupportedTemporalTypeException e) {
-            System.out.printf("--%s not supported.%n", chronoField);
-        }
-    }
-
-
     @Test
     public void testarData2(){
         LocalDateTime plus = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plus(1, ChronoUnit.MINUTES);
@@ -152,53 +170,15 @@ public class PulseTest {
         System.out.println(instant1);
 
 
-//        for (ChronoField chronoField : ChronoField.values()) {
-//            with(instant1, chronoField);
-//        }
-
-
-//        System.out.println("milis:" + instant1.get(ChronoField.MILLI_OF_SECOND));
-
-//        System.out.println("truncate: \n" + instant1.truncatedTo(ChronoUnit.SECONDS));
-
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
-
-
-
-
-
-
-
-//
-//        LocalDateTime now =  LocalDateTime.now();
-//        LocalDateTime newTime =  now.plusMinutes(1);
-//
-//        System.out.println(newTime.toString());
-//        System.out.println(newTime.format(DateTimeFormatter.ofPattern("yyyy-dd-MM'T'HH:mm:00.000")));
-
-//        LocalDateTime now =  LocalDateTime.now();
-//        LocalDateTime newTime =  now.plusMinutes(1);
-//        String format = newTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.000z"));
-//        System.out.println(format);
-
-
         Instant agora = Instant.now();
         System.out.println(agora);
 
         Instant with = agora.with(ChronoField.MILLI_OF_SECOND, 0);
         System.out.println(with.get(ChronoField.MILLI_OF_SECOND));
 
-
-
-
 //        System.out.println(with);
 
-
-
-
         // 2018-07-23T19:26:00.000Z
-
 
 //        Instant instantTruncated = Instant.now().truncatedTo( ChronoUnit.SECONDS );
 //        System.out.println(instantTruncated);
@@ -216,35 +196,15 @@ public class PulseTest {
 //        System.out.println(format);
 //
 
-
-
 //        2018-07-23T19:26:00.000Z
 
 
     }
 
 
-//    @Test
-    public void teste(){
-        Pulse newPulse = new Pulse.Builder()
-                .setUri("")
-                .setVersion("Version 2.0")
-                .setCipherSuite(0)
-                .setPeriod(60000)
-                .setCertificateId("")
-                .setChainIndex(1)
-                .setPulseIndex(0)
-                .setTimeStamp(ZonedDateTime.now())
-                .setLocalRandomValue("1212121")
-                .build();
-
-        System.out.println(newPulse);
-
-    }
-
 //    http://www.java2s.com/Tutorial/Java/0490__Security/BasicclassforexploringPKCS1V15Signatures.htm
 //    @Test
-    public void teste2() throws Exception{
+    public void validarAssinaturaNist() throws Exception{
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA", "BC");

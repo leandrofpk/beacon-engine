@@ -1,13 +1,12 @@
 package br.gov.inmetro.beacon.v1.domain.service;
 
-import br.gov.inmetro.beacon.v1.domain.repository.Pulses;
+import br.gov.inmetro.beacon.v1.domain.repository.PulsesRepository;
 import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,10 +16,10 @@ import java.util.Optional;
 @RequestScope
 public class QuerySinglePulsesService {
 
-    private final Pulses pulses;
+    private final PulsesRepository pulses;
 
     @Autowired
-    public QuerySinglePulsesService(Pulses records) {
+    public QuerySinglePulsesService(PulsesRepository records) {
         this.pulses = records;
     }
 
@@ -38,12 +37,8 @@ public class QuerySinglePulsesService {
         return pulses.findByChainAndId(chain, idChain);
     }
 
-    public Optional<PulseEntity> findByTimestampWork(Integer chain, LocalDateTime timestamp) {
-        return pulses.findByTimeStampWork(chain, timestamp);
-    }
-
     public PulseDto lastDto(Long chain) {
-        return pulses.lastDto(chain);
+        return pulses.lastDto(chain).get();
     }
 
     public PulseDto first(Integer chain) {

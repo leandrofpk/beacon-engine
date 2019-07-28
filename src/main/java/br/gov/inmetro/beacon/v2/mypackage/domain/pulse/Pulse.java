@@ -53,7 +53,7 @@ public class Pulse {
 
     }
 
-    public static class Builder{
+    public static class BuilderRegular{
 
         private String uri;
         private String version;
@@ -66,52 +66,52 @@ public class Pulse {
         private String localRandomValue;
         private String precommitmentValue;
 
-        public Builder setUri(String uri){
+        public BuilderRegular setUri(String uri){
             this.uri = uri;
             return this;
         }
 
-        public Builder setVersion(String version){
+        public BuilderRegular setVersion(String version){
             this.version = version;
             return this;
         }
 
-        public Builder setCipherSuite(int cipherSuite){
+        public BuilderRegular setCipherSuite(int cipherSuite){
             this.cipherSuite = cipherSuite;
             return this;
         }
 
-        public Builder setPeriod(int period){
+        public BuilderRegular setPeriod(int period){
             this.period = period;
             return this;
         }
 
-        public Builder setCertificateId(String certificateId){
+        public BuilderRegular setCertificateId(String certificateId){
             this.certificateId = certificateId;
             return this;
         }
 
-        public Builder setChainIndex(long chainIndex){
+        public BuilderRegular setChainIndex(long chainIndex){
             this.chainIndex = chainIndex;
             return this;
         }
 
-        public Builder setPulseIndex(long pulseIndex){
+        public BuilderRegular setPulseIndex(long pulseIndex){
             this.pulseIndex = pulseIndex;
             return this;
         }
 
-        public Builder setTimeStamp(ZonedDateTime timeStamp){
+        public BuilderRegular setTimeStamp(ZonedDateTime timeStamp){
             this.timeStamp = timeStamp;
             return this;
         }
 
-        public Builder setLocalRandomValue(String localRandomValue){
+        public BuilderRegular setLocalRandomValue(String localRandomValue){
             this.localRandomValue = localRandomValue;
             return this;
         }
 
-        public Builder setPrecommitmentValue(String precommitmentValue){
+        public BuilderRegular setPrecommitmentValue(String precommitmentValue){
             this.precommitmentValue = precommitmentValue;
             return this;
         }

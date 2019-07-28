@@ -1,9 +1,7 @@
 package br.gov.inmetro.beacon.v1.domain.service;
 
-import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
-import br.gov.inmetro.beacon.v1.domain.NewPulseDomainService;
-import br.gov.inmetro.beacon.v1.domain.repository.Pulses;
-import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
+import br.gov.inmetro.beacon.v1.application.api.LocalRandomValueDto;
+import br.gov.inmetro.beacon.v1.domain.repository.PulsesRepository;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -15,19 +13,19 @@ import java.security.PrivateKey;
 @Service
 public class CadastraRegistroService {
 
-    private Pulses records;
+    private PulsesRepository records;
 
     private Environment env;
 
     @Autowired
-    public CadastraRegistroService(Pulses records, Environment env) {
+    public CadastraRegistroService(PulsesRepository records, Environment env) {
         this.records = records;
         this.env = env;
     }
 
     @Transactional
-    public void novoRegistro(RecordSimpleDto simpleDto) throws Exception {
-        PulseEntity lastRecordEntity = records.last(new Long(simpleDto.getChain()));
+    public void novoRegistro(LocalRandomValueDto combinedNumber) throws Exception {
+        PulseEntity lastRecordEntity = records.last(1L);
 
         boolean startNewChain = false;
         Long id = 0L;
@@ -41,15 +39,15 @@ public class CadastraRegistroService {
         String propertyPrivateKey = env.getProperty("beacon.x509.privatekey");
 //        PrivateKey privateKey = CriptoUtilService.loadPrivateKey(propertyPrivateKey);
         PrivateKey privateKey = null;
-        NewPulseDomainService recordDomainService = new NewPulseDomainService(simpleDto, lastRecordEntity, privateKey,startNewChain);
+//        NewPulse newPulse1 = new NewPulse(combinedNumber, lastRecordEntity, privateKey,startNewChain);
 
-        Pulse newPulse = recordDomainService.newPulse();
+//        Pulse newPulse2 = recordDomainService.newPulse();
 
 //        System.out.println("Persistir");
 //        System.out.println(newPulse);
 
-        PulseEntity recordEntity = new PulseEntity(newPulse);
-        records.save(recordEntity);
+//        PulseEntity recordEntity = new PulseEntity(newPulse2);
+//        records.save(recordEntity);
     }
 
 }

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface Pulses extends JpaRepository<PulseEntity, Long>, PulsesQueries {
+public interface PulsesRepository extends JpaRepository<PulseEntity, Long>, PulsesQueries {
 }

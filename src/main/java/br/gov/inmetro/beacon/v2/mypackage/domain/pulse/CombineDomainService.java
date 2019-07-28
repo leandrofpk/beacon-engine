@@ -1,6 +1,6 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
-import br.gov.inmetro.beacon.v1.application.api.RecordSimpleDto;
+import br.gov.inmetro.beacon.v1.application.api.LocalRandomValueDto;
 import br.gov.inmetro.beacon.v1.infra.ProcessingErrorTypeEnum;
 import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
 import br.gov.inmetro.beacon.v2.mypackage.queue.EntropyDto;
@@ -17,11 +17,12 @@ import java.util.stream.Collectors;
 public class CombineDomainService {
 
     private List<EntropyDto> regularNoisesChainOne;
+
     private final Long chain;
+
     private final int numberOfSources;
+
     private final PulseDto lastPulseDto;
-    private List<RecordSimpleDto> recordSimpleDtoList = new ArrayList<>();
-    private List<ProcessingErrorDto> combineErrorList = new ArrayList<>();
 
     public CombineDomainService(List<EntropyDto> regularNoises, long chain, int numberOfSources,  PulseDto lastRecordDto) {
         this.regularNoisesChainOne = regularNoises;
@@ -30,15 +31,15 @@ public class CombineDomainService {
         this.lastPulseDto = lastRecordDto;
     }
 
-    public void processar(){
+    public CombineDomainResult processar(){
+        List<LocalRandomValueDto> localRandomValueDtos = new ArrayList<>();
+        List<ProcessingErrorDto> combineErrorList = new ArrayList<>();
+
+
         Map<ZonedDateTime, List<EntropyDto>> collect = regularNoisesChainOne
                 .stream()
 //                .filter(entropyDto -> entropyDto.getChain().equals(chain))
                 .collect(Collectors.groupingBy(EntropyDto::getTimeStamp));
-
-
-//        Map<ZonedDateTime, List<EntropyDto>> collect = null;
-
 
         collect.forEach((key, value) -> {
 
@@ -48,8 +49,8 @@ public class CombineDomainService {
 
 //             discarded number
             if (lastPulseDto != null){
-                if (key.isBefore(lastPulseDto.getTimeStamp())){
-                    this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain.toString(),
+                if (key.isBefore(lastPulseDto.getTimeStamp()) || (key.equals(lastPulseDto.getTimeStamp()))){
+                    combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain.toString(),
                             ZonedDateTime.now().withZoneSameInstant((ZoneOffset.UTC).normalized()), ProcessingErrorTypeEnum.DISCARDED_NUMBER));
                     return;
                 }
@@ -58,17 +59,19 @@ public class CombineDomainService {
             List<String> listRawData = new ArrayList<>();
             value.forEach(noiseDto -> listRawData.add(noiseDto.getRawData()));
 
-            this.recordSimpleDtoList.add(new RecordSimpleDto(key.toString(), combine(listRawData), chain.toString()));
+            localRandomValueDtos.add(new LocalRandomValueDto(key, combine(listRawData)));
 
             // combining errors
             if (value.size() != numberOfSources){
-                this.combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain.toString(), ZonedDateTime.now().withZoneSameInstant((ZoneOffset.UTC).normalized()), ProcessingErrorTypeEnum.COMBINING));
+                combineErrorList.add(new ProcessingErrorDto(key, numberOfSources, sources, chain.toString(), ZonedDateTime.now().withZoneSameInstant((ZoneOffset.UTC).normalized()), ProcessingErrorTypeEnum.COMBINING));
             }
 
         });
 
-        this.recordSimpleDtoList.sort(Comparator.comparing(RecordSimpleDto::getTimeStamp));
-        this.combineErrorList.sort(Comparator.comparing(ProcessingErrorDto::getTimeStamp));
+        localRandomValueDtos.sort(Comparator.comparing(LocalRandomValueDto::getTimeStamp));
+        combineErrorList.sort(Comparator.comparing(ProcessingErrorDto::getTimeStamp));
+
+        return new CombineDomainResult(localRandomValueDtos, combineErrorList);
     }
 
     private String combine(List<String> rawDataList) {
@@ -89,11 +92,4 @@ public class CombineDomainService {
         return ByteUtils.toHexString(xor);
     }
 
-    public List<RecordSimpleDto> getRecordSimpleDtoList() {
-        return this.recordSimpleDtoList;
-    }
-
-    public List<ProcessingErrorDto> getCombineErrorList() {
-        return this.combineErrorList;
-    }
 }

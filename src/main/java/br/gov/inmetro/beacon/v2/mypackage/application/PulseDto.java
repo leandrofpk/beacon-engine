@@ -2,6 +2,7 @@ package br.gov.inmetro.beacon.v2.mypackage.application;
 
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
 
 @Data
 @JacksonXmlRootElement(localName = "pulse")
+@JsonRootName("pulse")
 public class PulseDto implements Serializable {
 
     private Long id;

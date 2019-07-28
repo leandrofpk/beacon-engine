@@ -14,21 +14,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class PulsesImpl implements PulsesQueries {
+public class PulsesRepositoryImpl implements PulsesQueries {
 
     @PersistenceContext
     private EntityManager manager;
 
     @Transactional
-    public PulseDto lastDto(Long chainIndex){
+    public Optional<PulseDto> lastDto(Long chainIndex){
         try {
             PulseEntity r = (PulseEntity) manager.createQuery("from PulseEntity where chainIndex = :chainIndex order by id desc")
                     .setParameter("chainIndex", chainIndex)
                     .setMaxResults(1)
                     .getSingleResult();
-            return new PulseDto(r);
+            return Optional.of(new PulseDto(r));
         } catch(NoResultException ex){
-            return null;
+            return Optional.empty();
         }
     }
 
