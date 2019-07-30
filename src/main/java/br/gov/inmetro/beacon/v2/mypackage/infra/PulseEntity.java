@@ -4,8 +4,8 @@ import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,35 +15,37 @@ public class PulseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    protected String uri;
+    private String uri;
 
-    protected String version;
+    private String version;
 
-    protected int cipherSuite;
+    private int cipherSuite;
 
-    protected int period;
+    private int period;
 
-    protected String certificateId;
+    private String certificateId;
 
-    protected long chainIndex;
+    private long chainIndex;
 
     private long pulseIndex;
 
     private ZonedDateTime timeStamp;
 
-    protected String localRandomValue;
+    private String localRandomValue;
 
-//    protected PulseType.External external;
-//
-//    protected List<PulseType.ListValue> listValue;
+    @Embedded
+    private ExternalEntity externalEntity;
 
-    protected String precommitmentValue;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pulseEntity", cascade = CascadeType.PERSIST)
+    private List<ListValueEntity> listValueEntities;
 
-    protected int statusCode;
+    private String precommitmentValue;
 
-    protected String signatureValue;
+    private int statusCode;
 
-    protected String outputValue;
+    private String signatureValue;
+
+    private String outputValue;
 
     public PulseEntity(){
     }
@@ -58,7 +60,13 @@ public class PulseEntity {
         this.pulseIndex = newPulse.getPulseIndex();
         this.timeStamp = newPulse.getTimeStamp();
         this.localRandomValue = newPulse.getLocalRandomValue();
+        this.externalEntity = new ExternalEntity(newPulse.getExternal().getSourceId(),
+                                                 newPulse.getExternal().getStatusCode(),
+                                                 newPulse.getExternal().getValue());
         this.precommitmentValue = newPulse.getPrecommitmentValue();
+        this.statusCode = newPulse.getStatusCode();
+        this.signatureValue = newPulse.getSignatureValue();
+        this.outputValue = newPulse.getOutputValue();
     }
 
 }

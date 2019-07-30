@@ -26,8 +26,6 @@ public class NewPulseDomainService {
 
     private final CombinationErrors combinationErrorsRepository;
 
-//    private final CadastraRegistroService cadastraRegistroService;
-    //
     private List<EntropyDto> regularNoises = new ArrayList<>();
 
     private CombineDomainResult combineDomainResult;
@@ -95,10 +93,7 @@ public class NewPulseDomainService {
 
             Pulse newPulse = new Pulse.BuilderRegular()
                     .setUri(env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex)
-                    .setVersion(this.activeChain.getVersion())
-                    .setCipherSuite(this.activeChain.getCipherSuite())
-                    .setPeriod(this.activeChain.getPeriod())
-                    .setChainIndex(this.activeChain.getChainIndex())
+                    .setChainValueObject(activeChain)
                     .setCertificateId("")
                     .setPulseIndex(vPulseIndex)
                     .setTimeStamp(localRandomValue.getTimeStamp())

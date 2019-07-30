@@ -1,13 +1,17 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 
+import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.util.ASN1Dump;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -17,12 +21,17 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application-test.properties")
 public class PulseTest {
+
+    @Autowired
+    Environment env;
 
     /**
      * Should build a pulse for the first chain
@@ -32,7 +41,29 @@ public class PulseTest {
 
 //        ChainValueObject
 
-//        Pulse.
+        ChainValueObject activeChain = new ChainValueObject("2.0", 0, 60000, 1);
+
+        List<ListValue> listValue = new ArrayList<>();
+        listValue.add(ListValue.getOneValue("000", "previous", "000"));
+
+        Pulse newRegularPulse = new Pulse.BuilderRegular()
+                .setUri(env.getProperty("beacon.url"))
+                .setChainValueObject(activeChain)
+                .setCertificateId("")
+                .setPulseIndex(1)
+                .setTimeStamp(ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC).normalized()))
+                .setLocalRandomValue("111111111")
+                .setExternal(External.newExternal())
+                .setListValue(listValue)
+                .setPrecommitmentValue("precommitment")
+                .setStatusCode(0)
+                .setSignatureValue("signature")
+                .setOutputValue("outputValue")
+                .build();
+
+        System.out.println(newRegularPulse.toString());
+
+//        Assert.assertEquals();
 
     }
 

@@ -1,0 +1,6 @@
+ALTER TABLE list_value
+ADD CONSTRAINT fk_list_value_1
+  FOREIGN KEY (pulse_id)
+  REFERENCES pulse (id)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
