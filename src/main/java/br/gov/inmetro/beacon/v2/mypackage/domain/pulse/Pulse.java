@@ -32,10 +32,6 @@ public class Pulse {
 
     private List<ListValue> listValue;
 
-//    private PulseType.External external;
-//
-//    private List<PulseType.ListValue> listValue;
-//
     private String precommitmentValue;
 
     private int statusCode;

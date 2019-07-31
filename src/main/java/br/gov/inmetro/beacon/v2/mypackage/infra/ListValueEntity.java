@@ -26,10 +26,11 @@ public class ListValueEntity {
     public ListValueEntity() {
     }
 
-    public ListValueEntity(String value, String type, String uri) {
+    public ListValueEntity(String value, String type, String uri, PulseEntity pulseEntity) {
         this.value = value;
         this.type = type;
         this.uri = uri;
+        this.pulseEntity = pulseEntity;
     }
 
 }

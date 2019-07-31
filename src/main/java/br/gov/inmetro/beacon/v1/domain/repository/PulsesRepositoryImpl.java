@@ -20,15 +20,15 @@ public class PulsesRepositoryImpl implements PulsesQueries {
     private EntityManager manager;
 
     @Transactional
-    public Optional<PulseDto> lastDto(Long chainIndex){
+    public PulseDto lastDto(Long chainIndex){
         try {
             PulseEntity r = (PulseEntity) manager.createQuery("from PulseEntity where chainIndex = :chainIndex order by id desc")
                     .setParameter("chainIndex", chainIndex)
                     .setMaxResults(1)
                     .getSingleResult();
-            return Optional.of(new PulseDto(r));
+            return new PulseDto(r);
         } catch(NoResultException ex){
-            return Optional.empty();
+            return null;
         }
     }
 

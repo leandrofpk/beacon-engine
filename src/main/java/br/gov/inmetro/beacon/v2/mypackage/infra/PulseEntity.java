@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,7 +38,7 @@ public class PulseEntity {
     private ExternalEntity externalEntity;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pulseEntity", cascade = CascadeType.PERSIST)
-    private List<ListValueEntity> listValueEntities;
+    private List<ListValueEntity> listValueEntities = new ArrayList<>();
 
     private String precommitmentValue;
 
@@ -67,6 +68,14 @@ public class PulseEntity {
         this.statusCode = newPulse.getStatusCode();
         this.signatureValue = newPulse.getSignatureValue();
         this.outputValue = newPulse.getOutputValue();
+
+        newPulse.getListValue().forEach(
+                listValue -> this.listValueEntities.add(new ListValueEntity(
+                                                            listValue.getValue(),
+                                                            listValue.getType(),
+                                                            listValue.getUri(),
+                                                            this)));
+
     }
 
 }

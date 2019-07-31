@@ -38,7 +38,7 @@ public class QuerySinglePulsesService {
     }
 
     public PulseDto lastDto(Long chain) {
-        return pulses.lastDto(chain).get();
+        return pulses.lastDto(chain);
     }
 
     public PulseDto first(Integer chain) {

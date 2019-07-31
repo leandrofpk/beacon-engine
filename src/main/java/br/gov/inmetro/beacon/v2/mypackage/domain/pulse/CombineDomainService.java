@@ -35,7 +35,6 @@ public class CombineDomainService {
         List<LocalRandomValueDto> localRandomValueDtos = new ArrayList<>();
         List<ProcessingErrorDto> combineErrorList = new ArrayList<>();
 
-
         Map<ZonedDateTime, List<EntropyDto>> collect = regularNoisesChainOne
                 .stream()
 //                .filter(entropyDto -> entropyDto.getChain().equals(chain))

@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class NewPulseDomainService {
@@ -30,7 +29,7 @@ public class NewPulseDomainService {
 
     private CombineDomainResult combineDomainResult;
 
-    private Optional<PulseDto> lastPulseDto;
+    private PulseDto lastPulseDto;
 
     private ChainValueObject activeChain;
 
@@ -46,65 +45,79 @@ public class NewPulseDomainService {
     public void begin(List<EntropyDto> regularNoises){
         this.regularNoises = regularNoises;
 
-        // setar valores iniciais
         this.activeChain = ChainDomainService.getActiveChain();
         this.lastPulseDto = pulsesRepository.lastDto(activeChain.getChainIndex());
         String property = env.getProperty("beacon.number-of-entropy-sources");
 
-        // combinar
-
         combinar(activeChain.getChainIndex(), property);
-        // processar new pulse
         processar();
-        // persist new pulse
-
         persist();
     }
 
     private void combinar(long activeChain, String numberOfSources) {
-        Optional<PulseDto> lastRecordDto = pulsesRepository.lastDto(activeChain);
-
         CombineDomainService combineDomainService = new CombineDomainService(regularNoises, activeChain,
-                new Integer(numberOfSources), lastRecordDto.get());
+                new Integer(numberOfSources), this.lastPulseDto);
         this.combineDomainResult = combineDomainService.processar();
     }
 
     private void processar(){
-        long vPulseIndex = 1;
-
-//        List<Pulse> pulses = new ArrayList<>();
-
-        Pulse firstPulse = new Pulse.BuilderRegular()
-                .setPrecommitmentValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
-                .build();
-
-        if (this.lastPulseDto.isPresent()){
-            // setar primeiro pulso da cadeia
-
-
-
-        } else {
-            vPulseIndex = lastPulseDto.get().getPulseIndex();
-        }
+        long vPulseIndex = 0;
 
         for (LocalRandomValueDto localRandomValue: combineDomainResult.getLocalRandomValueDtos()) {
 
-            vPulseIndex = vPulseIndex +1;
-
-            Pulse newPulse = new Pulse.BuilderRegular()
-                    .setUri(env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex)
-                    .setChainValueObject(activeChain)
-                    .setCertificateId("")
-                    .setPulseIndex(vPulseIndex)
-                    .setTimeStamp(localRandomValue.getTimeStamp())
-                    .setLocalRandomValue(localRandomValue.getValue())
-                    .setPrecommitmentValue("precommitment")
-                    .build();
-
-            this.pulses.add(newPulse);
-            System.out.println(newPulse);
+            if (this.lastPulseDto == null){
+                this.pulses.add(getFirstPulseInBd(localRandomValue));
+            } else {
+//                vPulseIndex = vPulseIndex + 1;
+//
+//                Pulse newPulse = new Pulse.BuilderRegular()
+//                        .setUri(env.getProperty("beacon.url") + "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex)
+//                        .setChainValueObject(activeChain)
+//                        .setCertificateId("")
+//                        .setPulseIndex(vPulseIndex)
+//                        .setTimeStamp(localRandomValue.getTimeStamp())
+//                        .setLocalRandomValue(localRandomValue.getValue())
+//                        .setPrecommitmentValue("precommitment")
+//                        .build();
+//
+//                this.pulses.add(newPulse);
+            }
+//            System.out.println(newPulse);
         }
 
+    }
+
+    private Pulse getRegularPulse(){
+        return null;
+    }
+
+    private Pulse getFirstPulseInBd(LocalRandomValueDto localRandomValue){
+        List<ListValue> list = new ArrayList<>();
+        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "previous", null));
+        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "hour", null));
+        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "day", null));
+        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "month", null));
+        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "year", null));
+
+        return new Pulse.BuilderRegular()
+                .setUri(env.getProperty("beacon.url"))
+                .setChainValueObject(activeChain)
+                .setCertificateId("certificado")
+                .setPulseIndex(1)
+                .setTimeStamp(localRandomValue.getTimeStamp())
+                .setLocalRandomValue(localRandomValue.getValue())
+                .setListValue(list)
+                .setExternal(External.newExternal())
+                .setPrecommitmentValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
+                .setStatusCode(1)
+                .setSignatureValue("assinatura")
+                .setOutputValue("valor output")
+                .build();
     }
 
     @Transactional
@@ -118,24 +131,5 @@ public class NewPulseDomainService {
         combineDomainResult = null;
         pulses.clear();
     }
-
-//    @Transactional
-//    protected void persist(List<LocalRandomValueDto> recordSimpleDtoList,
-//                           List<ProcessingErrorDto> combineErrorList, String chain) throws Exception {
-//
-//        // TODO Talvez mudar para um serviço ou repositorio
-//        for (LocalRandomValueDto combinedNumber : recordSimpleDtoList){
-//            cadastraRegistroService.novoRegistro(combinedNumber);
-//
-//            Predicate<EntropyDto> predicado = noiseDto ->
-//                    ((noiseDto.getTimeStamp().equals(combinedNumber.getTimeStamp())
-////                           0 && noiseDto.getChain().equals(chain)));
-//                    ));
-//
-//            // TODO Talvez retirar da transação
-//            regularNoises.removeIf(predicado);
-//        }
-////        combinationErrors.persist(combineErrorList);
-//    }
 
 }
