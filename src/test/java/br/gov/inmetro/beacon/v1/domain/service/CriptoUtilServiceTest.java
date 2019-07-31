@@ -84,7 +84,10 @@ public class CriptoUtilServiceTest {
         X509Certificate cert = X509Certificate.getInstance(inStream);
         PublicKey publicKey = cert.getPublicKey();
 
+
         System.out.println(cert);
+//        System.out.println(publicKey);
+//        System.out.println("formato: \n" + publicKey.getFormat());
 
         inStream.close();
     }

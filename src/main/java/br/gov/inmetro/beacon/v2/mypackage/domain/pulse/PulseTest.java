@@ -234,7 +234,7 @@ public class PulseTest {
 
 
 //    http://www.java2s.com/Tutorial/Java/0490__Security/BasicclassforexploringPKCS1V15Signatures.htm
-//    @Test
+    @Test
     public void validarAssinaturaNist() throws Exception{
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
@@ -256,6 +256,7 @@ public class PulseTest {
         ASN1InputStream aIn = new ASN1InputStream(decSig);
         ASN1Sequence seq = (ASN1Sequence) aIn.readObject();
 
+        System.out.println("ASN1Dump:");
         System.out.println(ASN1Dump.dumpAsString(seq));
 
         MessageDigest hash = MessageDigest.getInstance("SHA-256", "BC");
@@ -263,25 +264,6 @@ public class PulseTest {
 
         ASN1OctetString sigHash = (ASN1OctetString) seq.getObjectAt(1);
         System.out.println(MessageDigest.isEqual(hash.digest(), sigHash.getOctets()));
-
-    }
-
-//    @Test
-    public void testeCampoStatusCode(){
-        int teste = 0;
-        System.out.println(teste);
-
-        teste =  0x1;
-        System.out.println(teste);
-
-        teste = 0x10;
-        System.out.println(teste);
-
-        int by1 = -32;
-        int by2 = 0xBB;
-        System.out.println(by1);
-        System.out.println(by2);
-
 
     }
 
