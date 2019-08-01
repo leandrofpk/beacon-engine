@@ -252,6 +252,7 @@ public class PulseTest {
         Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
         cipher.init(Cipher.DECRYPT_MODE, keyPair.getPublic());
 
+
         byte[] decSig = cipher.doFinal(sigBytes);
         ASN1InputStream aIn = new ASN1InputStream(decSig);
         ASN1Sequence seq = (ASN1Sequence) aIn.readObject();
