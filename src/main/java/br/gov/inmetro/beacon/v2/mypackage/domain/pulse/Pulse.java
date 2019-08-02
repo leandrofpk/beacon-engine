@@ -62,7 +62,7 @@ public class Pulse {
         this.outputValue = outputValue;
     }
 
-    public static class BuilderRegular{
+    public static class Builder {
 
         private String uri;
         private ChainValueObject chainValueObject;
@@ -77,62 +77,62 @@ public class Pulse {
         private String signatureValue;
         private String outputValue;
 
-        public BuilderRegular setUri(String uri){
+        public Builder setUri(String uri){
             this.uri = uri;
             return this;
         }
 
-        public BuilderRegular setChainValueObject(ChainValueObject chainValueObject){
+        public Builder setChainValueObject(ChainValueObject chainValueObject){
             this.chainValueObject = chainValueObject;
             return this;
         }
 
-        public BuilderRegular setCertificateId(String certificateId){
+        public Builder setCertificateId(String certificateId){
             this.certificateId = certificateId;
             return this;
         }
 
-        public BuilderRegular setPulseIndex(long pulseIndex){
+        public Builder setPulseIndex(long pulseIndex){
             this.pulseIndex = pulseIndex;
             return this;
         }
 
-        public BuilderRegular setTimeStamp(ZonedDateTime timeStamp){
+        public Builder setTimeStamp(ZonedDateTime timeStamp){
             this.timeStamp = timeStamp;
             return this;
         }
 
-        public BuilderRegular setLocalRandomValue(String localRandomValue){
+        public Builder setLocalRandomValue(String localRandomValue){
             this.localRandomValue = localRandomValue;
             return this;
         }
 
-        public BuilderRegular setExternal(External external){
+        public Builder setExternal(External external){
             this.external = external;
             return this;
         }
 
-        public BuilderRegular setListValue(List<ListValue>listValue){
+        public Builder setListValue(List<ListValue>listValue){
             this.listValue = listValue;
             return this;
         }
 
-        public BuilderRegular setPrecommitmentValue(String precommitmentValue){
+        public Builder setPrecommitmentValue(String precommitmentValue){
             this.precommitmentValue = precommitmentValue;
             return this;
         }
 
-        public BuilderRegular setStatusCode (int statusCode){
+        public Builder setStatusCode (int statusCode){
             this.statusCode = statusCode;
             return this;
         }
 
-        public BuilderRegular setSignatureValue (String signatureValue){
+        public Builder setSignatureValue (String signatureValue){
             this.signatureValue = signatureValue;
             return this;
         }
 
-        public BuilderRegular setOutputValue (String outputValue){
+        public Builder setOutputValue (String outputValue){
             this.outputValue = outputValue;
             return this;
         }

@@ -7,7 +7,6 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.util.ASN1Dump;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,7 @@ public class PulseTest {
         List<ListValue> listValue = new ArrayList<>();
         listValue.add(ListValue.getOneValue("000", "previous", "000"));
 
-        Pulse newRegularPulse = new Pulse.BuilderRegular()
+        Pulse newRegularPulse = new Pulse.Builder()
                 .setUri(env.getProperty("beacon.url"))
                 .setChainValueObject(activeChain)
                 .setCertificateId("")
@@ -206,29 +205,6 @@ public class PulseTest {
 
         Instant with = agora.with(ChronoField.MILLI_OF_SECOND, 0);
         System.out.println(with.get(ChronoField.MILLI_OF_SECOND));
-
-//        System.out.println(with);
-
-        // 2018-07-23T19:26:00.000Z
-
-//        Instant instantTruncated = Instant.now().truncatedTo( ChronoUnit.SECONDS );
-//        System.out.println(instantTruncated);
-//
-//        LocalDateTime now =  LocalDateTime.now(Clock.systemUTC());
-//        LocalDateTime newTime =  now.plusMinutes(1).truncatedTo(ChronoUnit.MILLIS);
-//        System.out.println(newTime);
-
-
-//
-//        LocalDateTime plus = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plus(1, ChronoUnit.MINUTES);
-//
-//        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSSSSS Z");
-//        String format = plus.format(FORMATTER);
-//        System.out.println(format);
-//
-
-//        2018-07-23T19:26:00.000Z
-
 
     }
 

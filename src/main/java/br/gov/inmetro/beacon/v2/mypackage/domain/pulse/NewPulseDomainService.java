@@ -61,37 +61,23 @@ public class NewPulseDomainService {
     }
 
     private void processar(){
-        long vPulseIndex = 0;
+        long vPulseIndex = 0; boolean firstPulse = false;
 
-        for (LocalRandomValueDto localRandomValue: combineDomainResult.getLocalRandomValueDtos()) {
-
-            if (this.lastPulseDto == null){
-                this.pulses.add(getFirstPulseInBd(localRandomValue));
-            } else {
-//                vPulseIndex = vPulseIndex + 1;
-//
-//                Pulse newPulse = new Pulse.BuilderRegular()
-//                        .setUri(env.getProperty("beacon.url") + "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex)
-//                        .setChainValueObject(activeChain)
-//                        .setCertificateId("")
-//                        .setPulseIndex(vPulseIndex)
-//                        .setTimeStamp(localRandomValue.getTimeStamp())
-//                        .setLocalRandomValue(localRandomValue.getValue())
-//                        .setPrecommitmentValue("precommitment")
-//                        .build();
-//
-//                this.pulses.add(newPulse);
-            }
-//            System.out.println(newPulse);
+        if (this.lastPulseDto == null) {  // first pulse
+            firstPulse = true;
         }
 
+        for (LocalRandomValueDto localRandomValue: combineDomainResult.getLocalRandomValueDtos()) {
+            if (firstPulse){
+                this.pulses.add(getFirstPulse(localRandomValue));
+                firstPulse = false;
+            } else {
+                this.pulses.add(getRegularPulse(localRandomValue, ++vPulseIndex));
+            }
+        }
     }
 
-    private Pulse getRegularPulse(){
-        return null;
-    }
-
-    private Pulse getFirstPulseInBd(LocalRandomValueDto localRandomValue){
+    private Pulse getRegularPulse(LocalRandomValueDto localRandomValue, long vPulseIndex){
         List<ListValue> list = new ArrayList<>();
         list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
                 "previous", null));
@@ -104,10 +90,40 @@ public class NewPulseDomainService {
         list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
                 "year", null));
 
-        return new Pulse.BuilderRegular()
+        return new Pulse.Builder()
                 .setUri(env.getProperty("beacon.url"))
                 .setChainValueObject(activeChain)
-                .setCertificateId("certificado")
+                .setCertificateId("0")
+                .setPulseIndex(++vPulseIndex )
+                .setTimeStamp(localRandomValue.getTimeStamp())
+                .setLocalRandomValue(localRandomValue.getValue())
+                .setListValue(list)
+                .setExternal(External.newExternal())
+                .setPrecommitmentValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
+                .setStatusCode(0)
+                .setSignatureValue("assinatura")
+                .setOutputValue("valor output")
+                .build();
+
+    }
+
+    private Pulse getFirstPulse(LocalRandomValueDto localRandomValue){
+        List<ListValue> list = new ArrayList<>();
+        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "previous", null));
+        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "hour", null));
+        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "day", null));
+        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "month", null));
+        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "year", null));
+
+        return new Pulse.Builder()
+                .setUri(env.getProperty("beacon.url"))
+                .setChainValueObject(activeChain)
+                .setCertificateId("0")
                 .setPulseIndex(1)
                 .setTimeStamp(localRandomValue.getTimeStamp())
                 .setLocalRandomValue(localRandomValue.getValue())
