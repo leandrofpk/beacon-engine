@@ -5,7 +5,6 @@ import br.gov.inmetro.beacon.v1.domain.repository.Records;
 import br.gov.inmetro.beacon.v1.infra.RecordEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@RequestScope
 public class SearchRecordService {
 
     private Records records;
