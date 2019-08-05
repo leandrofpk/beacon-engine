@@ -1,5 +1,6 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
+import br.gov.inmetro.beacon.v2.mypackage.infra.ExternalEntity;
 import lombok.Getter;
 
 @Getter
@@ -23,6 +24,10 @@ public class External {
                                      new Short("0"),
                                 "000000000000000000000000000000000000000000000000000000000000000000000000000000" +
                                         "00000000000000000000000000000000000000000000000000");
+    }
+
+    public static External newExternalFromEntity(ExternalEntity entity){
+        return new External(entity.getSourceId(), entity.getStatusCode(), entity.getValue());
     }
 
     @Override

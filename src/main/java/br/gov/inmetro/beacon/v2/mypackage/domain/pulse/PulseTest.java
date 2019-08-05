@@ -20,6 +20,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -82,10 +83,6 @@ public class PulseTest {
     public void shouldBuildTheFirstPuseNewChain(){
 
     }
-
-
-
-
 
 //    private String uri;
 //    private String version;
@@ -244,6 +241,26 @@ public class PulseTest {
 
     }
 
+    @Test
+    public void testingDate(){
+        ZonedDateTime date1 = ZonedDateTime.parse("2019-07-30T18:22:00.000Z");
+        System.out.println(date1);
+
+        ZonedDateTime primeroDaHora = date1.truncatedTo(ChronoUnit.HOURS);
+        ZonedDateTime primeroDoDia = date1.truncatedTo(ChronoUnit.DAYS);
+
+        System.out.println(primeroDaHora);
+        System.out.println(primeroDoDia);
+
+        ZonedDateTime startofMonth = date1.with(ChronoField.DAY_OF_MONTH, 1).truncatedTo(ChronoUnit.DAYS);
+        System.out.println("startofMonth");
+        System.out.println(startofMonth);
+
+        ZonedDateTime startofYear = date1.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
+        System.out.println("startofYear");
+        System.out.println(startofYear);
+
+    }
 
 
 }

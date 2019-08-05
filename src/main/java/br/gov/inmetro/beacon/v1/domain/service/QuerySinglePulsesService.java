@@ -33,15 +33,15 @@ public class QuerySinglePulsesService {
         return Optional.ofNullable(pulses.last(chain));
     }
 
-    public Optional<PulseEntity> findByChainAndId(int chain, Long idChain) {
-        return pulses.findByChainAndId(chain, idChain);
-    }
+//    public Optional<PulseEntity> findByChainAndId(int chain, Long idChain) {
+//        return pulses.findByChainAndId(chain, idChain);
+//    }
 
     public PulseDto lastDto(Long chain) {
         return pulses.lastDto(chain);
     }
 
-    public PulseDto first(Integer chain) {
+    public PulseDto first(Long chain) {
         return pulses.first(chain);
     }
 }

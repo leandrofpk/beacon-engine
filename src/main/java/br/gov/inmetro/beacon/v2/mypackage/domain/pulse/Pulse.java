@@ -1,10 +1,13 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
+import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.security.PublicKey;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -61,6 +64,37 @@ public class Pulse {
         this.signatureValue = signatureValue;
         this.outputValue = outputValue;
     }
+
+    public static Pulse BuilderFromEntity(PulseEntity entity) {
+        return new Pulse(entity.getUri(), entity.getVersion(), entity.getCipherSuite(), entity.getPeriod(), entity.getCertificateId(),
+                    entity.getChainIndex(), entity.getPulseIndex(), entity.getTimeStamp(), entity.getLocalRandomValue(),
+                    External.newExternalFromEntity(entity.getExternalEntity()), convertListValuesToPulse(entity), entity.getPrecommitmentValue(),
+                    entity.getStatusCode(), entity.getSignatureValue(), entity.getOutputValue());
+    }
+
+    private static List<ListValue> convertListValuesToPulse(PulseEntity pulseEntity){
+        List<ListValue> listValues = new ArrayList<>();
+        pulseEntity.getListValueEntities().forEach(entity -> listValues.add(ListValue.getOneValue(entity.getValue(), entity.getType(), entity.getUri())));
+        return listValues;
+    }
+
+//    private Pulse(PulseEntity entity){
+//        this.uri = entity.getUri();
+//        this.version = entity.getVersion();
+//        this.cipherSuite = entity.getCipherSuite();
+//        this.period = entity.getPeriod();
+//        this.certificateId = entity.getCertificateId();
+//        this.chainIndex = entity.getChainIndex();
+//        this.pulseIndex = entity.getPulseIndex();
+//        this.timeStamp = entity.getTimeStamp();
+//        this.localRandomValue = entity.getLocalRandomValue();
+//        this.external = External.newExternalFromEntity(entity.getExternalEntity());
+//        this.listValue = null;
+//        this.precommitmentValue = entity.getPrecommitmentValue();
+//        this.statusCode = entity.getStatusCode();
+//        this.signatureValue = entity.getSignatureValue();
+//        this.outputValue =  entity.getOutputValue();
+//    }
 
     public static class Builder {
 

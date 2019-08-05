@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.PrivateKey;
 
-@Service
+//@Service
 public class CadastraRegistroService {
 
     private PulsesRepository records;

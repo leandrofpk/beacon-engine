@@ -6,6 +6,8 @@ import br.gov.inmetro.beacon.v1.domain.repository.PulsesRepository;
 import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainDomainService;
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
+import br.gov.inmetro.beacon.v2.mypackage.domain.repository.EntropyRepository;
+import br.gov.inmetro.beacon.v2.mypackage.domain.service.PastOutputValuesService;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import br.gov.inmetro.beacon.v2.mypackage.queue.EntropyDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,84 +26,136 @@ public class NewPulseDomainService {
 
     private final PulsesRepository pulsesRepository;
 
+    private final EntropyRepository entropyRepository;
+
     private final CombinationErrors combinationErrorsRepository;
 
     private List<EntropyDto> regularNoises = new ArrayList<>();
 
     private CombineDomainResult combineDomainResult;
 
-    private PulseDto lastPulseDto;
+    private PulseEntity lastPulseEntity;
 
     private ChainValueObject activeChain;
 
-    private List<Pulse> pulses = new ArrayList<>();
+    private final PastOutputValuesService pastOutputValuesService;
 
     @Autowired
-    public NewPulseDomainService(Environment env, PulsesRepository pulsesRepository, CombinationErrors combinationErrors) {
+    public NewPulseDomainService(Environment env, PulsesRepository pulsesRepository, EntropyRepository entropyRepository,
+                                 CombinationErrors combinationErrors, PastOutputValuesService pastOutputValuesService) {
         this.env = env;
         this.pulsesRepository = pulsesRepository;
+        this.entropyRepository = entropyRepository;
         this.combinationErrorsRepository = combinationErrors;
+        this.pastOutputValuesService = pastOutputValuesService;
     }
 
     public void begin(List<EntropyDto> regularNoises){
         this.regularNoises = regularNoises;
 
         this.activeChain = ChainDomainService.getActiveChain();
-        this.lastPulseDto = pulsesRepository.lastDto(activeChain.getChainIndex());
+        this.lastPulseEntity = pulsesRepository.last(activeChain.getChainIndex());
         String property = env.getProperty("beacon.number-of-entropy-sources");
 
         combinar(activeChain.getChainIndex(), property);
-        processar();
-        persist();
+        processarAndPersistir();
     }
 
     private void combinar(long activeChain, String numberOfSources) {
+
+        PulseDto pulseDto = null;
+        if (lastPulseEntity != null){
+            pulseDto = new PulseDto(this.lastPulseEntity);
+        }
+
         CombineDomainService combineDomainService = new CombineDomainService(regularNoises, activeChain,
-                new Integer(numberOfSources), this.lastPulseDto);
+                new Integer(numberOfSources), pulseDto);
         this.combineDomainResult = combineDomainService.processar();
     }
 
-    private void processar(){
-        long vPulseIndex = 0; boolean firstPulse = false;
-
-        if (this.lastPulseDto == null) {  // first pulse
-            firstPulse = true;
+    private void processarAndPersistir(){
+        if (combineDomainResult.getLocalRandomValueDtos().size() < 2){
+            return;
         }
 
-        for (LocalRandomValueDto localRandomValue: combineDomainResult.getLocalRandomValueDtos()) {
-            if (firstPulse){
-                this.pulses.add(getFirstPulse(localRandomValue));
-                firstPulse = false;
+        List<LocalRandomValueDto> localRandomValueDtos = combineDomainResult.getLocalRandomValueDtos();
+
+        // tratando primeiro registro do banco
+        boolean firstPulseInBd = false;
+        Pulse previousPulse = null;
+        if (this.lastPulseEntity == null) {  // first pulse in BD
+            firstPulseInBd = true;
+        } else {
+            previousPulse = Pulse.BuilderFromEntity(lastPulseEntity);
+        }
+        // tratando primeiro registro do banco
+        // tratar primeiro registro da cadeia?
+
+        List<Pulse> processedPulses = new ArrayList<>();
+        for (int currentIndex = 0; currentIndex < localRandomValueDtos.size(); currentIndex++) {
+            // tratar previous pulse
+
+            LocalRandomValueDto localRandomValue1 = localRandomValueDtos.get(currentIndex);
+            LocalRandomValueDto localRandomValue2 = null;
+            int nextIndex = currentIndex + 1;
+
+            if (nextIndex < localRandomValueDtos.size()){
+                localRandomValue2 = localRandomValueDtos.get(nextIndex);
             } else {
-                this.pulses.add(getRegularPulse(localRandomValue, ++vPulseIndex));
+                return;
             }
+
+            Pulse pulso;
+            if (firstPulseInBd){
+                pulso = getFirstPulse(localRandomValue1);
+                firstPulseInBd = false;
+                previousPulse = pulso;
+            } else {
+                pulso = getRegularPulse( previousPulse, localRandomValue1, localRandomValue2);
+                previousPulse = pulso;
+            }
+            persistOnePulse(pulso);
+            processedPulses.add(pulso);
         }
+
+        processedPulses.forEach(pulse -> entropyRepository.deleteByTimeStamp(pulse.getTimeStamp()));
+
     }
 
-    private Pulse getRegularPulse(LocalRandomValueDto localRandomValue, long vPulseIndex){
+    private Pulse getRegularPulse(Pulse previous, LocalRandomValueDto current, LocalRandomValueDto next){
         List<ListValue> list = new ArrayList<>();
-        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-                "previous", null));
-        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-                "hour", null));
-        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-                "day", null));
-        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-                "month", null));
-        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-                "year", null));
+        list.add(ListValue.getOneValue(previous.getOutputValue(),
+                "previous", previous.getUri()));
+
+        list.addAll(pastOutputValuesService.getOldPulses(current.getTimeStamp()));
+
+//        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+//                "hour", null));
+//        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+//                "day", null));
+//        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+//                "month", null));
+//        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+//                "year", null));
+
+        // gap de data
+        int vStatusCode = 0;
+        long between = ChronoUnit.MINUTES.between(previous.getTimeStamp(), current.getTimeStamp());
+        if (between > 1){
+            vStatusCode = 2;
+        }
 
         return new Pulse.Builder()
                 .setUri(env.getProperty("beacon.url"))
                 .setChainValueObject(activeChain)
                 .setCertificateId("0")
-                .setPulseIndex(++vPulseIndex )
-                .setTimeStamp(localRandomValue.getTimeStamp())
-                .setLocalRandomValue(localRandomValue.getValue())
+                .setPulseIndex(previous.getPulseIndex()+1)
+                .setTimeStamp(current.getTimeStamp())
+                .setLocalRandomValue(current.getValue())
                 .setListValue(list)
                 .setExternal(External.newExternal())
-                .setPrecommitmentValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
-                .setStatusCode(0)
+                .setPrecommitmentValue(next.getValue())
+                .setStatusCode(vStatusCode)
                 .setSignatureValue("assinatura")
                 .setOutputValue("valor output")
                 .build();
@@ -136,16 +191,20 @@ public class NewPulseDomainService {
                 .build();
     }
 
+//    private void status(){
+//        long between = ChronoUnit.MINUTES.between(lastRecordEntity.getTimeStamp(), DateUtil.longToLocalDateTime( Long.toString(record.getTimeStamp() )));
+//        if (between == 1){
+//            return "0";
+//        }
+//
+//        return "2";
+//    }
+
     @Transactional
-    protected void persist(){
-        for (Pulse pulse : pulses){
-            pulsesRepository.save(new PulseEntity(pulse));
-        }
-
+    protected void persistOnePulse(Pulse pulse) {
+        pulsesRepository.save(new PulseEntity(pulse));
         combinationErrorsRepository.persist(combineDomainResult.getCombineErrorList());
-
-        combineDomainResult = null;
-        pulses.clear();
+//        pulses.remove(pulse);
     }
 
 }

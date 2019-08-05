@@ -1,6 +1,7 @@
 package br.gov.inmetro.beacon.v1.domain.repository;
 
 import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
+import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -46,14 +48,13 @@ public class PulsesRepositoryImpl implements PulsesQueries {
     }
 
     @Transactional
-    public PulseDto first(Integer chain){
-        PulseEntity r = (PulseEntity) manager.createQuery("from PulseEntity where chain = :chain order by id")
-                .setParameter("chain", chain.toString())
+    public PulseDto first(Long chainIndex){
+        PulseEntity r = (PulseEntity) manager.createQuery("from PulseEntity where chainIndex = :chainIndex order by id")
+                .setParameter("chainIndex", chainIndex)
                 .setMaxResults(1)
                 .getSingleResult();
 
         return new PulseDto(r);
-
     }
 
     @Transactional(readOnly = true)
@@ -66,50 +67,33 @@ public class PulsesRepositoryImpl implements PulsesQueries {
     }
 
     @Transactional(readOnly = true)
-    public Long maxChain(Integer chain){
-
-        Long singleResult = (Long) manager.createQuery(" select max(r.idChain) from PulseEntity r where r.chainIndex = :chainIndex ")
-                .setParameter("chainIndex", chain.toString())
-                .getSingleResult();
-
-        return singleResult == null ? 0 : singleResult;
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<PulseEntity> findByTimeStampWork(Integer chainIndex, LocalDateTime timeStamp){
-
-        PulseEntity recordEntity;
-
-        try {
-
-            recordEntity = (PulseEntity) manager.createQuery("from PulseEntity r " +
-                    "where r.chain = :chain and r.timeStampWork = :timeStamp")
-                    .setParameter("chainIndex", chainIndex.toString())
-                    .setParameter("timeStamp", timeStamp).getSingleResult();
-        } catch (NoResultException e){
-            return Optional.empty();
-        }
-
-        return Optional.of(recordEntity);
-    }
-
-    @Override
-    public Optional<PulseEntity> findByTimeStamp(Integer chainIndex, Long data) {
-        PulseEntity recordEntity = (PulseEntity) manager.createQuery("from PulseEntity r where r.chainIndex = :chainIndex and r.timeStamp = :timestamp")
-                .setParameter("chainIndex", chainIndex.toString())
-                .setParameter("timestamp", data).getSingleResult();
-        return Optional.of(recordEntity);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<PulseEntity> findByChainAndId(Integer chain, Long idChain){
+    public Optional<PulseEntity> findByChainAndPulseIndex(Long chainIndex, Long pulseIndex){
         PulseEntity recordEntity = (PulseEntity) manager
-                .createQuery("from RecordEntity where chain = :chain and idChain = :idChain order by id desc")
-                .setParameter("chain", chain.toString())
-                .setParameter("idChain", idChain)
+                .createQuery("from RecordEntity where chainIndex = :chainIndex and pulseIndex = :pulseIndex")
+                .setParameter("chainIndex", chainIndex)
+                .setParameter("pulseIndex", pulseIndex)
                 .getSingleResult();
 
         return Optional.of(recordEntity);
     }
+
+    @Transactional(readOnly = true)
+    public Pulse findOldPulses(Long chainIndex, ZonedDateTime timeStamp){
+        PulseEntity pulseEntity = (PulseEntity) manager
+                .createQuery("from PulseEntity where chainIndex = :chainIndex and timeStamp >= :timeStamp order by timeStamp")
+                .setParameter("chainIndex", chainIndex)
+                .setParameter("timeStamp", timeStamp)
+                .setMaxResults(1)
+                .getSingleResult();
+            return Pulse.BuilderFromEntity(pulseEntity);
+    }
+
+    //    public Optional<PulseEntity> findByTimeStamp(Integer chainIndex, Long data) {
+//        PulseEntity recordEntity = (PulseEntity) manager.createQuery("from PulseEntity r where r.chainIndex = :chainIndex and r.timeStamp = :timestamp")
+//                .setParameter("chainIndex", chainIndex.toString())
+//                .setParameter("timestamp", data).getSingleResult();
+//        return Optional.of(recordEntity);
+//    }
+
 
 }

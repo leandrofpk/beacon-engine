@@ -49,14 +49,14 @@ public class ChainsController {
         return mv;
     }
 
-    @GetMapping("/{chainId}/{id}")
-    public ModelAndView ver(@PathVariable("chainId") Integer chainId, @PathVariable("id") Long idChain) {
-        ModelAndView mv = new ModelAndView("records/show");
-        Optional<PulseEntity> byChainAndId = searchRecordService.findByChainAndId(chainId, idChain);
-        mv.addObject("record", byChainAndId.get());
-        mv.addObject("v1", false);
-        return mv;
-    }
+//    @GetMapping("/{chainId}/{id}")
+//    public ModelAndView ver(@PathVariable("chainId") Integer chainId, @PathVariable("id") Long idChain) {
+//        ModelAndView mv = new ModelAndView("records/show");
+//        Optional<PulseEntity> byChainAndId = searchRecordService.findByChainAndId(chainId, idChain);
+//        mv.addObject("record", byChainAndId.get());
+//        mv.addObject("v1", false);
+//        return mv;
+//    }
 
     private String getAppUrl(HttpServletRequest request) {
         if (request.getServerPort() != 443){
