@@ -127,23 +127,15 @@ public class NewPulseDomainService {
         list.add(ListValue.getOneValue(previous.getOutputValue(),
                 "previous", previous.getUri()));
 
-        list.addAll(pastOutputValuesService.getOldPulses(current.getTimeStamp()));
-
-//        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-//                "hour", null));
-//        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-//                "day", null));
-//        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-//                "month", null));
-//        list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-//                "year", null));
-
         // gap de data
         int vStatusCode = 0;
         long between = ChronoUnit.MINUTES.between(previous.getTimeStamp(), current.getTimeStamp());
         if (between > 1){
             vStatusCode = 2;
         }
+
+        list.addAll(pastOutputValuesService.getOldPulses(current.getTimeStamp()));
+
 
         return new Pulse.Builder()
                 .setUri(env.getProperty("beacon.url"))

@@ -79,13 +79,17 @@ public class PulsesRepositoryImpl implements PulsesQueries {
 
     @Transactional(readOnly = true)
     public Pulse findOldPulses(Long chainIndex, ZonedDateTime timeStamp){
-        PulseEntity pulseEntity = (PulseEntity) manager
-                .createQuery("from PulseEntity where chainIndex = :chainIndex and timeStamp >= :timeStamp order by timeStamp")
-                .setParameter("chainIndex", chainIndex)
-                .setParameter("timeStamp", timeStamp)
-                .setMaxResults(1)
-                .getSingleResult();
+        try {
+            PulseEntity pulseEntity = (PulseEntity) manager
+                    .createQuery("from PulseEntity where chainIndex = :chainIndex and timeStamp >= :timeStamp order by timeStamp")
+                    .setParameter("chainIndex", chainIndex)
+                    .setParameter("timeStamp", timeStamp)
+                    .setMaxResults(1)
+                    .getSingleResult();
             return Pulse.BuilderFromEntity(pulseEntity);
+        } catch (NoResultException e){
+            return null;
+        }
     }
 
     //    public Optional<PulseEntity> findByTimeStamp(Integer chainIndex, Long data) {
