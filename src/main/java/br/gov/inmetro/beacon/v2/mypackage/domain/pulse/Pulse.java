@@ -48,7 +48,8 @@ public class Pulse {
                   @NonNull ZonedDateTime timeStamp, @NonNull String localRandomValue, @NonNull External external,
                   @NonNull List<ListValue> listValue, @NonNull String precommitmentValue,
                   int statusCode, @NonNull String signatureValue, @NonNull String outputValue) {
-        this.uri =  uri +  "/beacon/" + version + "/chain/" + chainIndex + "/pulse/" + pulseIndex;
+//        this.uri =  uri +  "/beacon/" + version + "/chain/" + chainIndex + "/pulse/" + pulseIndex;
+        this.uri =  uri;
         this.version = version;
         this.cipherSuite = cipherSuite;
         this.period = period;
@@ -77,24 +78,6 @@ public class Pulse {
         pulseEntity.getListValueEntities().forEach(entity -> listValues.add(ListValue.getOneValue(entity.getValue(), entity.getType(), entity.getUri())));
         return listValues;
     }
-
-//    private Pulse(PulseEntity entity){
-//        this.uri = entity.getUri();
-//        this.version = entity.getVersion();
-//        this.cipherSuite = entity.getCipherSuite();
-//        this.period = entity.getPeriod();
-//        this.certificateId = entity.getCertificateId();
-//        this.chainIndex = entity.getChainIndex();
-//        this.pulseIndex = entity.getPulseIndex();
-//        this.timeStamp = entity.getTimeStamp();
-//        this.localRandomValue = entity.getLocalRandomValue();
-//        this.external = External.newExternalFromEntity(entity.getExternalEntity());
-//        this.listValue = null;
-//        this.precommitmentValue = entity.getPrecommitmentValue();
-//        this.statusCode = entity.getStatusCode();
-//        this.signatureValue = entity.getSignatureValue();
-//        this.outputValue =  entity.getOutputValue();
-//    }
 
     public static class Builder {
 
