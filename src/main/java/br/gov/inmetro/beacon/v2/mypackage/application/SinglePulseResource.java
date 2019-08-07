@@ -37,6 +37,39 @@ public class SinglePulseResource {
         } catch (Exception e){
             return new ResponseEntity("Bad Request", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @RequestMapping("time/next/{timeStamp}")
+    public ResponseEntity next(@PathVariable String timeStamp){
+        try {
+            ZonedDateTime parse = ZonedDateTime.parse(timeStamp, DateTimeFormatter.ISO_DATE_TIME);
+            PulseDto byTimestamp = singlePulsesService.findNext(parse);
+
+            if (byTimestamp==null){
+                return new ResponseEntity("Pulse Not Available.", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity(byTimestamp, HttpStatus.OK);
+
+        } catch (Exception e){
+            return new ResponseEntity("Bad Request", HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @RequestMapping("time/previous/{timeStamp}")
+    public ResponseEntity previous(@PathVariable String timeStamp){
+        try {
+            ZonedDateTime parse = ZonedDateTime.parse(timeStamp, DateTimeFormatter.ISO_DATE_TIME);
+            PulseDto byTimestamp = singlePulsesService.findPrevious(parse);
+
+            if (byTimestamp==null){
+                return new ResponseEntity("Pulse Not Available.", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity(byTimestamp, HttpStatus.OK);
+
+        } catch (Exception e){
+            return new ResponseEntity("Bad Request", HttpStatus.BAD_REQUEST);
+        }
 
     }
 

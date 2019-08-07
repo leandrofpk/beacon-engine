@@ -6,6 +6,7 @@ import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.ZonedDateTime;
@@ -14,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 @RequestScope
 public class QuerySinglePulsesService {
 
@@ -53,13 +54,33 @@ public class QuerySinglePulsesService {
         }
     }
 
-    public PulseDto findByTimestamp(ZonedDateTime dateTime){
-        PulseEntity byTimestamp = pulsesRepository.findByTimestamp(dateTime);
+    public PulseDto findByTimestamp(ZonedDateTime timeStamp){
+        PulseEntity byTimestamp = pulsesRepository.findByTimestamp(timeStamp);
         if (byTimestamp==null){
             return null;
         } else {
             return new PulseDto(byTimestamp);
         }
     }
+
+    public PulseDto findNext(ZonedDateTime timeStamp){
+        PulseEntity next = pulsesRepository.findNext(timeStamp);
+        if (next==null){
+            return null;
+        } else {
+            return new PulseDto(pulsesRepository.findByTimestamp(next.getTimeStamp()));
+        }
+    }
+
+    public PulseDto findPrevious(ZonedDateTime timeStamp){
+        PulseEntity next = pulsesRepository.findPrevious(timeStamp);
+        if (next==null){
+            return null;
+        } else {
+            return new PulseDto(pulsesRepository.findByTimestamp(next.getTimeStamp()));
+        }
+    }
+
+
 
 }

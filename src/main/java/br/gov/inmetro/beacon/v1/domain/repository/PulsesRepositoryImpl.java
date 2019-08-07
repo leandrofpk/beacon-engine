@@ -102,6 +102,13 @@ public class PulsesRepositoryImpl implements PulsesQueries {
         }
     }
 
+    @Override
+    public PulseEntity findNext(ZonedDateTime timeStamp) {
+
+
+
+        return null;
+    }
 
 
     //    public Optional<PulseEntity> findByTimeStamp(Integer chainIndex, Long data) {

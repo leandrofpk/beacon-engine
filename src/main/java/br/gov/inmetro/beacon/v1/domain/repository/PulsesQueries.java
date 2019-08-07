@@ -14,8 +14,6 @@ public interface PulsesQueries {
     Pulse findOldPulses(Long chainIndex, ZonedDateTime timeStamp);
     Optional<PulseEntity> findByChainAndPulseIndex(Long chainIndex, Long pulseIndex);
     PulseEntity findByTimestamp(ZonedDateTime timeStamp);
+    PulseEntity findNext(ZonedDateTime timeStamp);
 
-    //    @Deprecated
-//    Long maxChain(Integer chain);
-//    Optional<PulseEntity> findByChainAndTimeStamp(Long chain, ZonedDateTime data);
 }
