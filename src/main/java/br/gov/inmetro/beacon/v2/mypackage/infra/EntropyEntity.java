@@ -2,6 +2,7 @@ package br.gov.inmetro.beacon.v2.mypackage.infra;
 
 import br.gov.inmetro.beacon.v2.mypackage.queue.EntropyDto;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import java.time.ZonedDateTime;
 @Entity
 @Data
 @Table(name = "entropy")
+@NoArgsConstructor
 public class EntropyEntity {
 
     @Id

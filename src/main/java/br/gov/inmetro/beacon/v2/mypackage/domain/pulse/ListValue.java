@@ -6,11 +6,11 @@ import lombok.NonNull;
 @Getter
 public class ListValue {
 
-    private String value;
+    private String uri;
 
     private String type;
 
-    private String uri;
+    private String value;
 
     private ListValue(@NonNull String value, @NonNull String type, String uri) {
         this.value = value;

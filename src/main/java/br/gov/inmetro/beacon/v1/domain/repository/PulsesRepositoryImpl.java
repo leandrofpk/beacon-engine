@@ -1,6 +1,5 @@
 package br.gov.inmetro.beacon.v1.domain.repository;
 
-import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
 import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import org.springframework.stereotype.Repository;
@@ -9,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -22,39 +20,33 @@ public class PulsesRepositoryImpl implements PulsesQueries {
     private EntityManager manager;
 
     @Transactional
-    public PulseDto lastDto(Long chainIndex){
-        try {
-            PulseEntity r = (PulseEntity) manager.createQuery("from PulseEntity where chainIndex = :chainIndex order by id desc")
-                    .setParameter("chainIndex", chainIndex)
-                    .setMaxResults(1)
-                    .getSingleResult();
-            return new PulseDto(r);
-        } catch(NoResultException ex){
-            return null;
-        }
-    }
-
-    @Transactional
     public PulseEntity last(Long chainIndex){
-        try {
-            return (PulseEntity) manager.createQuery("from PulseEntity where chainIndex = :chainIndex order by id desc")
-                    .setParameter("chainIndex", chainIndex)
-                    .setMaxResults(1)
-                    .getSingleResult();
-
-        } catch(NoResultException ex){
-            return null;
-        }
-    }
-
-    @Transactional
-    public PulseDto first(Long chainIndex){
-        PulseEntity r = (PulseEntity) manager.createQuery("from PulseEntity where chainIndex = :chainIndex order by id")
+        Long lastPulseIndex = (Long) manager.createQuery(
+                "select max(p.pulseIndex) from PulseEntity p where p.chainIndex = :chainIndex")
                 .setParameter("chainIndex", chainIndex)
-                .setMaxResults(1)
                 .getSingleResult();
 
-        return new PulseDto(r);
+        if (lastPulseIndex==null){
+            return null;
+        } else {
+            Optional<PulseEntity> byChainAndPulseIndex = findByChainAndPulseIndex(chainIndex, lastPulseIndex);
+            return byChainAndPulseIndex.get();
+        }
+    }
+
+    @Transactional
+    public PulseEntity first(Long chainIndex){
+        Long firstPulseIndex = (Long) manager.createQuery(
+                "select min(p.pulseIndex) from PulseEntity p where p.chainIndex = :chainIndex")
+                .setParameter("chainIndex", chainIndex)
+                .getSingleResult();
+
+        if (firstPulseIndex==null){
+            return null;
+        } else {
+            Optional<PulseEntity> byChainAndPulseIndex = findByChainAndPulseIndex(chainIndex, firstPulseIndex);
+            return byChainAndPulseIndex.get();
+        }
     }
 
     @Transactional(readOnly = true)
@@ -69,7 +61,9 @@ public class PulsesRepositoryImpl implements PulsesQueries {
     @Transactional(readOnly = true)
     public Optional<PulseEntity> findByChainAndPulseIndex(Long chainIndex, Long pulseIndex){
         PulseEntity recordEntity = (PulseEntity) manager
-                .createQuery("from RecordEntity where chainIndex = :chainIndex and pulseIndex = :pulseIndex")
+                .createQuery("from PulseEntity p " +
+                        "join fetch p.listValueEntities lve " +
+                        "where p.chainIndex = :chainIndex and p.pulseIndex = :pulseIndex")
                 .setParameter("chainIndex", chainIndex)
                 .setParameter("pulseIndex", pulseIndex)
                 .getSingleResult();
@@ -86,11 +80,29 @@ public class PulsesRepositoryImpl implements PulsesQueries {
                     .setParameter("timeStamp", timeStamp)
                     .setMaxResults(1)
                     .getSingleResult();
+
             return Pulse.BuilderFromEntity(pulseEntity);
         } catch (NoResultException e){
             return null;
         }
     }
+
+    @Transactional(readOnly = true)
+    public PulseEntity findByTimestamp(ZonedDateTime timeStamp){
+        try {
+            PulseEntity pulseEntity = (PulseEntity) manager
+                    .createQuery("from PulseEntity p " +
+                            "join fetch p.listValueEntities lve " +
+                            "where p.timeStamp = :timeStamp")
+                    .setParameter("timeStamp", timeStamp)
+                    .getSingleResult();
+            return pulseEntity;
+        } catch (NoResultException e){
+            return null;
+        }
+    }
+
+
 
     //    public Optional<PulseEntity> findByTimeStamp(Integer chainIndex, Long data) {
 //        PulseEntity recordEntity = (PulseEntity) manager.createQuery("from PulseEntity r where r.chainIndex = :chainIndex and r.timeStamp = :timestamp")

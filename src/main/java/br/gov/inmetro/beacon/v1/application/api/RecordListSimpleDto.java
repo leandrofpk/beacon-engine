@@ -1,6 +1,5 @@
 package br.gov.inmetro.beacon.v1.application.api;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -10,7 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-@JacksonXmlRootElement(localName = "record")
+//@JacksonXmlRootElement(localName = "record")
 public class RecordListSimpleDto implements Serializable {
 
 

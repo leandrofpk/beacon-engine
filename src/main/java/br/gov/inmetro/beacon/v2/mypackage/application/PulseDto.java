@@ -1,59 +1,56 @@
 package br.gov.inmetro.beacon.v2.mypackage.application;
 
+import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.External;
+import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.ListValue;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Data;
 
-import java.io.Serializable;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-@JacksonXmlRootElement(localName = "pulse")
-@JsonRootName("pulse")
-public class PulseDto implements Serializable {
+@JsonTypeName("pulse")
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT ,use = JsonTypeInfo.Id.NAME)
+public class PulseDto {
 
+    @JsonIgnore
     private Long id;
 
-    protected String uri;
+    private String uri;
 
-    protected String version;
+    private String version;
 
-    protected int cipherSuite;
+    private int cipherSuite;
 
-    protected int period;
+    private int period;
 
-    protected String certificateId;
+    private String certificateId;
 
-    protected long chainIndex;
+    private long chainIndex;
 
-    protected long pulseIndex;
+    private long pulseIndex;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSz")
     private java.time.ZonedDateTime timeStamp;
 
-    protected String localRandomValue;
+    private String localRandomValue;
 
-//    protected PulseType.External external;
-//
-//    protected List<PulseType.ListValue> listValue;
+    private External external;
 
-    protected String precommitmentValue;
+    private List<ListValue> listValues;
 
-    protected int statusCode;
+    private String precommitmentValue;
 
-    protected String signatureValue;
+    private int statusCode;
 
-    protected String outputValue;
+    private String signatureValue;
 
-//    @JsonFormat(pattern = "dd/MM/yyyy hh:mm a")
-//    private LocalDateTime timeStampOriginal;
-//
-//    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSz")
-//    private ZonedDateTime timestamp;
-//
-//    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-//    private LocalDateTime timestamp2;
+    private String outputValue;
 
     public PulseDto() {
     }
@@ -62,8 +59,9 @@ public class PulseDto implements Serializable {
         this.id = pulseEntity.getId();
         this.pulseIndex = pulseEntity.getPulseIndex();
         this.period = pulseEntity.getPeriod();
-        this.timeStamp = pulseEntity.getTimeStamp();
+        this.timeStamp = pulseEntity.getTimeStamp().withZoneSameInstant((ZoneOffset.UTC).normalized());
         this.uri = pulseEntity.getUri();
+        this.version = pulseEntity.getVersion();
         this.certificateId = pulseEntity.getCertificateId();
         this.chainIndex = pulseEntity.getChainIndex();
         this.localRandomValue = pulseEntity.getLocalRandomValue();
@@ -71,5 +69,16 @@ public class PulseDto implements Serializable {
         this.signatureValue = pulseEntity.getSignatureValue();
         this.outputValue = pulseEntity.getOutputValue();
         this.statusCode = pulseEntity.getStatusCode();
+
+        this.external =  External.newExternalFromEntity(pulseEntity.getExternalEntity());
+        this.listValues  = convertListValuesToPulse(pulseEntity);
     }
+
+    private static List<ListValue> convertListValuesToPulse(PulseEntity pulseEntity){
+        List<ListValue> listValues = new ArrayList<>();
+        pulseEntity.getListValueEntities().forEach(
+                entity -> listValues.add(ListValue.getOneValue(entity.getValue(), entity.getType(), entity.getUri())));
+        return listValues;
+    }
+
 }

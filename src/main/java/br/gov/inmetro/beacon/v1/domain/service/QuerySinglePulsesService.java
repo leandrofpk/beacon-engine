@@ -2,11 +2,13 @@ package br.gov.inmetro.beacon.v1.domain.service;
 
 import br.gov.inmetro.beacon.v1.domain.repository.PulsesRepository;
 import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
+import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,32 +18,48 @@ import java.util.Optional;
 @RequestScope
 public class QuerySinglePulsesService {
 
-    private final PulsesRepository pulses;
+    private final PulsesRepository pulsesRepository;
 
     @Autowired
     public QuerySinglePulsesService(PulsesRepository records) {
-        this.pulses = records;
+        this.pulsesRepository = records;
     }
 
     public List<PulseDto> findLast20(Integer chain) {
         List<PulseDto> dtos = new ArrayList<>();
-        pulses.obterTodos(chain).forEach(pulseEntity -> dtos.add(new PulseDto(pulseEntity)));
+        pulsesRepository.obterTodos(chain).forEach(pulseEntity -> dtos.add(new PulseDto(pulseEntity)));
         return Collections.unmodifiableList(dtos);
     }
 
     public Optional<PulseEntity> last(Long chain) {
-        return Optional.ofNullable(pulses.last(chain));
+        return Optional.ofNullable(pulsesRepository.last(chain));
     }
-
-//    public Optional<PulseEntity> findByChainAndId(int chain, Long idChain) {
-//        return pulses.findByChainAndId(chain, idChain);
-//    }
 
     public PulseDto lastDto(Long chain) {
-        return pulses.lastDto(chain);
+        PulseEntity last = pulsesRepository.last(chain);
+        if (last==null){
+            return null;
+        } else {
+            return new PulseDto(last);
+        }
     }
 
-    public PulseDto first(Long chain) {
-        return pulses.first(chain);
+    public PulseDto firstDto(Long chain) {
+        PulseEntity last = pulsesRepository.first(chain);
+        if (last==null){
+            return null;
+        } else {
+            return new PulseDto(last);
+        }
     }
+
+    public PulseDto findByTimestamp(ZonedDateTime dateTime){
+        PulseEntity byTimestamp = pulsesRepository.findByTimestamp(dateTime);
+        if (byTimestamp==null){
+            return null;
+        } else {
+            return new PulseDto(byTimestamp);
+        }
+    }
+
 }

@@ -12,20 +12,9 @@ public class BeaconApplication {
 		SpringApplication.run(BeaconApplication.class, args);
 	}
 
-//	@Autowired
-//	private InfraConfig appUri;
-//
-//	@Bean
-//	public InfraConfig getAppUri(HttpServletRequest request) {
-//		String uri = null;
-//
-//		if (request.getServerPort() != 443){
-//			uri = request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-//		} else {
-//			uri = request.getServerName() + request.getContextPath();
-//		}
-//
-//		return appUri;
+//	@EventListener(ContextRefreshedEvent.class)
+//	public void contextRefreshedEvent() {
+//		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 //	}
 
 }

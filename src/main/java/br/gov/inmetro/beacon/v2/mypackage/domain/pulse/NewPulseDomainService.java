@@ -50,6 +50,7 @@ public class NewPulseDomainService {
         this.pastOutputValuesService = pastOutputValuesService;
     }
 
+    @Transactional
     public void begin(List<EntropyDto> regularNoises){
         this.regularNoises = regularNoises;
 
@@ -118,7 +119,7 @@ public class NewPulseDomainService {
             processedPulses.add(pulso);
         }
 
-        processedPulses.forEach(pulse -> entropyRepository.deleteByTimeStamp(pulse.getTimeStamp()));
+//        processedPulses.forEach(pulse -> entropyRepository.deleteByTimeStamp(pulse.getTimeStamp()));
 
     }
 
@@ -132,10 +133,12 @@ public class NewPulseDomainService {
         long between = ChronoUnit.MINUTES.between(previous.getTimeStamp(), current.getTimeStamp());
         if (between > 1){
             vStatusCode = 2;
-            list.add(ListValue.getOneValue(previous.getOutputValue(), "hour", previous.getUri()));
-            list.add(ListValue.getOneValue(previous.getOutputValue(), "day", previous.getUri()));
-            list.add(ListValue.getOneValue(previous.getOutputValue(), "month", previous.getUri()));
-            list.add(ListValue.getOneValue(previous.getOutputValue(), "year", previous.getUri()));
+            List<ListValue> listValue = previous.getListValue();
+
+            list.add(ListValue.getOneValue(listValue.get(1).getValue(), "hour", listValue.get(1).getUri()));
+            list.add(ListValue.getOneValue(listValue.get(2).getValue(), "day", listValue.get(2).getUri()));
+            list.add(ListValue.getOneValue(listValue.get(3).getValue(), "month", listValue.get(3).getUri()));
+            list.add(ListValue.getOneValue(listValue.get(4).getValue(), "year", listValue.get(4).getUri()));
         } else {
             list.addAll(pastOutputValuesService.getOldPulses(current.getTimeStamp()));
         }
@@ -196,6 +199,7 @@ public class NewPulseDomainService {
     protected void persistOnePulse(Pulse pulse) {
         pulsesRepository.save(new PulseEntity(pulse));
         combinationErrorsRepository.persist(combineDomainResult.getCombineErrorList());
+        entropyRepository.deleteByTimeStamp(pulse.getTimeStamp());
 //        pulses.remove(pulse);
     }
 

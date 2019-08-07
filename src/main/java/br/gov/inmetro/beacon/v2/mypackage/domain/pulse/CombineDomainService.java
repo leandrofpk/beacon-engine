@@ -37,7 +37,6 @@ public class CombineDomainService {
 
         Map<ZonedDateTime, List<EntropyDto>> collect = regularNoisesChainOne
                 .stream()
-//                .filter(entropyDto -> entropyDto.getChain().equals(chain))
                 .collect(Collectors.groupingBy(EntropyDto::getTimeStamp));
 
         collect.forEach((key, value) -> {

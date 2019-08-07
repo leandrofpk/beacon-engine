@@ -1,10 +1,10 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain.service;
 
 import br.gov.inmetro.beacon.v1.domain.repository.PulsesRepository;
-import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
 import br.gov.inmetro.beacon.v2.mypackage.domain.ActiveChainService;
 import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.ListValue;
 import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
+import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +39,7 @@ public class PastOutputValuesService {
         Pulse pulseHour = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDaHora);
 
         if (pulseHour==null){
-            PulseDto first = pulsesRepository.first(activeChainService.get().getChainIndex());
+            PulseEntity first = pulsesRepository.first(activeChainService.get().getChainIndex());
             listValues.add(ListValue.getOneValue(first.getOutputValue(), "hour", first.getUri()));
         } else {
             listValues.add(ListValue.getOneValue(pulseHour.getOutputValue(), "hour", pulseHour.getUri()));
