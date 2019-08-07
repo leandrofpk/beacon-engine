@@ -96,7 +96,7 @@ public class NewPulseDomainService {
             // tratar previous pulse
 
             LocalRandomValueDto localRandomValue1 = localRandomValueDtos.get(currentIndex);
-            LocalRandomValueDto localRandomValue2 = null;
+            LocalRandomValueDto localRandomValue2;
             int nextIndex = currentIndex + 1;
 
             if (nextIndex < localRandomValueDtos.size()){
@@ -132,16 +132,22 @@ public class NewPulseDomainService {
         long between = ChronoUnit.MINUTES.between(previous.getTimeStamp(), current.getTimeStamp());
         if (between > 1){
             vStatusCode = 2;
+            list.add(ListValue.getOneValue(previous.getOutputValue(), "hour", previous.getUri()));
+            list.add(ListValue.getOneValue(previous.getOutputValue(), "day", previous.getUri()));
+            list.add(ListValue.getOneValue(previous.getOutputValue(), "month", previous.getUri()));
+            list.add(ListValue.getOneValue(previous.getOutputValue(), "year", previous.getUri()));
+        } else {
+            list.addAll(pastOutputValuesService.getOldPulses(current.getTimeStamp()));
         }
 
-        list.addAll(pastOutputValuesService.getOldPulses(current.getTimeStamp()));
-
+        long vPulseIndex = previous.getPulseIndex()+1;
+        String uri = env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex;
 
         return new Pulse.Builder()
-                .setUri(env.getProperty("beacon.url"))
+                .setUri(uri)
                 .setChainValueObject(activeChain)
                 .setCertificateId("0")
-                .setPulseIndex(previous.getPulseIndex()+1)
+                .setPulseIndex(vPulseIndex)
                 .setTimeStamp(current.getTimeStamp())
                 .setLocalRandomValue(current.getValue())
                 .setListValue(list)
@@ -149,7 +155,7 @@ public class NewPulseDomainService {
                 .setPrecommitmentValue(next.getValue())
                 .setStatusCode(vStatusCode)
                 .setSignatureValue("assinatura")
-                .setOutputValue("valor output")
+                .setOutputValue("output value index:" + vPulseIndex)
                 .build();
 
     }
@@ -167,8 +173,11 @@ public class NewPulseDomainService {
         list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
                 "year", null));
 
+        String uri = env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + 1;
+
+
         return new Pulse.Builder()
-                .setUri(env.getProperty("beacon.url"))
+                .setUri(uri)
                 .setChainValueObject(activeChain)
                 .setCertificateId("0")
                 .setPulseIndex(1)
@@ -179,18 +188,9 @@ public class NewPulseDomainService {
                 .setPrecommitmentValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
                 .setStatusCode(1)
                 .setSignatureValue("assinatura")
-                .setOutputValue("valor output")
+                .setOutputValue("valor output index 1")
                 .build();
     }
-
-//    private void status(){
-//        long between = ChronoUnit.MINUTES.between(lastRecordEntity.getTimeStamp(), DateUtil.longToLocalDateTime( Long.toString(record.getTimeStamp() )));
-//        if (between == 1){
-//            return "0";
-//        }
-//
-//        return "2";
-//    }
 
     @Transactional
     protected void persistOnePulse(Pulse pulse) {

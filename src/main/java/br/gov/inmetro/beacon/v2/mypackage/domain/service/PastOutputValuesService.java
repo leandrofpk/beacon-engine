@@ -33,7 +33,6 @@ public class PastOutputValuesService {
         List<ListValue> listValues = new ArrayList<>();
 
         // saber se o current é o mesmo da hora.
-
         ZonedDateTime primeroDaHora = currentTimestamp.truncatedTo(ChronoUnit.HOURS);
         System.out.println("Current:" + currentTimestamp);
         System.out.println("primeroDaHora:" + primeroDaHora);
@@ -41,24 +40,27 @@ public class PastOutputValuesService {
 
         if (pulseHour==null){
             PulseDto first = pulsesRepository.first(activeChainService.get().getChainIndex());
-            listValues.add(ListValue.getOneValue(first.getLocalRandomValue(), "hour", first.getUri()));
+            listValues.add(ListValue.getOneValue(first.getOutputValue(), "hour", first.getUri()));
         } else {
-            listValues.add(ListValue.getOneValue(pulseHour.getLocalRandomValue(), "hour", pulseHour.getUri()));
+            listValues.add(ListValue.getOneValue(pulseHour.getOutputValue(), "hour", pulseHour.getUri()));
         }
 
+        //day
+        ZonedDateTime primeroDoDia = currentTimestamp.truncatedTo(ChronoUnit.DAYS);
+        System.out.println(primeroDoDia);
+        Pulse pulseDay = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoDia);
+        listValues.add(ListValue.getOneValue(pulseDay.getOutputValue(), "day", pulseDay.getUri()));
 
-//        ZonedDateTime primeroDoDia = currentTimestamp.truncatedTo(ChronoUnit.DAYS);
-//        System.out.println(primeroDoDia);
-//        Pulse pulseDay = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoDia);
-//        listValues.add(ListValue.getOneValue(pulseDay.getLocalRandomValue(), "day", pulseDay.getUri()));
-//
-//        ZonedDateTime primeroDoMes = currentTimestamp.with(ChronoField.DAY_OF_MONTH, 1).truncatedTo(ChronoUnit.DAYS);
-//        Pulse pulseMonth = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoMes);
-//        listValues.add(ListValue.getOneValue(pulseMonth.getLocalRandomValue(), "month", pulseMonth.getUri()));
-//
-//        ZonedDateTime primeroDoAno = currentTimestamp.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
-//        Pulse pulseYear = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoAno);
-//        listValues.add(ListValue.getOneValue(pulseYear.getLocalRandomValue(), "year", pulseYear.getUri()));
+        //month
+        ZonedDateTime primeroDoMes = currentTimestamp.with(ChronoField.DAY_OF_MONTH, 1).truncatedTo(ChronoUnit.DAYS);
+        Pulse pulseMonth = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoMes);
+        listValues.add(ListValue.getOneValue(pulseMonth.getOutputValue(), "month", pulseMonth.getUri()));
+
+        //year
+        ZonedDateTime primeroDoAno = currentTimestamp.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
+        System.out.println("primeroDoAno:" + primeroDoAno);
+        Pulse pulseYear = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoAno);
+        listValues.add(ListValue.getOneValue(pulseYear.getOutputValue(), "year", pulseYear.getUri()));
 
         return listValues;
     }
