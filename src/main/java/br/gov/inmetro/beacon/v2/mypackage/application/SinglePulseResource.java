@@ -1,22 +1,23 @@
 package br.gov.inmetro.beacon.v2.mypackage.application;
 
-import br.gov.inmetro.beacon.v1.domain.service.QuerySinglePulsesService;
+import br.gov.inmetro.beacon.v2.mypackage.domain.service.QuerySinglePulsesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @RestController
-//@Api(value = "Pulse")
-@Api(tags = "Pulse Commands", value = "PulseCommands", description = "Controller for Vehicle Commands")
+@Api(tags = "Pulse Commands", value = "PulseCommands", description = "Controller for Pulse Commands")
 @RequestMapping(value = "beacon/2.0/pulse", produces= MediaType.APPLICATION_JSON_VALUE)
 public class SinglePulseResource {
 
@@ -28,23 +29,26 @@ public class SinglePulseResource {
     }
 
     @ApiOperation(value = "Pulse at a specific time (or next closest)")
-    @RequestMapping("time/{timeStamp}")
+    @GetMapping("time/{timeStamp}")
     public ResponseEntity specificTime(@PathVariable String timeStamp){
         try {
             ZonedDateTime parse = ZonedDateTime.parse(timeStamp, DateTimeFormatter.ISO_DATE_TIME);
-            PulseDto byTimestamp = singlePulsesService.findByTimestamp(parse);
+            PulseDto byTimestamp = singlePulsesService.findSpecificTime(parse);
 
             if (byTimestamp==null){
                 return new ResponseEntity("Pulse Not Available.", HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity(byTimestamp, HttpStatus.OK);
 
-        } catch (Exception e){
+        } catch (DateTimeParseException e){
             return new ResponseEntity("Bad Request", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @RequestMapping("time/next/{timeStamp}")
+    @ApiOperation(value = "Next Pulse")
+    @GetMapping("time/next/{timeStamp}")
     public ResponseEntity next(@PathVariable String timeStamp){
         try {
             ZonedDateTime parse = ZonedDateTime.parse(timeStamp, DateTimeFormatter.ISO_DATE_TIME);
@@ -55,13 +59,15 @@ public class SinglePulseResource {
             }
             return new ResponseEntity(byTimestamp, HttpStatus.OK);
 
-        } catch (Exception e){
+        } catch (DateTimeParseException e){
             return new ResponseEntity("Bad Request", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
-    @RequestMapping("time/previous/{timeStamp}")
+    @ApiOperation(value = "Previous Pulse")
+    @GetMapping("time/previous/{timeStamp}")
     public ResponseEntity previous(@PathVariable String timeStamp){
         try {
             ZonedDateTime parse = ZonedDateTime.parse(timeStamp, DateTimeFormatter.ISO_DATE_TIME);
@@ -72,10 +78,31 @@ public class SinglePulseResource {
             }
             return new ResponseEntity(byTimestamp, HttpStatus.OK);
 
-        } catch (Exception e){
+        } catch (DateTimeParseException e){
             return new ResponseEntity("Bad Request", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
+
+    @ApiOperation(value = "Last Available Pulse")
+    @GetMapping("last")
+    public ResponseEntity last(){
+        try {
+            PulseDto byTimestamp = singlePulsesService.findLast();
+
+            if (byTimestamp==null){
+                return new ResponseEntity("Pulse Not Available.", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity(byTimestamp, HttpStatus.OK);
+
+        } catch (DateTimeParseException e){
+            return new ResponseEntity("Bad Request", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

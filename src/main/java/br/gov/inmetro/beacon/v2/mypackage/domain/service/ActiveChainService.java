@@ -1,4 +1,4 @@
-package br.gov.inmetro.beacon.v2.mypackage.domain;
+package br.gov.inmetro.beacon.v2.mypackage.domain.service;
 
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
 import br.gov.inmetro.beacon.v2.mypackage.domain.repository.ChainRepository;

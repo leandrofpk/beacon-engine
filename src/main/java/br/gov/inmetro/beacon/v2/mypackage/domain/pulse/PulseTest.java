@@ -260,6 +260,14 @@ public class PulseTest {
         System.out.println("startofYear");
         System.out.println(startofYear);
 
+
+        long between1 = ChronoUnit.MINUTES.between(date1, date1);
+        System.out.println(between1);
+
+        long between2 = ChronoUnit.MINUTES.between(date1.minus(1, ChronoUnit.MINUTES), date1.plus(2, ChronoUnit.MINUTES));
+        System.out.println(between2);
+
+
     }
 
 

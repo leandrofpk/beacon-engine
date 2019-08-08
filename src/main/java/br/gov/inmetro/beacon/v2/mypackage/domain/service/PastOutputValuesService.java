@@ -1,7 +1,6 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain.service;
 
 import br.gov.inmetro.beacon.v1.domain.repository.PulsesRepository;
-import br.gov.inmetro.beacon.v2.mypackage.domain.ActiveChainService;
 import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.ListValue;
 import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;

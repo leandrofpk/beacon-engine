@@ -28,7 +28,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     private ApiInfo metaData() {
         return new ApiInfoBuilder()
-                .title("Brazilian Beacon")
+                .title("Brazilian Beacon REST API")
                 .description("\"Spring Boot REST API for greeting people\"")
                 .version("2.0")
                 .license("Apache License Version 2.0")
