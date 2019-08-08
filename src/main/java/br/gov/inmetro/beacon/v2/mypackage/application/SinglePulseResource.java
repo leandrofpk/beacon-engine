@@ -1,6 +1,8 @@
 package br.gov.inmetro.beacon.v2.mypackage.application;
 
 import br.gov.inmetro.beacon.v1.domain.service.QuerySinglePulsesService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +15,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 @RestController
+//@Api(value = "Pulse")
+@Api(tags = "Pulse Commands", value = "PulseCommands", description = "Controller for Vehicle Commands")
 @RequestMapping(value = "beacon/2.0/pulse", produces= MediaType.APPLICATION_JSON_VALUE)
 public class SinglePulseResource {
 
@@ -23,6 +27,7 @@ public class SinglePulseResource {
         this.singlePulsesService = singlePulsesService;
     }
 
+    @ApiOperation(value = "Pulse at a specific time (or next closest)")
     @RequestMapping("time/{timeStamp}")
     public ResponseEntity specificTime(@PathVariable String timeStamp){
         try {
