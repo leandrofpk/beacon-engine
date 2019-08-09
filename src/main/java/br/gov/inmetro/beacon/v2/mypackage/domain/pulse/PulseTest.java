@@ -2,11 +2,14 @@ package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.util.ASN1Dump;
+import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +18,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.crypto.Cipher;
+import java.nio.ByteBuffer;
 import java.security.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,14 +36,10 @@ public class PulseTest {
     @Autowired
     Environment env;
 
-    /**
-     * Should build a pulse for the first chain
-     */
-    @Test
-    public void shouldBuildTheFirstPulseTest(){
+    private Pulse aPulse;
 
-//        ChainValueObject
-
+    @Before
+    public void init(){
         ChainValueObject activeChain = new ChainValueObject("2.0", 0, 60000, 1);
 
         List<ListValue> listValue = new ArrayList<>();
@@ -61,7 +60,20 @@ public class PulseTest {
                 .setOutputValue("outputValue")
                 .build();
 
-        System.out.println(newRegularPulse.toString());
+        aPulse = newRegularPulse;
+
+    }
+
+    /**
+     * Should build a pulse for the first chain
+     */
+    @Test
+    public void shouldBuildTheFirstPulseTest(){
+
+//        ChainValueObject
+
+
+//        System.out.println(newRegularPulse.toString());
 
 //        Assert.assertEquals();
 
@@ -270,5 +282,103 @@ public class PulseTest {
 
     }
 
+    @Test
+    public void testarSerializacao(){
+//        public boolean isSignatureValid(UnpackedRecord record) throws Exception {
+//            final ByteArrayOutputStream baos = new ByteArrayOutputStream(2048); // should be enough
+//            baos.write(record.getVersion().getBytes(StandardCharsets.US_ASCII));
+//            baos.write(record.getFrequencyAsBytes());
+
+        //campos uint32 devem
+
+//        uint32
+//        cipherSuite
+//        period
+//        statuscode
+//
+//        uint64
+//        chainIndex
+//        pulseIndex
+//        external.statusCode
+
+//        ByteBuffer byteBuffer = ByteBuffer.allocate(4).putInt(aPulse.getCipherSuite());
+//        byte[] array = new byte[4];
+//
+//        System.out.println(array);
+//        System.out.println(array.length);
+//
+//        for (int i = 0; i < array.length; i++) {
+//            System.out.println(array[i]);
+//        }
+
+        System.out.println("*************************************");
+
+        byte[] array = ByteBuffer.allocate(4).putInt(2).array();
+        System.out.println(array);
+
+        for (int i = 0; i < array.length; i++) {
+            System.out.println(array[i]);
+        }
+
+//        Integer integer = 1;
+//        byte[] array2 = new byte[4];
+
+
+
+//        System.out.println(array2);
+//        System.out.println(array2.length);
+//
+//        for (int i = 0; i < array2.length; i++) {
+//            System.out.println(array2[i]);
+//        }
+//
+//        System.out.println("-----------------------------------------");
+//
+//
+//        byte[] serializeTeste = new byte[4];
+//        serializeTeste = SerializationUtils.serialize(new Integer(1));
+//        System.out.println(serializeTeste);
+//
+//        Object deserialize = SerializationUtils.deserialize(serializeTeste);
+//        System.out.println(deserialize);
+
+
+
+//        System.out.println(byteBuffer);
+//        System.out.println("Pulse deserializado: " + byteBuffer.toString());
+
+//        System.out.println("Pulse int:" + aPulse.getCipherSuite());
+//        byte[] serialize = SerializationUtils.serialize(byteBuffer.);
+//        System.out.println(serialize);
+//
+//        int length = serialize.length;
+//        System.out.println("Length:" + length);
+//
+//        Object deserialize = SerializationUtils.deserialize(serialize);
+//        System.out.println(deserialize);
+
+    }
+
+    @Test
+    public void binaryString(){
+//        fonte:
+//        https://www.geeksforgeeks.org/java-integer-bitcount-method/
+
+
+        int a = 10;
+
+        // Convert integer number to binary  format
+        System.out.println(Integer.toBinaryString(a));
+
+        // to print number of 1's in the number a
+        System.out.println(Integer.bitCount(a));
+
+        long b = 1;
+
+        System.out.println(Long.toBinaryString(b));
+        System.out.println(Long.bitCount(b));
+
+
+    }
 
 }
