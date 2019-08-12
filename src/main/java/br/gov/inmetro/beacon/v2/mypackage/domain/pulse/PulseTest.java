@@ -275,7 +275,7 @@ public class PulseTest {
         SecureRandom random = new SecureRandom();
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
 
-        generator.initialize(256, random);
+        generator.initialize(1024, random);
 
         KeyPair pair = generator.generateKeyPair();
         Key pubKey = pair.getPublic();
@@ -284,7 +284,7 @@ public class PulseTest {
         cipher.init(Cipher.ENCRYPT_MODE, pubKey, random);
         byte[] cipherText = cipher.doFinal(input);
 //        System.out.println("cipher: " + new String(cipherText));
-        System.out.println("cipher: " + Hex.toHexString(cipherText));
+        System.out.println("cipher: " + Hex.toHexString(cipherText).toUpperCase());
 
         cipher.init(Cipher.DECRYPT_MODE, privKey);
         byte[] plainText = cipher.doFinal(cipherText);
