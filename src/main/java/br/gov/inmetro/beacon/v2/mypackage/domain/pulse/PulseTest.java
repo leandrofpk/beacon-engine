@@ -23,6 +23,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -265,34 +266,6 @@ public class PulseTest {
 
     }
 
-//    http://www.java2s.com/Tutorial/Java/0490__Security/RSAexamplewithPKCS1Padding.htm
-    @Test
-    public void outroTeste() throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-
-        byte[] input = "abc".getBytes();
-        Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-        SecureRandom random = new SecureRandom();
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
-
-        generator.initialize(1024, random);
-
-        KeyPair pair = generator.generateKeyPair();
-        Key pubKey = pair.getPublic();
-        Key privKey = pair.getPrivate();
-
-        cipher.init(Cipher.ENCRYPT_MODE, pubKey, random);
-        byte[] cipherText = cipher.doFinal(input);
-//        System.out.println("cipher: " + new String(cipherText));
-        System.out.println("cipher: " + Hex.toHexString(cipherText).toUpperCase());
-
-        cipher.init(Cipher.DECRYPT_MODE, privKey);
-        byte[] plainText = cipher.doFinal(cipherText);
-        System.out.println("plain : " + new String(plainText));
-
-    }
-
-
     @Test
     public void testingDate(){
         ZonedDateTime date1 = ZonedDateTime.parse("2019-07-30T18:22:00.000Z");
@@ -322,116 +295,53 @@ public class PulseTest {
 
     }
 
+
+//    http://www.java2s.com/Tutorial/Java/0490__Security/RSAexamplewithPKCS1Padding.htm
     @Test
-    public void testarSerializacao(){
-//        public boolean isSignatureValid(UnpackedRecord record) throws Exception {
-//            final ByteArrayOutputStream baos = new ByteArrayOutputStream(2048); // should be enough
-//            baos.write(record.getVersion().getBytes(StandardCharsets.US_ASCII));
-//            baos.write(record.getFrequencyAsBytes());
+    public void outroTeste() throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-        //campos uint32 devem
+//        byte[] input = "abc".getBytes();
+        byte[] input =  "88569C283D277F82C06D8CC262CB19FC6F5C73C31922F5AB28275891D4FA6C5B2EC7EA0F9AC15CD61A38D889C71042F05591CF32D6B233D4D9D9F36531F10356".getBytes(StandardCharsets.UTF_8);
+        Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+//        SecureRandom random = new SecureRandom();
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
 
-//        uint32
-//        cipherSuite
-//        period
-//        statuscode
-//
-//        uint64
-//        chainIndex
-//        pulseIndex
-//        external.statusCode
+//        generator.initialize(1024, random);
+        generator.initialize(4096);
 
-//        ByteBuffer byteBuffer = ByteBuffer.allocate(4).putInt(aPulse.getCipherSuite());
-//        byte[] array = new byte[4];
-//
-//        System.out.println(array);
-//        System.out.println(array.length);
-//
-//        for (int i = 0; i < array.length; i++) {
-//            System.out.println(array[i]);
-//        }
+        KeyPair pair = generator.generateKeyPair();
+        Key pubKey = pair.getPublic();
+        Key privKey = pair.getPrivate();
 
-        System.out.println("*************************************");
+        System.out.println("priv:" + pair.getPrivate().toString());
+        System.out.println("pub:" + pair.getPublic().toString());
 
-        byte[] array = ByteBuffer.allocate(4).putInt(2).array();
-        System.out.println(array);
+        cipher.init(Cipher.ENCRYPT_MODE, privKey);
+        byte[] cipherText = cipher.doFinal(input);
+//        System.out.println("cipher: " + new String(cipherText));
+        System.out.println("cipher: " + Hex.toHexString(cipherText).toUpperCase());
 
-        for (int i = 0; i < array.length; i++) {
-            System.out.println(array[i]);
-        }
-
-//        Integer integer = 1;
-//        byte[] array2 = new byte[4];
-
-
-
-//        System.out.println(array2);
-//        System.out.println(array2.length);
-//
-//        for (int i = 0; i < array2.length; i++) {
-//            System.out.println(array2[i]);
-//        }
-//
-//        System.out.println("-----------------------------------------");
-//
-//
-//        byte[] serializeTeste = new byte[4];
-//        serializeTeste = SerializationUtils.serialize(new Integer(1));
-//        System.out.println(serializeTeste);
-//
-//        Object deserialize = SerializationUtils.deserialize(serializeTeste);
-//        System.out.println(deserialize);
-
-
-
-//        System.out.println(byteBuffer);
-//        System.out.println("Pulse deserializado: " + byteBuffer.toString());
-
-//        System.out.println("Pulse int:" + aPulse.getCipherSuite());
-//        byte[] serialize = SerializationUtils.serialize(byteBuffer.);
-//        System.out.println(serialize);
-//
-//        int length = serialize.length;
-//        System.out.println("Length:" + length);
-//
-//        Object deserialize = SerializationUtils.deserialize(serialize);
-//        System.out.println(deserialize);
+        cipher.init(Cipher.DECRYPT_MODE, pubKey);
+        byte[] plainText = cipher.doFinal(cipherText);
+        System.out.println("plain : " + new String(plainText));
 
     }
 
+//    https://stackoverflow.com/questions/43459993/how-do-i-generate-rsa-key-pair-in-java-in-openssl-format
     @Test
-    public void binaryString(){
-//        fonte:
-//        https://www.geeksforgeeks.org/java-integer-bitcount-method/
+    public void teste() throws Exception{
 
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(4096); KeyPair kp = kpg.generateKeyPair();
 
-        int a = 10;
-
-        // Convert integer number to binary  format
-        System.out.println(Integer.toBinaryString(a));
-
-        // to print number of 1's in the number a
-        System.out.println(Integer.bitCount(a));
-
-        long b = 1;
-
-        System.out.println(Long.toBinaryString(b));
-        System.out.println(Long.bitCount(b));
-
-
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz");
-
-
-        ZonedDateTime now1 = ZonedDateTime.now()
-                .truncatedTo(ChronoUnit.MINUTES)
-                .withZoneSameInstant((ZoneOffset.UTC).normalized());
-
-        System.out.println(now1);
-
-        String format = now1.format(dateTimeFormatter);
-        System.out.println(format);
-
+        System.out.println ("-----BEGIN PRIVATE KEY-----");
+        System.out.println (Base64.getMimeEncoder().encodeToString( kp.getPrivate().getEncoded()));
+        System.out.println ("-----END PRIVATE KEY-----");
+        System.out.println ("-----BEGIN PUBLIC KEY-----");
+        System.out.println (Base64.getMimeEncoder().encodeToString( kp.getPublic().getEncoded()));
+        System.out.println ("-----END PUBLIC KEY-----");
     }
+
 
 }

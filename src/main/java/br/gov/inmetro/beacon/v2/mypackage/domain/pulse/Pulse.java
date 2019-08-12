@@ -2,7 +2,7 @@ package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
-import br.gov.inmetro.beacon.v2.mypackage.infra.util.Sha512InternalUtil;
+import br.gov.inmetro.beacon.v2.mypackage.infra.util.suite0.CipherSuiteZero;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService.loadPrivateKey;
-import static br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService.sign;
 
 @Getter
 public class Pulse {
@@ -66,7 +65,7 @@ public class Pulse {
                   @NonNull List<ListValue> listValue, @NonNull String precommitmentValue,
                   int statusCode, String signatureValue, String outputValue) {
 
-        Sha512InternalUtil sha512Util = new Sha512InternalUtil();
+        CipherSuiteZero sha512Util = new CipherSuiteZero();
 
         this.uri =  uri;
         this.version = version;
@@ -91,12 +90,14 @@ public class Pulse {
 //        String propertyPrivateKey = environment.getProperty("beacon.x509.privatekey");
         PrivateKey privateKey = null;
         try {
-            privateKey = loadPrivateKey("/home/leandro/dev/beacon-keys/inmetro-pkcs8.key");
+//            privateKey = loadPrivateKey("/home/leandro/dev/beacon-keys/inmetro-pkcs8.key");
+//            privateKey = loadPrivateKey("D:\\inmetro\\beacon-keys\\inmetro-pkcs8.key");
         } catch (Exception e) {
             e.printStackTrace();
         }
 //        String signature = sign(hashSha512Hexa, privateKey);
-        this.signatureValue = sha512Util.signBytes15(digest, privateKey);
+//        this.signatureValue = sha512Util.signBytes15(digest, privateKey);
+        this.signatureValue = "signatureValue";
         this.outputValue = "output";
 
     }
