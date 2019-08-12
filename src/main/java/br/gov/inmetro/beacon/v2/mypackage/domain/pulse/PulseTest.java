@@ -9,6 +9,7 @@ import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.util.ASN1Dump;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
+import org.bouncycastle.util.encoders.Hex;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,17 +18,17 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.nio.ByteBuffer;
 import java.security.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application-test.properties")
@@ -38,7 +39,7 @@ public class PulseTest {
 
     private Pulse aPulse;
 
-    @Before
+//    @Before
     public void init(){
         ChainValueObject activeChain = new ChainValueObject("2.0", 0, 60000, 1);
 
@@ -56,8 +57,8 @@ public class PulseTest {
                 .setListValue(listValue)
                 .setPrecommitmentValue("precommitment")
                 .setStatusCode(0)
-                .setSignatureValue("signature")
-                .setOutputValue("outputValue")
+//                .setSignatureValue("signature")
+//                .setOutputValue("outputValue")
                 .build();
 
         aPulse = newRegularPulse;
@@ -228,6 +229,7 @@ public class PulseTest {
         KeyPair keyPair = keyGen.generateKeyPair();
 
         Signature signature = Signature.getInstance("SHA256withRSA", "BC");
+//        Signature signature = Signature.getInstance("SHA256withRSA", "BC");
         signature.initSign(keyPair.getPrivate());
 
         byte[] message = "abc".getBytes();
@@ -251,7 +253,45 @@ public class PulseTest {
         ASN1OctetString sigHash = (ASN1OctetString) seq.getObjectAt(1);
         System.out.println(MessageDigest.isEqual(hash.digest(), sigHash.getOctets()));
 
+        System.out.println(hash);
+        System.out.println(hash.getAlgorithm());
+        System.out.println(hash.getDigestLength());
+        System.out.println(hash.digest());
+
+        String s = Hex.toHexString(decSig);
+        System.out.println("Assintatura");
+        System.out.println(s);
+
+
     }
+
+//    http://www.java2s.com/Tutorial/Java/0490__Security/RSAexamplewithPKCS1Padding.htm
+    @Test
+    public void outroTeste() throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
+        byte[] input = "abc".getBytes();
+        Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+        SecureRandom random = new SecureRandom();
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
+
+        generator.initialize(256, random);
+
+        KeyPair pair = generator.generateKeyPair();
+        Key pubKey = pair.getPublic();
+        Key privKey = pair.getPrivate();
+
+        cipher.init(Cipher.ENCRYPT_MODE, pubKey, random);
+        byte[] cipherText = cipher.doFinal(input);
+//        System.out.println("cipher: " + new String(cipherText));
+        System.out.println("cipher: " + Hex.toHexString(cipherText));
+
+        cipher.init(Cipher.DECRYPT_MODE, privKey);
+        byte[] plainText = cipher.doFinal(cipherText);
+        System.out.println("plain : " + new String(plainText));
+
+    }
+
 
     @Test
     public void testingDate(){
@@ -378,6 +418,19 @@ public class PulseTest {
         System.out.println(Long.toBinaryString(b));
         System.out.println(Long.bitCount(b));
 
+
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz");
+
+
+        ZonedDateTime now1 = ZonedDateTime.now()
+                .truncatedTo(ChronoUnit.MINUTES)
+                .withZoneSameInstant((ZoneOffset.UTC).normalized());
+
+        System.out.println(now1);
+
+        String format = now1.format(dateTimeFormatter);
+        System.out.println(format);
 
     }
 

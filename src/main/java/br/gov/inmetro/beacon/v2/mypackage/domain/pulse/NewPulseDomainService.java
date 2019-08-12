@@ -15,6 +15,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +124,7 @@ public class NewPulseDomainService {
 
     }
 
-    private Pulse getRegularPulse(Pulse previous, LocalRandomValueDto current, LocalRandomValueDto next){
+    private Pulse getRegularPulse(Pulse previous, LocalRandomValueDto current, LocalRandomValueDto next) {
         List<ListValue> list = new ArrayList<>();
         list.add(ListValue.getOneValue(previous.getOutputValue(),
                 "previous", previous.getUri()));
@@ -157,13 +158,13 @@ public class NewPulseDomainService {
                 .setExternal(External.newExternal())
                 .setPrecommitmentValue(next.getValue())
                 .setStatusCode(vStatusCode)
-                .setSignatureValue("assinatura")
-                .setOutputValue("output value index:" + vPulseIndex)
+//                .setSignatureValue("assinatura")
+//                .setOutputValue("output value index:" + vPulseIndex)
                 .build();
 
     }
 
-    private Pulse getFirstPulse(LocalRandomValueDto localRandomValue){
+    private Pulse getFirstPulse(LocalRandomValueDto localRandomValue) {
         List<ListValue> list = new ArrayList<>();
         list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
                 "previous", null));
@@ -190,8 +191,8 @@ public class NewPulseDomainService {
                 .setExternal(External.newExternal())
                 .setPrecommitmentValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
                 .setStatusCode(1)
-                .setSignatureValue("assinatura")
-                .setOutputValue("valor output index 1")
+//                .setSignatureValue("assinatura")
+//                .setOutputValue("valor output index 1")
                 .build();
     }
 

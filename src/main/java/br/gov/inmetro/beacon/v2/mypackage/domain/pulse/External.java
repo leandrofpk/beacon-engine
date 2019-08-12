@@ -2,6 +2,9 @@ package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 import br.gov.inmetro.beacon.v2.mypackage.infra.ExternalEntity;
 import lombok.Getter;
+import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
+
+import java.nio.ByteBuffer;
 
 @Getter
 public class External {
@@ -28,6 +31,18 @@ public class External {
 
     public static External newExternalFromEntity(ExternalEntity entity){
         return new External(entity.getSourceId(), entity.getStatusCode(), entity.getValue());
+    }
+
+    public byte[] getSourceIdAsByte(){
+        return ByteUtils.fromHexString(sourceId);
+    }
+
+    public byte[] getStatusCodeAsByte(){
+        return ByteBuffer.allocate(8).putLong(statusCode).array();
+    }
+
+    public byte[] getValueAsByte(){
+        return ByteUtils.fromHexString(value);
     }
 
     @Override
