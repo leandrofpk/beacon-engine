@@ -48,6 +48,8 @@ public class CriptoUtilServiceTest {
         PrivateKey privateKey = loadPrivateKey(propertyPrivateKey);
         String signature = sign(hashSha512Hexa, privateKey);
 
+        System.out.println("signature:" + signature);
+
         String propertyPublicKey = environment.getProperty("beacon.x509.certificate");
 
         PublicKey publicKey = loadPublicKeyFromCertificate(propertyPublicKey);
@@ -78,15 +80,37 @@ public class CriptoUtilServiceTest {
 
     @Test
     public void loadX509Certificate() throws IOException, CertificateException {
-
+        System.out.println("INMETRO");
         String certificatePath = environment.getProperty("beacon.x509.certificate");
         InputStream inStream = new FileInputStream(certificatePath);
         X509Certificate cert = X509Certificate.getInstance(inStream);
         PublicKey publicKey = cert.getPublicKey();
 
+        System.out.println(publicKey.getFormat());
+        System.out.println(publicKey.getAlgorithm());
 
         System.out.println(cert);
-//        System.out.println(publicKey);
+        System.out.println(publicKey);
+
+//        System.out.println("formato: \n" + publicKey.getFormat());
+
+        inStream.close();
+    }
+
+    @Test
+    public void loadNistX509Certificate() throws IOException, CertificateException {
+        System.out.println("NIST");
+        String certificatePath = "/home/leandro/dev/beacon-keys/4096-module/nist.cer";
+        InputStream inStream = new FileInputStream(certificatePath);
+        X509Certificate cert = X509Certificate.getInstance(inStream);
+        PublicKey publicKey = cert.getPublicKey();
+
+        System.out.println(publicKey.getFormat());
+        System.out.println(publicKey.getAlgorithm());
+
+        System.out.println(cert);
+        System.out.println(publicKey);
+
 //        System.out.println("formato: \n" + publicKey.getFormat());
 
         inStream.close();

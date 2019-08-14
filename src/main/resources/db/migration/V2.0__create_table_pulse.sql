@@ -11,7 +11,7 @@ CREATE TABLE pulse (
   period int(11) NOT NULL,
   precommitment_value varchar(255) NOT NULL,
   pulse_index bigint(20) NOT NULL,
-  signature_value varchar(255) NOT NULL,
+  signature_value varchar(2048) NOT NULL,
   status_code int(11) NOT NULL,
   time_stamp datetime NOT NULL,
   uri varchar(255) NOT NULL,

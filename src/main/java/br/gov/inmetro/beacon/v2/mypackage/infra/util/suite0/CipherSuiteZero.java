@@ -36,24 +36,16 @@ public class CipherSuiteZero implements ICipherSuite {
         return null;
     }
 
-    public String signBytes15(String plainText, PrivateKey privKey) {
+    public String signBytes15(String plainText, Key privKey) {
         byte[] cipherText = null;
 
         try {
-
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
             byte[] input = plainText.getBytes();
             Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-
             cipher.init(Cipher.ENCRYPT_MODE, privKey);
-
             cipherText = cipher.doFinal(input);
-//            System.out.println("cipher: " + Hex.toHexString(cipherText).toUpperCase());
-
-//        cipher.init(Cipher.DECRYPT_MODE, pubKey);
-//        byte[] plainText = cipher.doFinal(cipherText);
-//        System.out.println("plain : " + new String(plainText));
 
         } catch (Exception e){
             e.printStackTrace();

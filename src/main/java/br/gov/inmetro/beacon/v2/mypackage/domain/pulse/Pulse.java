@@ -1,5 +1,6 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
+import br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService;
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
 import br.gov.inmetro.beacon.v2.mypackage.infra.util.suite0.CipherSuiteZero;
@@ -12,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.time.ZoneOffset;
@@ -80,26 +82,20 @@ public class Pulse {
         this.listValue = listValue;
         this.precommitmentValue = sha512Util.getDigest(precommitmentValue);
         this.statusCode = statusCode;
-//        this.signatureValue = signatureValue;
-//        this.outputValue = outputValue;
 
-        ByteArrayOutputStream byteArrayOutputStream = byteSerializeFields();
-        String digest = sha512Util.getDigest(byteArrayOutputStream.toByteArray());
 
         //sign
-//        String propertyPrivateKey = environment.getProperty("beacon.x509.privatekey");
-        PrivateKey privateKey = null;
         try {
-//            privateKey = loadPrivateKey("/home/leandro/dev/beacon-keys/inmetro-pkcs8.key");
-//            privateKey = loadPrivateKey("D:\\inmetro\\beacon-keys\\inmetro-pkcs8.key");
+            ByteArrayOutputStream byteArrayOutputStream = byteSerializeFields();
+            String digest = sha512Util.getDigest(byteArrayOutputStream.toByteArray());
+
+            Key privKey = CriptoUtilService.loadPrivateKey("/home/leandro/dev/beacon-keys/4096-module/beacon-priv-pkcs8.pem");
+            this.signatureValue = sha512Util.signBytes15(digest, privKey);
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        String signature = sign(hashSha512Hexa, privateKey);
-//        this.signatureValue = sha512Util.signBytes15(digest, privateKey);
-        this.signatureValue = "signatureValue";
-        this.outputValue = "output";
 
+        this.outputValue = "output";
     }
 
     private ByteArrayOutputStream byteSerializeFields()  {
