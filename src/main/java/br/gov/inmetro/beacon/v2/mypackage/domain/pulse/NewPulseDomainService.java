@@ -3,6 +3,7 @@ package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 import br.gov.inmetro.beacon.v1.application.api.LocalRandomValueDto;
 import br.gov.inmetro.beacon.v1.domain.repository.CombinationErrors;
 import br.gov.inmetro.beacon.v1.domain.repository.PulsesRepository;
+import br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService;
 import br.gov.inmetro.beacon.v2.mypackage.application.PulseDto;
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainDomainService;
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.security.Key;
+import java.security.PrivateKey;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,8 @@ public class NewPulseDomainService {
 
     private final PastOutputValuesService pastOutputValuesService;
 
+    private Key privateKey;
+
     @Autowired
     public NewPulseDomainService(Environment env, PulsesRepository pulsesRepository, EntropyRepository entropyRepository,
                                  CombinationErrors combinationErrors, PastOutputValuesService pastOutputValuesService) {
@@ -58,6 +63,12 @@ public class NewPulseDomainService {
         this.activeChain = ChainDomainService.getActiveChain();
         this.lastPulseEntity = pulsesRepository.last(activeChain.getChainIndex());
         String property = env.getProperty("beacon.number-of-entropy-sources");
+
+        try {
+            this.privateKey = CriptoUtilService.loadPrivateKey(env.getProperty("beacon.x509.privatekey"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         combinar(activeChain.getChainIndex(), property);
         processarAndPersistir();
@@ -120,8 +131,6 @@ public class NewPulseDomainService {
             processedPulses.add(pulso);
         }
 
-//        processedPulses.forEach(pulse -> entropyRepository.deleteByTimeStamp(pulse.getTimeStamp()));
-
     }
 
     private Pulse getRegularPulse(Pulse previous, LocalRandomValueDto current, LocalRandomValueDto next) {
@@ -160,6 +169,7 @@ public class NewPulseDomainService {
                 .setStatusCode(vStatusCode)
 //                .setSignatureValue("assinatura")
 //                .setOutputValue("output value index:" + vPulseIndex)
+                .setPrivateKey(privateKey)
                 .build();
 
     }
@@ -193,6 +203,7 @@ public class NewPulseDomainService {
                 .setStatusCode(1)
 //                .setSignatureValue("assinatura")
 //                .setOutputValue("valor output index 1")
+                .setPrivateKey(privateKey)
                 .build();
     }
 
@@ -201,7 +212,6 @@ public class NewPulseDomainService {
         pulsesRepository.save(new PulseEntity(pulse));
         combinationErrorsRepository.persist(combineDomainResult.getCombineErrorList());
         entropyRepository.deleteByTimeStamp(pulse.getTimeStamp());
-//        pulses.remove(pulse);
     }
 
 }

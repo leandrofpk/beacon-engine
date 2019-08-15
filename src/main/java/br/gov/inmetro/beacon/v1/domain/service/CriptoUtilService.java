@@ -2,10 +2,7 @@ package br.gov.inmetro.beacon.v1.domain.service;
 
 import javax.security.cert.CertificateException;
 import javax.security.cert.X509Certificate;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -93,11 +90,17 @@ public class CriptoUtilService {
         return privateKey;
     }
 
-    public static PublicKey loadPublicKeyFromCertificate(String certificatePath) throws IOException, CertificateException {
-        InputStream inStream = new FileInputStream(certificatePath);
-        X509Certificate cert = X509Certificate.getInstance(inStream);
-        final PublicKey publicKey = cert.getPublicKey();
-        inStream.close();
+    public static PublicKey loadPublicKeyFromCertificate(String certificatePath) {
+        PublicKey publicKey = null;
+        try (InputStream inStream = new FileInputStream(certificatePath)) {
+            X509Certificate cert = X509Certificate.getInstance(inStream);
+            publicKey = cert.getPublicKey();
+//            inStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException | CertificateException e) {
+            e.printStackTrace();
+        }
         return publicKey;
     }
 

@@ -11,6 +11,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class CipherSuiteZero implements ICipherSuite {
 
+
+
     public String getDigest(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-512");

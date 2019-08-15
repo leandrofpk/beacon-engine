@@ -65,7 +65,7 @@ public class Pulse {
                   @NonNull String certificateId, long chainIndex, long pulseIndex,
                   @NonNull ZonedDateTime timeStamp, @NonNull String localRandomValue, @NonNull External external,
                   @NonNull List<ListValue> listValue, @NonNull String precommitmentValue,
-                  int statusCode, String signatureValue, String outputValue) {
+                  int statusCode, String signatureValue, String outputValue, Key privateKey) {
 
         CipherSuiteZero sha512Util = new CipherSuiteZero();
 
@@ -83,19 +83,20 @@ public class Pulse {
         this.precommitmentValue = sha512Util.getDigest(precommitmentValue);
         this.statusCode = statusCode;
 
-
-        //sign
+        //sign and output
         try {
             ByteArrayOutputStream byteArrayOutputStream = byteSerializeFields();
             String digest = sha512Util.getDigest(byteArrayOutputStream.toByteArray());
 
-            Key privKey = CriptoUtilService.loadPrivateKey("/home/leandro/dev/beacon-keys/4096-module/beacon-priv-pkcs8.pem");
-            this.signatureValue = sha512Util.signBytes15(digest, privKey);
+            this.signatureValue = sha512Util.signBytes15(digest, privateKey);
+
+            //outputvalue
+            byteArrayOutputStream.write(getSignatureValueAsByte());
+            this.outputValue = sha512Util.getDigest(byteArrayOutputStream.toByteArray());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        this.outputValue = "output";
     }
 
     private ByteArrayOutputStream byteSerializeFields()  {
@@ -121,9 +122,6 @@ public class Pulse {
             baos.write(getYearRandOutAsByte());
             baos.write(getPrecommitmentValueAsByte());
             baos.write(getStatusCodeAsByte());
-            // hash
-            // sign
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,7 +134,7 @@ public class Pulse {
         return new Pulse(entity.getUri(), entity.getVersion(), entity.getCipherSuite(), entity.getPeriod(), entity.getCertificateId(),
                     entity.getChainIndex(), entity.getPulseIndex(), entity.getTimeStamp(), entity.getLocalRandomValue(),
                     External.newExternalFromEntity(entity.getExternalEntity()), convertListValuesToPulse(entity), entity.getPrecommitmentValue(),
-                    entity.getStatusCode(), entity.getSignatureValue(), entity.getOutputValue());
+                    entity.getStatusCode(), entity.getSignatureValue(), entity.getOutputValue(), null);
     }
 
     private static List<ListValue> convertListValuesToPulse(PulseEntity pulseEntity){
@@ -159,6 +157,8 @@ public class Pulse {
         private int statusCode;
         private String signatureValue;
         private String outputValue;
+
+        private Key privateKey;
 
         public Builder setUri(String uri){
             this.uri = uri;
@@ -220,10 +220,15 @@ public class Pulse {
 //            return this;
 //        }
 
+        public Builder setPrivateKey(Key privateKey){
+            this.privateKey = privateKey;
+            return this;
+        }
+
         public Pulse build() {
             return new Pulse(uri, chainValueObject.getVersion(), chainValueObject.getCipherSuite(), chainValueObject.getPeriod(), certificateId,
                     chainValueObject.getChainIndex(), pulseIndex, timeStamp, localRandomValue, external, listValue,
-                    precommitmentValue, statusCode, signatureValue, outputValue);
+                    precommitmentValue, statusCode, signatureValue, outputValue, privateKey);
         }
 
     }
@@ -294,6 +299,10 @@ public class Pulse {
 
     public byte[] getStatusCodeAsByte(){
         return ByteBuffer.allocate(4).putInt(this.statusCode).array();
+    }
+
+    public byte[] getSignatureValueAsByte(){
+        return ByteUtils.fromHexString(signatureValue);
     }
 
     @Override
