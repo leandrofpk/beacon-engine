@@ -2,16 +2,16 @@ package br.gov.inmetro.beacon.v2.mypackage.infra.util.suite0;
 
 import br.gov.inmetro.beacon.v2.mypackage.infra.util.ICipherSuite;
 import org.bouncycastle.util.encoders.Hex;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+@Service
 public class CipherSuiteZero implements ICipherSuite {
-
-
 
     public String getDigest(String input) {
         try {

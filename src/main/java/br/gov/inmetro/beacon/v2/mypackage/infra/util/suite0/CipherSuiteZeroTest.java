@@ -39,7 +39,8 @@ public class CipherSuiteZeroTest {
     @Test
     public void signBytes15Test() throws Exception {
 
-        PrivateKey privKey = CriptoUtilService.loadPrivateKey("D:\\inmetro\\beacon-keys\\nova-chave\\priv-key-pkcs8.pem");
+//        PrivateKey privKey = CriptoUtilService.loadPrivateKey("D:\\inmetro\\beacon-keys\\nova-chave\\priv-key-pkcs8.pem");
+        PrivateKey privKey = CriptoUtilService.loadPrivateKey("D:\\inmetro\\beacon-keys\\4096-module\\beacon-priv-pkcs8.pem");
         ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
 
         String result = cipherSuite.signBytes15(plainText, privKey);

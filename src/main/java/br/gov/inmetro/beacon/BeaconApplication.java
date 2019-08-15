@@ -21,5 +21,8 @@ public class BeaconApplication {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
+
+
+
 }
 

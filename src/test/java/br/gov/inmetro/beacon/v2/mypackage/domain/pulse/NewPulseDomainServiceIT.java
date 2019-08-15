@@ -27,7 +27,7 @@ public class NewPulseDomainServiceIT {
     private PulsesRepository pulsesRepository;
 
     @Test
-    public void teste(){
+    public void teste() throws Exception {
         List<EntropyDto> list = new ArrayList<>();
         list.add(new EntropyDto("030b5d4e297262022390977e0d771762ceffd4ef9a79f7f7a0cb0439a347a46a5558969e8ded74de678f1a4d50e33bf68e5b317cbc523893fc987fca13ea84c0",60000, "1", "2019-01-30T18:45:00.000Z"));
         list.add(new EntropyDto("4701694e62abddc3837cd8e309b8722e505f223aac4a3d4fc5b1fc080490e703cd630fe487abc803d4c0f2215c057207f349db70bfacfb75fd02491414d50e4f",60000, "1", "2019-01-30T18:46:00.000Z"));

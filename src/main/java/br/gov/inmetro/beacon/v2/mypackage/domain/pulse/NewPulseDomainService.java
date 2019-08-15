@@ -16,9 +16,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.security.Key;
-import java.security.PrivateKey;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +41,6 @@ public class NewPulseDomainService {
 
     private final PastOutputValuesService pastOutputValuesService;
 
-    private Key privateKey;
-
     @Autowired
     public NewPulseDomainService(Environment env, PulsesRepository pulsesRepository, EntropyRepository entropyRepository,
                                  CombinationErrors combinationErrors, PastOutputValuesService pastOutputValuesService) {
@@ -54,21 +49,16 @@ public class NewPulseDomainService {
         this.entropyRepository = entropyRepository;
         this.combinationErrorsRepository = combinationErrors;
         this.pastOutputValuesService = pastOutputValuesService;
+
     }
 
     @Transactional
-    public void begin(List<EntropyDto> regularNoises){
+    public void begin(List<EntropyDto> regularNoises) throws Exception {
         this.regularNoises = regularNoises;
 
         this.activeChain = ChainDomainService.getActiveChain();
         this.lastPulseEntity = pulsesRepository.last(activeChain.getChainIndex());
         String property = env.getProperty("beacon.number-of-entropy-sources");
-
-        try {
-            this.privateKey = CriptoUtilService.loadPrivateKey(env.getProperty("beacon.x509.privatekey"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         combinar(activeChain.getChainIndex(), property);
         processarAndPersistir();
@@ -86,7 +76,7 @@ public class NewPulseDomainService {
         this.combineDomainResult = combineDomainService.processar();
     }
 
-    private void processarAndPersistir(){
+    private void processarAndPersistir() throws Exception {
         if (combineDomainResult.getLocalRandomValueDtos().size() < 2){
             return;
         }
@@ -104,7 +94,7 @@ public class NewPulseDomainService {
         // tratando primeiro registro do banco
         // tratar primeiro registro da cadeia?
 
-        List<Pulse> processedPulses = new ArrayList<>();
+//        List<Pulse> processedPulses = new ArrayList<>();
         for (int currentIndex = 0; currentIndex < localRandomValueDtos.size(); currentIndex++) {
             // tratar previous pulse
 
@@ -128,12 +118,12 @@ public class NewPulseDomainService {
                 previousPulse = pulso;
             }
             persistOnePulse(pulso);
-            processedPulses.add(pulso);
+//            processedPulses.add(pulso);
         }
 
     }
 
-    private Pulse getRegularPulse(Pulse previous, LocalRandomValueDto current, LocalRandomValueDto next) {
+    private Pulse getRegularPulse(Pulse previous, LocalRandomValueDto current, LocalRandomValueDto next) throws Exception {
         List<ListValue> list = new ArrayList<>();
         list.add(ListValue.getOneValue(previous.getOutputValue(),
                 "previous", previous.getUri()));
@@ -150,7 +140,18 @@ public class NewPulseDomainService {
             list.add(ListValue.getOneValue(listValue.get(3).getValue(), "month", listValue.get(3).getUri()));
             list.add(ListValue.getOneValue(listValue.get(4).getValue(), "year", listValue.get(4).getUri()));
         } else {
-            list.addAll(pastOutputValuesService.getOldPulses(current.getTimeStamp()));
+
+            if (previous.getPulseIndex() == 1){  // this is the second pulse
+                List<ListValue> listValue = previous.getListValue();
+
+                list.add(ListValue.getOneValue(listValue.get(1).getValue(), "hour", previous.getUri()));
+                list.add(ListValue.getOneValue(listValue.get(2).getValue(), "day", previous.getUri()));
+                list.add(ListValue.getOneValue(listValue.get(3).getValue(), "month", previous.getUri()));
+                list.add(ListValue.getOneValue(listValue.get(4).getValue(), "year", previous.getUri()));
+            } else {
+                list.addAll(pastOutputValuesService.getOldPulses(current.getTimeStamp()));
+            }
+
         }
 
         long vPulseIndex = previous.getPulseIndex()+1;
@@ -167,14 +168,12 @@ public class NewPulseDomainService {
                 .setExternal(External.newExternal())
                 .setPrecommitmentValue(next.getValue())
                 .setStatusCode(vStatusCode)
-//                .setSignatureValue("assinatura")
-//                .setOutputValue("output value index:" + vPulseIndex)
-                .setPrivateKey(privateKey)
+                .setPrivateKey(CriptoUtilService.loadPrivateKey(env.getProperty("beacon.x509.privatekey")))
                 .build();
 
     }
 
-    private Pulse getFirstPulse(LocalRandomValueDto localRandomValue) {
+    private Pulse getFirstPulse(LocalRandomValueDto localRandomValue) throws Exception {
         List<ListValue> list = new ArrayList<>();
         list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
                 "previous", null));
@@ -201,9 +200,7 @@ public class NewPulseDomainService {
                 .setExternal(External.newExternal())
                 .setPrecommitmentValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
                 .setStatusCode(1)
-//                .setSignatureValue("assinatura")
-//                .setOutputValue("valor output index 1")
-                .setPrivateKey(privateKey)
+                .setPrivateKey(CriptoUtilService.loadPrivateKey(env.getProperty("beacon.x509.privatekey")))
                 .build();
     }
 

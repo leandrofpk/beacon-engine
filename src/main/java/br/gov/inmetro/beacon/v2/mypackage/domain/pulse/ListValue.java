@@ -12,7 +12,7 @@ public class ListValue {
 
     private String value;
 
-    private ListValue(@NonNull String value, @NonNull String type, String uri) {
+    private ListValue(String value, String type, String uri) {
         this.value = value;
         this.type = type;
         this.uri = uri;

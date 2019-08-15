@@ -27,7 +27,7 @@ public class PastOutputValuesService {
         this.activeChainService = activeChainService;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ListValue> getOldPulses(ZonedDateTime currentTimestamp){
         List<ListValue> listValues = new ArrayList<>();
 
