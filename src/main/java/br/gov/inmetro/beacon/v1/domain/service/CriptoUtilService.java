@@ -1,5 +1,7 @@
 package br.gov.inmetro.beacon.v1.domain.service;
 
+import org.bouncycastle.util.encoders.Hex;
+
 import javax.security.cert.CertificateException;
 import javax.security.cert.X509Certificate;
 import java.io.*;
@@ -31,6 +33,26 @@ public class CriptoUtilService {
         byte[] signature = privateSignature.sign();
 
         return Base64.getEncoder().encodeToString(signature);
+    }
+
+    public static String signReturnHex(String plainText, PrivateKey privateKey) throws Exception {
+        Signature privateSignature = Signature.getInstance("NONEwithRSA");
+        privateSignature.initSign(privateKey);
+        privateSignature.update(plainText.getBytes(UTF_8));
+
+        byte[] signature = privateSignature.sign();
+
+        return Hex.toHexString(signature).toUpperCase();
+    }
+
+    public static boolean verifyReturnHex(String plainText, String signature, PublicKey publicKey) throws Exception {
+        Signature publicSignature = Signature.getInstance("NONEwithRSA");
+        publicSignature.initVerify(publicKey);
+        publicSignature.update(plainText.getBytes(UTF_8));
+
+        byte[] signatureBytes = Hex.decode(signature);
+
+        return publicSignature.verify(signatureBytes);
     }
 
     public static boolean verify(String plainText, String signature, PublicKey publicKey) throws Exception {

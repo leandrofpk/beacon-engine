@@ -8,13 +8,24 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.util.ASN1Dump;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Assert;
 import org.junit.Test;
 
 import javax.crypto.Cipher;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.*;
 import java.security.interfaces.RSAPublicKey;
+
+import org.bouncycastle.openssl.PEMDecryptorProvider;
+import org.bouncycastle.openssl.PEMEncryptedKeyPair;
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.PEMParser;
+
+import static br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService.*;
+import static org.junit.Assert.assertTrue;
 
 public class CipherSuiteZeroTest {
 
@@ -94,7 +105,37 @@ public class CipherSuiteZeroTest {
 
     }
 
+    @Test
+    public void testePKCS1BouceCastle() throws Exception {
 
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
+        String privateKeyFile = "D:\\inmetro\\beacon-keys\\4096-module\\beacon-priv.pem";
+
+        PEMParser pemParser = new PEMParser(new FileReader(privateKeyFile));
+        JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
+        Object object = pemParser.readObject();
+        KeyPair kp = converter.getKeyPair((PEMKeyPair) object);
+        PrivateKey privateKey = kp.getPrivate();
+
+        System.out.println(privateKey);
+
+        String hashSha512Hexa = "5C571D1B7641A359DE56A2498D4B972F4AFD6C85752381790E575E70B3BA7CBD7F5D6C646675F48C696884B0381FDC751C6153102EA14023F2719E23FE0C931C";
+
+        String signature = signReturnHex(hashSha512Hexa, privateKey);
+        System.out.println(signature);
+
+
+        PublicKey publicKey = loadPublicKeyFromCertificate("D:\\inmetro\\beacon-keys\\4096-module\\beacon.cer");
+//        PublicKey publicKey = loadPublicKeyFromCertificate("D:\\inmetro\\beacon-keys\\4096-module\\nist.cer");
+        //Let's check the signature
+        boolean isCorrect = CriptoUtilService.verifyReturnHex(hashSha512Hexa, signature, publicKey);
+
+        assertTrue(isCorrect);
+
+
+
+    }
 
 
 }

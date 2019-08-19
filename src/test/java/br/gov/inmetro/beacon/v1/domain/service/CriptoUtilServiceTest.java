@@ -59,6 +59,32 @@ public class CriptoUtilServiceTest {
         assertTrue(isCorrect);
     }
 
+
+    @Test
+    public void testSignAndVerifyFromPemFilesV2() throws Exception {
+        String hashSha512Hexa = "5C571D1B7641A359DE56A2498D4B972F4AFD6C85752381790E575E70B3BA7CBD7F5D6C646675F48C696884B0381FDC751C6153102EA14023F2719E23FE0C931C";
+
+//        String propertyPrivateKey = environment.getProperty("beacon.x509.privatekey");
+//        String propertyPrivateKey = environment.getProperty("beacon.x509.privatekey");
+
+        //sign
+//        PrivateKey privateKey = loadPrivateKey("D:\\inmetro\\beacon-keys\\4096-module\\beacon-priv-pkcs8.pem");
+        PrivateKey privateKey = loadPrivateKey("D:\\inmetro\\beacon-keys\\4096-module\\beacon-priv-pkcs8.pem");
+
+
+        String signature = sign(hashSha512Hexa, privateKey);
+
+        System.out.println("signature:" + signature);
+
+//        String propertyPublicKey = environment.getProperty("beacon.x509.certificate");
+
+        PublicKey publicKey = loadPublicKeyFromCertificate("D:\\inmetro\\beacon-keys\\4096-module\\beacon-pubkey.pem");
+        //Let's check the signature
+        boolean isCorrect = CriptoUtilService.verify(hashSha512Hexa, signature, publicKey);
+
+        assertTrue(isCorrect);
+    }
+
 //    @Test
 //    public void cripto() throws Exception {
 //        String clearText = "Sample plain text";
