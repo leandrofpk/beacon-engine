@@ -1,17 +1,8 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 
-import br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService;
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.util.ASN1Dump;
-import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
-import org.bouncycastle.util.encoders.Hex;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +10,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.security.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application-test.properties")
@@ -121,28 +108,6 @@ public class PulseTest {
 //    }
 
     @Test
-    public void outroTesteDeData(){
-//        ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC));
-//        System.out.println(now);
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz");
-
-        ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC).normalized());
-        System.out.println(now);
-
-        ZonedDateTime now2 = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES).withZoneSameInstant((ZoneOffset.UTC).normalized());
-        System.out.println(now2);
-
-        String format2 = now2.format(dateTimeFormatter);
-        System.out.println(format2);
-
-//        2019-07-21T12:12:00.000Z
-//        2019-07-20T14:15:00.000Z
-
-//        System.out.println(now.withZoneSameInstant(ZoneId.of("UTC")));
-    }
-
-    @Test
     public void testarData(){
 //        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'h:m:ss.SZ");
 //        final String format = simpleDateFormat.format(LocalDateTime.now());
@@ -217,55 +182,10 @@ public class PulseTest {
 
         Instant with = agora.with(ChronoField.MILLI_OF_SECOND, 0);
         System.out.println(with.get(ChronoField.MILLI_OF_SECOND));
-
     }
 
 
-//    http://www.java2s.com/Tutorial/Java/0490__Security/BasicclassforexploringPKCS1V15Signatures.htm
-    @Test
-    public void validarAssinaturaNist() throws Exception{
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA", "BC");
-        keyGen.initialize(512, new SecureRandom());
-        KeyPair keyPair = keyGen.generateKeyPair();
-
-        Signature signature = Signature.getInstance("SHA256withRSA", "BC");
-//        Signature signature = Signature.getInstance("SHA256withRSA", "BC");
-        signature.initSign(keyPair.getPrivate());
-
-        byte[] message = "abc".getBytes();
-        signature.update(message);
-
-        byte[] sigBytes = signature.sign();
-        Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-        cipher.init(Cipher.DECRYPT_MODE, keyPair.getPublic());
-
-
-        byte[] decSig = cipher.doFinal(sigBytes);
-        ASN1InputStream aIn = new ASN1InputStream(decSig);
-        ASN1Sequence seq = (ASN1Sequence) aIn.readObject();
-
-        System.out.println("ASN1Dump:");
-        System.out.println(ASN1Dump.dumpAsString(seq));
-
-        MessageDigest hash = MessageDigest.getInstance("SHA-256", "BC");
-        hash.update(message);
-
-        ASN1OctetString sigHash = (ASN1OctetString) seq.getObjectAt(1);
-        System.out.println(MessageDigest.isEqual(hash.digest(), sigHash.getOctets()));
-
-        System.out.println(hash);
-        System.out.println(hash.getAlgorithm());
-        System.out.println(hash.getDigestLength());
-        System.out.println(hash.digest());
-
-        String s = Hex.toHexString(decSig);
-        System.out.println("Assintatura");
-        System.out.println(s);
-
-
-    }
 
     @Test
     public void testingDate(){
@@ -295,77 +215,5 @@ public class PulseTest {
 
 
     }
-
-
-//    http://www.java2s.com/Tutorial/Java/0490__Security/RSAexamplewithPKCS1Padding.htm
-    @Test
-    public void outroTeste() throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-
-//        byte[] input = "abc".getBytes();
-        byte[] input =  "88569C283D277F82C06D8CC262CB19FC6F5C73C31922F5AB28275891D4FA6C5B2EC7EA0F9AC15CD61A38D889C71042F05591CF32D6B233D4D9D9F36531F10356".getBytes(StandardCharsets.UTF_8);
-        Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-//        SecureRandom random = new SecureRandom();
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
-
-//        generator.initialize(1024, random);
-        generator.initialize(4096);
-
-        KeyPair pair = generator.generateKeyPair();
-        Key pubKey = pair.getPublic();
-        Key privKey = pair.getPrivate();
-
-        System.out.println("priv:" + pair.getPrivate().toString());
-        System.out.println("pub:" + pair.getPublic().toString());
-
-        cipher.init(Cipher.ENCRYPT_MODE, privKey);
-        byte[] cipherText = cipher.doFinal(input);
-//        System.out.println("cipher: " + new String(cipherText));
-        System.out.println("cipher: " + Hex.toHexString(cipherText).toUpperCase());
-
-        cipher.init(Cipher.DECRYPT_MODE, pubKey);
-        byte[] plainText = cipher.doFinal(cipherText);
-        System.out.println("plain : " + new String(plainText));
-
-    }
-
-    @Test
-    public void outroTeste2() throws Exception {
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-
-        byte[] input =  "88569C283D277F82C06D8CC262CB19FC6F5C73C31922F5AB28275891D4FA6C5B2EC7EA0F9AC15CD61A38D889C71042F05591CF32D6B233D4D9D9F36531F10356".getBytes(StandardCharsets.UTF_8);
-        Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-
-        Key pubKey = CriptoUtilService.loadPublicKeyFromCertificate("/home/leandro/dev/beacon-keys/4096-module/beacon.cer");
-        Key privKey = CriptoUtilService.loadPrivateKey("/home/leandro/dev/beacon-keys/4096-module/beacon-priv-pkcs8.pem");
-
-        System.out.println("pub:" + pubKey.toString());
-        System.out.println("priv:" + privKey.toString());
-
-        cipher.init(Cipher.ENCRYPT_MODE, privKey);
-        byte[] cipherText = cipher.doFinal(input);
-        System.out.println("cipher: " + Hex.toHexString(cipherText).toUpperCase());
-
-        cipher.init(Cipher.DECRYPT_MODE, pubKey);
-        byte[] plainText = cipher.doFinal(cipherText);
-        System.out.println("plain : " + new String(plainText));
-    }
-
-
-//    https://stackoverflow.com/questions/43459993/how-do-i-generate-rsa-key-pair-in-java-in-openssl-format
-    @Test
-    public void teste() throws Exception{
-
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(4096); KeyPair kp = kpg.generateKeyPair();
-
-        System.out.println ("-----BEGIN PRIVATE KEY-----");
-        System.out.println (Base64.getMimeEncoder().encodeToString( kp.getPrivate().getEncoded()));
-        System.out.println ("-----END PRIVATE KEY-----");
-        System.out.println ("-----BEGIN PUBLIC KEY-----");
-        System.out.println (Base64.getMimeEncoder().encodeToString( kp.getPublic().getEncoded()));
-        System.out.println ("-----END PUBLIC KEY-----");
-    }
-
 
 }

@@ -1,18 +1,16 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 import br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService;
+import org.apache.commons.io.FileUtils;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 public class SerializationTest {
 
@@ -89,9 +87,7 @@ public class SerializationTest {
     @Test
     public void encode() throws NoSuchAlgorithmException, IOException {
 //    private void encode(int valor, int BLenHashBytes){
-
         ByteBuffer byteBuffer = ByteBuffer.allocate(64);
-
 
 //        "5501e3d72bc42f3b96e16de4dcadcb16768e109662bd16d667d5fd9aee585af31bbdc5dd4f53592276064b53dddd76c8f3604b2a41db6e09f78f82bb5d6569e7".
         byte[] bytes = ("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").getBytes();
@@ -101,10 +97,12 @@ public class SerializationTest {
 
 
 
-
-//        byte[] arquivoNist = Files.readAllBytes( Paths.get("/home/leandro/dev/projetos/java/beacon/src/main/java/br/gov/inmetro/beacon/nist-ans1.txt") );
-//        String hashNist = CriptoUtilService.hashSha512Hexa(arquivoNist.toString());
-//        System.out.println(hashNist);
+        String s = FileUtils.readFileToString(new File("nist-ans1.txt"));
+        String hashNist = CriptoUtilService.hashSha512Hexa(s);
+        System.out.println(hashNist);
 
     }
+
+
+
 }
