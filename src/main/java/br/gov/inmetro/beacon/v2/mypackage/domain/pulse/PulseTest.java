@@ -230,4 +230,10 @@ public class PulseTest {
         System.out.println(concatenate.length);
     }
 
+    @Test
+    public void testSerializeString(){
+        //aqui
+        aqui
+    }
+
 }
