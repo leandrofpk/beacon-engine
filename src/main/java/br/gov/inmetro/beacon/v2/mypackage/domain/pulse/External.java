@@ -37,10 +37,6 @@ public class External {
         return ByteUtils.fromHexString(sourceId);
     }
 
-    public byte[] getStatusCodeAsByte(){
-        return ByteBuffer.allocate(8).putLong(statusCode).array();
-    }
-
     public byte[] getValueAsByte(){
         return ByteUtils.fromHexString(value);
     }

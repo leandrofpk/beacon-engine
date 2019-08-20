@@ -10,13 +10,14 @@ import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Getter
 public class Pulse {
@@ -195,25 +196,26 @@ public class Pulse {
 
             final ByteArrayOutputStream baos = new ByteArrayOutputStream(4096); // should be enough
             try {
+
                 baos.write(getUriAsByte());
                 baos.write(getVersionAsByte());
-                baos.write(getCipherSuiteAsByte());
-                baos.write(getPeriodAsByte());
-                baos.write(getCertifiedIdAsByte());
-                baos.write(getChainIndexAsByte());
-                baos.write(getPulseIndexAsByte());
+                baos.write(encode4(chainValueObject.getCipherSuite()));
+                baos.write(encode4(chainValueObject.getPeriod()));
+                baos.write(byteSerializeHash(certificateId));
+                baos.write(encode8(chainValueObject.getChainIndex()));
+                baos.write(encode8(pulseIndex));
                 baos.write(getTimeStampAsByte());
-                baos.write(getLocalRandomValueAsByte());
-                baos.write(external.getSourceIdAsByte());
-                baos.write(external.getStatusCodeAsByte());
-                baos.write(external.getValueAsByte());
-                baos.write(getPreviousRandOutAsByte());
-                baos.write(getHourRandOutAsByte());
-                baos.write(getDayRandOutAsByte());
-                baos.write(getMOnthRandOutAsByte());
-                baos.write(getYearRandOutAsByte());
-                baos.write(getPrecommitmentValueAsByte());
-                baos.write(getStatusCodeAsByte());
+                baos.write(byteSerializeHash(localRandomValue)); // verificar
+                baos.write(byteSerializeHash(external.getSourceId()));
+                baos.write(encode8(external.getStatusCode()));
+                baos.write(byteSerializeHash(external.getValue()));
+                baos.write(byteSerializeHash(listValue.get(0).getValue()));
+                baos.write(byteSerializeHash(listValue.get(1).getValue()));
+                baos.write(byteSerializeHash(listValue.get(2).getValue()));
+                baos.write(byteSerializeHash(listValue.get(3).getValue()));
+                baos.write(byteSerializeHash(listValue.get(4).getValue()));
+                baos.write(byteSerializeHash(precommitmentValue));
+                baos.write(encode4(statusCode));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -221,21 +223,30 @@ public class Pulse {
             return baos;
         }
 
+        private byte[] encode4(int value){
+            return ByteBuffer.allocate(4).putInt(value).array();
+        }
+
+        private byte[] encode8(long value){
+            return ByteBuffer.allocate(8).putLong(value).array();
+        }
+
+        private byte[] byteSerializeHash(String hash){
+            int bLenHash = 64;
+            byte[] bytes1 = ByteBuffer.allocate(4).putInt(bLenHash).array();
+            byte[] bytes2 = ByteUtils.fromHexString(hash);
+            byte[] concatenate = ByteUtils.concatenate(bytes1, bytes2);
+
+            return concatenate;
+        }
+
         // TODO Conferir tamanho
         public byte[] getUriAsByte(){
-            return uri.getBytes(StandardCharsets.UTF_8);
+            return uri.getBytes(UTF_8);
         }
 
         public byte[] getVersionAsByte(){
-            return chainValueObject.getVersion().getBytes(StandardCharsets.UTF_8);
-        }
-
-        public byte[] getCipherSuiteAsByte(){
-            return ByteBuffer.allocate(4).putInt(chainValueObject.getCipherSuite()).array();
-        }
-
-        public byte[] getPeriodAsByte(){
-            return ByteBuffer.allocate(4).putInt(chainValueObject.getPeriod()).array();
+            return chainValueObject.getVersion().getBytes(UTF_8);
         }
 
         // TODO Conferir
@@ -243,18 +254,10 @@ public class Pulse {
             return ByteUtils.fromHexString(certificateId);
         }
 
-        public byte[] getChainIndexAsByte(){
-            return ByteBuffer.allocate(8).putLong(chainValueObject.getChainIndex()).array();
-        }
-
-        public byte[] getPulseIndexAsByte(){
-            return ByteBuffer.allocate(8).putLong(pulseIndex).array();
-        }
-
         public byte[] getTimeStampAsByte(){
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz");
             String format = timeStamp.withZoneSameInstant((ZoneOffset.UTC).normalized()).format(dateTimeFormatter);
-            return format.getBytes(StandardCharsets.UTF_8);
+            return format.getBytes(UTF_8);
         }
 
         public byte[] getLocalRandomValueAsByte(){

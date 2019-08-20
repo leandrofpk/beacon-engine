@@ -12,6 +12,7 @@ import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.io.FileUtils.readFileToString;
+import static org.apache.commons.io.FileUtils.sizeOf;
 
 public class CriptoUtilService {
 
@@ -116,6 +117,9 @@ public class CriptoUtilService {
         PublicKey publicKey = null;
         try (InputStream inStream = new FileInputStream(certificatePath)) {
             X509Certificate cert = X509Certificate.getInstance(inStream);
+
+//            System.out.println(cert);
+
             publicKey = cert.getPublicKey();
 //            inStream.close();
         } catch (FileNotFoundException e) {

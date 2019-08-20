@@ -3,6 +3,7 @@ package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
 import org.apache.commons.lang3.time.DateUtils;
+import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.nio.ByteBuffer;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
@@ -18,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application-test.properties")
@@ -214,6 +218,16 @@ public class PulseTest {
         System.out.println(between2);
 
 
+    }
+
+    @Test
+    public void testLenthSerializationHash(){
+        String hash =  "5C571D1B7641A359DE56A2498D4B972F4AFD6C85752381790E575E70B3BA7CBD7F5D6C646675F48C696884B0381FDC751C6153102EA14023F2719E23FE0C931C";
+        int bLenHash = 64;
+        byte[] bytes1 = ByteBuffer.allocate(4).putInt(bLenHash).array();
+        byte[] bytes2 = ByteUtils.fromHexString(hash);
+        byte[] concatenate = ByteUtils.concatenate(bytes1, bytes2);
+        System.out.println(concatenate.length);
     }
 
 }

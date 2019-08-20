@@ -4,18 +4,27 @@ import br.gov.inmetro.beacon.v1.domain.RSA;
 import br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService;
 import br.gov.inmetro.beacon.v2.mypackage.infra.util.CipherSuiteBuilder;
 import br.gov.inmetro.beacon.v2.mypackage.infra.util.ICipherSuite;
+import org.apache.commons.io.FileUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.util.ASN1Dump;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.util.encoders.Base64;
+import org.bouncycastle.util.encoders.Base64Encoder;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Assert;
 import org.junit.Test;
 
 import javax.crypto.Cipher;
+import javax.sound.midi.Soundbank;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.*;
 import java.security.interfaces.RSAPublicKey;
 
@@ -23,8 +32,10 @@ import org.bouncycastle.openssl.PEMDecryptorProvider;
 import org.bouncycastle.openssl.PEMEncryptedKeyPair;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
+import org.springframework.util.Base64Utils;
 
 import static br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertTrue;
 
 public class CipherSuiteZeroTest {
@@ -105,7 +116,7 @@ public class CipherSuiteZeroTest {
 
     }
 
-    @Test
+    @Test // FUNCIONANDO
     public void testePKCS1BouceCastle() throws Exception {
 
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
@@ -128,12 +139,70 @@ public class CipherSuiteZeroTest {
 
         PublicKey publicKey = loadPublicKeyFromCertificate("D:\\inmetro\\beacon-keys\\4096-module\\beacon.cer");
 //        PublicKey publicKey = loadPublicKeyFromCertificate("D:\\inmetro\\beacon-keys\\4096-module\\nist.cer");
+
+
+
+
+
+
+
         //Let's check the signature
         boolean isCorrect = CriptoUtilService.verifyReturnHex(hashSha512Hexa, signature, publicKey);
 
         assertTrue(isCorrect);
 
 
+
+    }
+
+    @Test
+    public void testeHasCertificateId() throws NoSuchAlgorithmException, IOException {
+
+//        D:\inmetro\beacon-keys\4096-module
+
+//        PublicKey publicKey = loadPublicKeyFromCertificate("D:\\inmetro\\beacon-keys\\4096-module\\nist-v2.cer");
+
+//        System.out.println(publicKey.getAlgorithm());
+
+
+
+//        Base64.decode(publicKey.getEncoded());
+//        String s = Base64Utils.encodeToString(publicKey.getEncoded());
+//        String s1 = hashSha512Hexa(s);
+//        System.out.println(s1);
+
+        ICipherSuite build = CipherSuiteBuilder.build(0);
+
+        System.out.println("Bytes");
+//        byte[] bytes = Files.readAllBytes(Paths.get("D:\\inmetro\\beacon-keys\\4096-module\\nist-v2-pubkey.pem"));
+        byte[] bytes = Files.readAllBytes(Paths.get("D:\\inmetro\\beacon-keys\\4096-module\\nist-v2-pubkey-semCabecalho.pem"));
+        String digest = build.getDigest(bytes);
+        System.out.println("Digest bytes:" + digest);
+
+
+//        String s1 = Base64Utils.encodeToString(bytes);
+//        System.out.println("Base 64 from ChaveSemCabecalho");
+//        System.out.println(s1);
+
+        System.out.println("String");
+//        String s = FileUtils.readFileToString(new File("D:\\inmetro\\beacon-keys\\4096-module\\nist-v2-pubkey.pem"));
+        String s = FileUtils.readFileToString(new File("D:\\inmetro\\beacon-keys\\4096-module\\nist-v2-pubkey-semCabecalho.pem"));
+        System.out.println(s);
+
+        System.out.println("Digest string:" + build.getDigest(s));
+
+
+
+        System.out.println("DER");
+//        String s = FileUtils.readFileToString(new File("D:\\inmetro\\beacon-keys\\4096-module\\nist-v2-pubkey.pem"));
+        byte[] bytesDer = Files.readAllBytes(Paths.get("D:\\inmetro\\beacon-keys\\4096-module\\nist-v2-public_key.der"));
+
+
+
+
+        String digest1 = build.getDigest(bytesDer);
+
+        System.out.println("Digest DER:" + digest1);
 
     }
 
