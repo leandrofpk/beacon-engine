@@ -2,6 +2,8 @@ package br.gov.inmetro.beacon.v2.mypackage.domain.externalsrc;
 
 public class ExternalSourceDefinition {
 
+    private String sourceId;
+
     private String externalSourceDescription;
 
     /**
