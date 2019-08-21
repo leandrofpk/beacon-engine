@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @RunWith(SpringRunner.class)
@@ -233,7 +234,24 @@ public class PulseTest {
     @Test
     public void testSerializeString(){
         //aqui
-        aqui
+//        aqui
+
+        String dateStr = "2019-08-21T02:50:00.000Z";
+
+        byte[] bytes1 = dateStr.getBytes(US_ASCII);
+        System.out.println(bytes1.length);
+
+        String versao = "2.0";
+        byte[] bytes2 = versao.getBytes(US_ASCII);
+        System.out.println(bytes2.length);
+
+        // page 15 Draft
+        String uri = "https://beacon.nist.gov/beacon/2.0/chain/1/pulse/1";
+        byte[] bytes3 = uri.getBytes(US_ASCII);
+        System.out.println(bytes3.length);
+
+
+
     }
 
 }

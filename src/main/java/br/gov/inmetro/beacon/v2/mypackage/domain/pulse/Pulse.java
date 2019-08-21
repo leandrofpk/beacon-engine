@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Getter
@@ -183,7 +184,7 @@ public class Pulse {
                 this.signatureValue = sha512Util.signBytes15(digest, privateKey);
 
                 //outputvalue
-                byteArrayOutputStream.write(getSignatureValueAsByte());
+                byteArrayOutputStream.write(byteSerializeSig(this.signatureValue));
                 this.outputValue = sha512Util.getDigest(byteArrayOutputStream.toByteArray());
 
             } catch (Exception e){
@@ -197,14 +198,14 @@ public class Pulse {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream(4096); // should be enough
             try {
 
-                baos.write(getUriAsByte());
-                baos.write(getVersionAsByte());
+                baos.write(byteSerializeString(uri));
+                baos.write(byteSerializeString(chainValueObject.getVersion()));
                 baos.write(encode4(chainValueObject.getCipherSuite()));
                 baos.write(encode4(chainValueObject.getPeriod()));
                 baos.write(byteSerializeHash(certificateId));
                 baos.write(encode8(chainValueObject.getChainIndex()));
                 baos.write(encode8(pulseIndex));
-                baos.write(getTimeStampAsByte());
+                baos.write(byteSerializeString(getTimeStampFormated()));
                 baos.write(byteSerializeHash(localRandomValue)); // verificar
                 baos.write(byteSerializeHash(external.getSourceId()));
                 baos.write(encode8(external.getStatusCode()));
@@ -240,62 +241,31 @@ public class Pulse {
             return concatenate;
         }
 
-        // TODO Conferir tamanho
-        public byte[] getUriAsByte(){
-            return uri.getBytes(UTF_8);
+        // conferir
+        private byte[] byteSerializeString(String value){
+            int bytLen = value.getBytes(US_ASCII).length;
+            byte[] bytes1 = ByteBuffer.allocate(bytLen).putInt(bytLen).array();
+            byte[] bytes2 = value.getBytes(UTF_8);
+
+            byte[] concatenate = ByteUtils.concatenate(bytes1, bytes2);
+
+            return concatenate;
         }
 
-        public byte[] getVersionAsByte(){
-            return chainValueObject.getVersion().getBytes(UTF_8);
-        }
-
-        // TODO Conferir
-        public byte[] getCertifiedIdAsByte() {
-            return ByteUtils.fromHexString(certificateId);
-        }
-
-        public byte[] getTimeStampAsByte(){
+        public String getTimeStampFormated(){
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz");
             String format = timeStamp.withZoneSameInstant((ZoneOffset.UTC).normalized()).format(dateTimeFormatter);
-            return format.getBytes(UTF_8);
+            return format;
         }
 
-        public byte[] getLocalRandomValueAsByte(){
-            return ByteUtils.fromHexString(localRandomValue);
-        }
+        private byte[] byteSerializeSig(String hexString){
+            int bLenHash = 512;
+            byte[] bytes1 = ByteBuffer.allocate(4).putInt(bLenHash).array();
+            byte[] bytes2 = ByteUtils.fromHexString(hexString);
+            byte[] concatenate = ByteUtils.concatenate(bytes1, bytes2);
 
-        public byte[] getPreviousRandOutAsByte(){
-            return ByteUtils.fromHexString(listValue.get(0).getValue());
+            return concatenate;
         }
-
-        public byte[] getHourRandOutAsByte(){
-            return ByteUtils.fromHexString(listValue.get(1).getValue());
-        }
-
-        public byte[] getDayRandOutAsByte(){
-            return ByteUtils.fromHexString(listValue.get(2).getValue());
-        }
-
-        public byte[] getMOnthRandOutAsByte(){
-            return ByteUtils.fromHexString(listValue.get(3).getValue());
-        }
-
-        public byte[] getYearRandOutAsByte(){
-            return ByteUtils.fromHexString(listValue.get(4).getValue());
-        }
-
-        public byte[] getPrecommitmentValueAsByte(){
-            return ByteUtils.fromHexString(this.precommitmentValue);
-        }
-
-        public byte[] getStatusCodeAsByte(){
-            return ByteBuffer.allocate(4).putInt(this.statusCode).array();
-        }
-
-        public byte[] getSignatureValueAsByte(){
-            return ByteUtils.fromHexString(this.signatureValue);
-        }
-
 
     }
 
