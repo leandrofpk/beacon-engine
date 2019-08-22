@@ -2,10 +2,12 @@ package br.gov.inmetro.beacon.v2.mypackage.infra;
 
 import com.sun.istack.internal.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "chain")
 public class ChainEntity {
