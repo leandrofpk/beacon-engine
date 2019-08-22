@@ -7,4 +7,4 @@ CREATE TABLE processing_error (
   time_stamp_error datetime NOT NULL,
   used_or_discarded_fonts varchar(20) NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

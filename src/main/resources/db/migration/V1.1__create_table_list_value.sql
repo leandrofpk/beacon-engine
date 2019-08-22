@@ -6,4 +6,4 @@ CREATE TABLE list_value (
   pulse_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY FK501fr5f1dx73u2yu62j4mwrwx (pulse_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

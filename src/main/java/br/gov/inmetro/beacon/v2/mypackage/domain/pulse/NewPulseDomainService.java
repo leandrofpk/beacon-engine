@@ -168,7 +168,7 @@ public class NewPulseDomainService {
                 .setExternal(External.newExternal())
                 .setPrecommitmentValue(next.getValue())
                 .setStatusCode(vStatusCode)
-                .setPrivateKey(CriptoUtilService.loadPrivateKey(env.getProperty("beacon.x509.privatekey")))
+                .setPrivateKey(CriptoUtilService.loadPrivateKeyPkcs1(env.getProperty("beacon.x509.privatekey")))
                 .build();
 
     }
@@ -200,7 +200,7 @@ public class NewPulseDomainService {
                 .setExternal(External.newExternal())
                 .setPrecommitmentValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
                 .setStatusCode(1)
-                .setPrivateKey(CriptoUtilService.loadPrivateKey(env.getProperty("beacon.x509.privatekey")))
+                .setPrivateKey(CriptoUtilService.loadPrivateKeyPkcs1(env.getProperty("beacon.x509.privatekey")))
                 .build();
     }
 

@@ -193,27 +193,27 @@ public class PulseAssinatiraAndPkcs15Test {
 
     }
 
-    @Test
-    public void outroTeste2() throws Exception {
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-
-        byte[] input =  "88569C283D277F82C06D8CC262CB19FC6F5C73C31922F5AB28275891D4FA6C5B2EC7EA0F9AC15CD61A38D889C71042F05591CF32D6B233D4D9D9F36531F10356".getBytes(UTF_8);
-        Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-
-        Key pubKey = CriptoUtilService.loadPublicKeyFromCertificate("/home/leandro/dev/beacon-keys/4096-module/beacon.cer");
-        Key privKey = CriptoUtilService.loadPrivateKey("/home/leandro/dev/beacon-keys/4096-module/beacon-priv-pkcs8.pem");
-
-        System.out.println("pub:" + pubKey.toString());
-        System.out.println("priv:" + privKey.toString());
-
-        cipher.init(Cipher.ENCRYPT_MODE, privKey);
-        byte[] cipherText = cipher.doFinal(input);
-        System.out.println("cipher: " + Hex.toHexString(cipherText).toUpperCase());
-
-        cipher.init(Cipher.DECRYPT_MODE, pubKey);
-        byte[] plainText = cipher.doFinal(cipherText);
-        System.out.println("plain : " + new String(plainText));
-    }
+//    @Test
+//    public void outroTeste2() throws Exception {
+//        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+//
+//        byte[] input =  "88569C283D277F82C06D8CC262CB19FC6F5C73C31922F5AB28275891D4FA6C5B2EC7EA0F9AC15CD61A38D889C71042F05591CF32D6B233D4D9D9F36531F10356".getBytes(UTF_8);
+//        Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+//
+//        Key pubKey = CriptoUtilService.loadPublicKeyFromCertificate("/home/leandro/dev/beacon-keys/4096-module/beacon.cer");
+//        Key privKey = CriptoUtilService.loadPrivateKey("/home/leandro/dev/beacon-keys/4096-module/beacon-priv-pkcs8.pem");
+//
+//        System.out.println("pub:" + pubKey.toString());
+//        System.out.println("priv:" + privKey.toString());
+//
+//        cipher.init(Cipher.ENCRYPT_MODE, privKey);
+//        byte[] cipherText = cipher.doFinal(input);
+//        System.out.println("cipher: " + Hex.toHexString(cipherText).toUpperCase());
+//
+//        cipher.init(Cipher.DECRYPT_MODE, pubKey);
+//        byte[] plainText = cipher.doFinal(cipherText);
+//        System.out.println("plain : " + new String(plainText));
+//    }
 
 
     //    https://stackoverflow.com/questions/43459993/how-do-i-generate-rsa-key-pair-in-java-in-openssl-format

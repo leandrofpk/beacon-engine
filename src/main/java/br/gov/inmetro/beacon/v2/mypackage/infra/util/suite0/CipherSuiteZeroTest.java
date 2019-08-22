@@ -1,6 +1,5 @@
 package br.gov.inmetro.beacon.v2.mypackage.infra.util.suite0;
 
-import br.gov.inmetro.beacon.v1.domain.RSA;
 import br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService;
 import br.gov.inmetro.beacon.v2.mypackage.infra.util.CipherSuiteBuilder;
 import br.gov.inmetro.beacon.v2.mypackage.infra.util.ICipherSuite;
@@ -9,33 +8,22 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.util.ASN1Dump;
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-import org.bouncycastle.util.encoders.Base64;
-import org.bouncycastle.util.encoders.Base64Encoder;
 import org.bouncycastle.util.encoders.Hex;
-import org.junit.Assert;
 import org.junit.Test;
 
 import javax.crypto.Cipher;
-import javax.sound.midi.Soundbank;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.*;
-import java.security.interfaces.RSAPublicKey;
 
-import org.bouncycastle.openssl.PEMDecryptorProvider;
-import org.bouncycastle.openssl.PEMEncryptedKeyPair;
-import org.bouncycastle.openssl.PEMKeyPair;
-import org.bouncycastle.openssl.PEMParser;
-import org.springframework.util.Base64Utils;
-
-import static br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService.loadPublicKeyFromCertificate;
+import static br.gov.inmetro.beacon.v1.domain.service.CriptoUtilService.signReturnHex;
 import static org.junit.Assert.assertTrue;
 
 public class CipherSuiteZeroTest {
@@ -58,27 +46,27 @@ public class CipherSuiteZeroTest {
             "21711CB2077CFB669077F3855C84C2C4330B4EC2987EB5E6C1FE5B344900570A" +
             "A30550C3B8B0592F1796602F40E713059BC732792C91678F2B6E5BD75FD38FEE";
 
-    @Test
-    public void signBytes15Test() throws Exception {
+//    @Test
+//    public void signBytes15Test() throws Exception {
+//
+////        PrivateKey privKey = CriptoUtilService.loadPrivateKey("D:\\inmetro\\beacon-keys\\nova-chave\\priv-key-pkcs8.pem");
+//        PrivateKey privKey = CriptoUtilService.loadPrivateKey("D:\\inmetro\\beacon-keys\\4096-module\\beacon-priv-pkcs8.pem");
+//        ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
+//
+//        String result = cipherSuite.signBytes15(plainText, privKey);
+//        Assert.assertEquals(cipherText, result);
+//    }
 
-//        PrivateKey privKey = CriptoUtilService.loadPrivateKey("D:\\inmetro\\beacon-keys\\nova-chave\\priv-key-pkcs8.pem");
-        PrivateKey privKey = CriptoUtilService.loadPrivateKey("D:\\inmetro\\beacon-keys\\4096-module\\beacon-priv-pkcs8.pem");
-        ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
 
-        String result = cipherSuite.signBytes15(plainText, privKey);
-        Assert.assertEquals(cipherText, result);
-    }
-
-
-    @Test
-    public void verifySignBytes15Test() throws Exception {
-        RSAPublicKey publicKey = RSA.getPublicKey("D:\\inmetro\\beacon-keys\\nova-chave\\pub-key.pem");
-        ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
-
-        String result = cipherSuite.verifySignBytes15(cipherText, publicKey);
-
-        Assert.assertEquals(plainText, result);
-    }
+//    @Test
+//    public void verifySignBytes15Test() throws Exception {
+//        RSAPublicKey publicKey = RSA.getPublicKey("D:\\inmetro\\beacon-keys\\nova-chave\\pub-key.pem");
+//        ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
+//
+//        String result = cipherSuite.verifySignBytes15(cipherText, publicKey);
+//
+//        Assert.assertEquals(plainText, result);
+//    }
 
 
     @Test

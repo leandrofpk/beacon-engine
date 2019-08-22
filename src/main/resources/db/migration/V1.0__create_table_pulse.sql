@@ -18,4 +18,4 @@ CREATE TABLE pulse (
   version varchar(255) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY UK1t9peie90oq11xjedtedj2ea (time_stamp,chain_index)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

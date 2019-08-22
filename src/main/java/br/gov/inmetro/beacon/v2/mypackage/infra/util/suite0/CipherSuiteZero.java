@@ -38,44 +38,69 @@ public class CipherSuiteZero implements ICipherSuite {
         return null;
     }
 
-    public String signBytes15(String plainText, Key privKey) {
-        byte[] cipherText = null;
+    @Override
+    public String signBytes15(String plainText, PrivateKey privateKey) throws Exception {
 
-        try {
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+            Signature privateSignature = Signature.getInstance("NONEwithRSA");
+            privateSignature.initSign(privateKey);
+            privateSignature.update(plainText.getBytes(UTF_8));
 
-            byte[] input = plainText.getBytes();
-            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-            cipher.init(Cipher.ENCRYPT_MODE, privKey);
-            cipherText = cipher.doFinal(input);
+            byte[] signature = privateSignature.sign();
 
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+            return Hex.toHexString(signature).toUpperCase();
 
-        return Hex.toHexString(cipherText).toUpperCase();
     }
 
-    public String verifySignBytes15(String cipherText, PublicKey pubKey) {
-        byte [] plainText = null;
-        try {
+    @Override
+    public boolean verifySignBytes15(String plainText, String signature, PublicKey publicKey) throws Exception {
+        Signature publicSignature = Signature.getInstance("NONEwithRSA");
+        publicSignature.initVerify(publicKey);
+        publicSignature.update(plainText.getBytes(UTF_8));
 
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        byte[] signatureBytes = Hex.decode(signature);
 
-//            byte[] input = cipherText.getBytes();
-            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+        return publicSignature.verify(signatureBytes);
 
-            cipher.init(Cipher.DECRYPT_MODE, pubKey);
-            plainText = cipher.doFinal(cipherText.getBytes(UTF_8));
-
-
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return Hex.toHexString(plainText).toUpperCase();
     }
+
+//    public String signBytes15(String plainText, Key privKey) {
+//        byte[] cipherText = null;
+//
+//        try {
+//            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+//
+//            byte[] input = plainText.getBytes();
+//            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+//            cipher.init(Cipher.ENCRYPT_MODE, privKey);
+//            cipherText = cipher.doFinal(input);
+//
+//        } catch (Exception e){
+//            e.printStackTrace();
+//        }
+//
+//        return Hex.toHexString(cipherText).toUpperCase();
+//    }
+
+//    public String verifySignBytes15(String cipherText, PublicKey pubKey) {
+//        byte [] plainText = null;
+//        try {
+//
+//            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+//
+////            byte[] input = cipherText.getBytes();
+//            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+//
+//            cipher.init(Cipher.DECRYPT_MODE, pubKey);
+//            plainText = cipher.doFinal(cipherText.getBytes(UTF_8));
+//
+//
+//
+//        } catch (Exception e){
+//            e.printStackTrace();
+//        }
+//
+//        return Hex.toHexString(plainText).toUpperCase();
+//    }
 
 
 }
