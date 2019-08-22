@@ -241,9 +241,17 @@ public class PulseTest {
         byte[] bytes1 = dateStr.getBytes(US_ASCII);
         System.out.println(bytes1.length);
 
-        String versao = "2.0";
-        byte[] bytes2 = versao.getBytes(US_ASCII);
-        System.out.println(bytes2.length);
+        String value = "2.0";
+        int bytLen = value.getBytes(UTF_8).length;
+        byte[] bytesA1 = value.getBytes(UTF_8);
+        byte[] bytesA2 = value.getBytes(UTF_8);
+
+
+
+        byte[] concatenate = ByteUtils.concatenate(bytesA1, bytesA2);
+
+
+
 
         // page 15 Draft
         String uri = "https://beacon.nist.gov/beacon/2.0/chain/1/pulse/1";

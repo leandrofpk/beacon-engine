@@ -2,6 +2,8 @@ package br.gov.inmetro.beacon.v2.mypackage.domain.pulse;
 
 import br.gov.inmetro.beacon.v2.mypackage.domain.chain.ChainValueObject;
 import br.gov.inmetro.beacon.v2.mypackage.infra.PulseEntity;
+import br.gov.inmetro.beacon.v2.mypackage.infra.util.CipherSuiteBuilder;
+import br.gov.inmetro.beacon.v2.mypackage.infra.util.ICipherSuite;
 import br.gov.inmetro.beacon.v2.mypackage.infra.util.suite0.CipherSuiteZero;
 import lombok.Getter;
 import lombok.NonNull;
@@ -106,8 +108,7 @@ public class Pulse {
         private String outputValue;
         private PrivateKey privateKey;
 
-        private final CipherSuiteZero sha512Util = new CipherSuiteZero();
-
+        private final ICipherSuite sha512Util = CipherSuiteBuilder.build(0);
 
         public Builder setUri(String uri){
             this.uri = uri;
@@ -176,7 +177,7 @@ public class Pulse {
         private void calcSignAndOutputValue() {
             try {
 
-                CipherSuiteZero sha512Util = new CipherSuiteZero();
+//                CipherSuiteBuilder.build(0);
                 ByteArrayOutputStream byteArrayOutputStream = byteSerializeFields();
 
                 String digest = sha512Util.getDigest(byteArrayOutputStream.toByteArray());
@@ -195,7 +196,7 @@ public class Pulse {
 
         private ByteArrayOutputStream byteSerializeFields()  {
 
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream(4096); // should be enough
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream(8192); // should be enough
             try {
 
                 baos.write(byteSerializeString(uri));
@@ -243,8 +244,8 @@ public class Pulse {
 
         // conferir
         private byte[] byteSerializeString(String value){
-            int bytLen = value.getBytes(US_ASCII).length;
-            byte[] bytes1 = ByteBuffer.allocate(bytLen).putInt(bytLen).array();
+            int bytLen = value.getBytes(UTF_8).length;
+            byte[] bytes1 = ByteBuffer.allocate(4).putInt(bytLen).array();
             byte[] bytes2 = value.getBytes(UTF_8);
 
             byte[] concatenate = ByteUtils.concatenate(bytes1, bytes2);

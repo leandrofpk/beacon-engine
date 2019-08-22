@@ -1,10 +1,10 @@
 package br.gov.inmetro.beacon.v1.infra;
 
 import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.ProcessingErrorDto;
+import com.sun.istack.internal.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 
 @Entity

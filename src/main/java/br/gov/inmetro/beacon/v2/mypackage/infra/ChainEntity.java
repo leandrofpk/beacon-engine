@@ -1,9 +1,9 @@
 package br.gov.inmetro.beacon.v2.mypackage.infra;
 
+import com.sun.istack.internal.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Entity

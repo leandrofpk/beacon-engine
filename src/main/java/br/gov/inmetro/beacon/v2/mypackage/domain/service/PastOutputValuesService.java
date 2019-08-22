@@ -33,8 +33,6 @@ public class PastOutputValuesService {
 
         // saber se o current é o mesmo da hora.
         ZonedDateTime primeroDaHora = currentTimestamp.truncatedTo(ChronoUnit.HOURS);
-        System.out.println("Current:" + currentTimestamp);
-        System.out.println("primeroDaHora:" + primeroDaHora);
         Pulse pulseHour = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDaHora);
 
         if (pulseHour==null){
@@ -46,7 +44,6 @@ public class PastOutputValuesService {
 
         //day
         ZonedDateTime primeroDoDia = currentTimestamp.truncatedTo(ChronoUnit.DAYS);
-        System.out.println(primeroDoDia);
         Pulse pulseDay = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoDia);
         listValues.add(ListValue.getOneValue(pulseDay.getOutputValue(), "day", pulseDay.getUri()));
 
@@ -57,7 +54,6 @@ public class PastOutputValuesService {
 
         //year
         ZonedDateTime primeroDoAno = currentTimestamp.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
-        System.out.println("primeroDoAno:" + primeroDoAno);
         Pulse pulseYear = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoAno);
         listValues.add(ListValue.getOneValue(pulseYear.getOutputValue(), "year", pulseYear.getUri()));
 
