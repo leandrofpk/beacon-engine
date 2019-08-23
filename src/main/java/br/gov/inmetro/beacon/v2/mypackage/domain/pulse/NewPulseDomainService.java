@@ -128,6 +128,9 @@ public class NewPulseDomainService {
         list.add(ListValue.getOneValue(previous.getOutputValue(),
                 "previous", previous.getUri()));
 
+        long vPulseIndex = previous.getPulseIndex()+1;
+        String uri = env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex;
+
         // gap de data
         int vStatusCode = 0;
         long between = ChronoUnit.MINUTES.between(previous.getTimeStamp(), current.getTimeStamp());
@@ -149,13 +152,12 @@ public class NewPulseDomainService {
                 list.add(ListValue.getOneValue(listValue.get(3).getValue(), "month", previous.getUri()));
                 list.add(ListValue.getOneValue(listValue.get(4).getValue(), "year", previous.getUri()));
             } else {
-                list.addAll(pastOutputValuesService.getOldPulses(current.getTimeStamp()));
+                list.addAll(pastOutputValuesService.getOldPulses(current, uri));
             }
 
         }
 
-        long vPulseIndex = previous.getPulseIndex()+1;
-        String uri = env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex;
+
 
         return new Pulse.Builder()
                 .setUri(uri)

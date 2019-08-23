@@ -1,5 +1,6 @@
 package br.gov.inmetro.beacon.v2.mypackage.domain.service;
 
+import br.gov.inmetro.beacon.v1.application.api.LocalRandomValueDto;
 import br.gov.inmetro.beacon.v1.domain.repository.PulsesRepository;
 import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.ListValue;
 import br.gov.inmetro.beacon.v2.mypackage.domain.pulse.Pulse;
@@ -28,37 +29,62 @@ public class PastOutputValuesService {
     }
 
     @Transactional
-    public List<ListValue> getOldPulses(ZonedDateTime currentTimestamp){
+    public List<ListValue> getOldPulses(LocalRandomValueDto currentDto, String uri){
         List<ListValue> listValues = new ArrayList<>();
 
-        // saber se o current é o mesmo da hora.
-        ZonedDateTime primeroDaHora = currentTimestamp.truncatedTo(ChronoUnit.HOURS);
+        ZonedDateTime primeroDaHora = currentDto.getTimeStamp().truncatedTo(ChronoUnit.HOURS);
         Pulse pulseHour = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDaHora);
 
+        // saber se o current é o mesmo da hora.
         if (pulseHour==null){
-            PulseEntity first = pulsesRepository.first(activeChainService.get().getChainIndex());
-            listValues.add(ListValue.getOneValue(first.getOutputValue(), "hour", first.getUri()));
+//            PulseEntity first = pulsesRepository.first(activeChainService.get().getChainIndex());
+//            listValues.add(ListValue.getOneValue(first.getOutputValue(), "hour", first.getUri()));
+            listValues.add(ListValue.getOneValue(currentDto.getValue(), "hour", uri));  // current is the first of hour
         } else {
             listValues.add(ListValue.getOneValue(pulseHour.getOutputValue(), "hour", pulseHour.getUri()));
         }
 
-        //day
-        ZonedDateTime primeroDoDia = currentTimestamp.truncatedTo(ChronoUnit.DAYS);
+        //dayh
+        ZonedDateTime primeroDoDia = currentDto.getTimeStamp().truncatedTo(ChronoUnit.DAYS);
         Pulse pulseDay = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoDia);
-        listValues.add(ListValue.getOneValue(pulseDay.getOutputValue(), "day", pulseDay.getUri()));
+
+        // saber se o current é o primeiro
+//        System.out.println(String.format("%s:%s", currentDto.getTimeStamp().get(ChronoField.HOUR_OF_DAY), currentDto.getTimeStamp().get(ChronoField.MINUTE_OF_HOUR)));
+
+        if (pulseDay==null){
+            listValues.add(ListValue.getOneValue(currentDto.getValue(), "day", uri));  // current is the first of day
+        } else {
+            listValues.add(ListValue.getOneValue(pulseDay.getOutputValue(), "day", pulseDay.getUri()));
+        }
 
         //month
-        ZonedDateTime primeroDoMes = currentTimestamp.with(ChronoField.DAY_OF_MONTH, 1).truncatedTo(ChronoUnit.DAYS);
+        ZonedDateTime primeroDoMes = currentDto.getTimeStamp().with(ChronoField.DAY_OF_MONTH, 1).truncatedTo(ChronoUnit.DAYS);
         Pulse pulseMonth = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoMes);
-        listValues.add(ListValue.getOneValue(pulseMonth.getOutputValue(), "month", pulseMonth.getUri()));
+        if (pulseMonth==null){
+            listValues.add(ListValue.getOneValue(currentDto.getValue(), "month", uri));  // current is the first of month
+        } else {
+            listValues.add(ListValue.getOneValue(pulseMonth.getOutputValue(), "month", pulseMonth.getUri()));
+        }
 
         //year
-        ZonedDateTime primeroDoAno = currentTimestamp.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
+        ZonedDateTime primeroDoAno = currentDto.getTimeStamp().withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
         Pulse pulseYear = pulsesRepository.findOldPulses(activeChainService.get().getChainIndex(), primeroDoAno);
-        listValues.add(ListValue.getOneValue(pulseYear.getOutputValue(), "year", pulseYear.getUri()));
+        if (pulseYear==null){
+            listValues.add(ListValue.getOneValue(currentDto.getValue(), "year", uri));  // current is the first of year
+        } else {
+            listValues.add(ListValue.getOneValue(pulseYear.getOutputValue(), "year", pulseYear.getUri()));
+        }
 
         return listValues;
     }
 
+    private boolean isFirstOfDay(ZonedDateTime currentTimestamp){
+        if ((currentTimestamp.get(ChronoField.HOUR_OF_DAY) == 0)
+                && (currentTimestamp.get(ChronoField.MINUTE_OF_HOUR) == 0)) { // é o primeiro do dia
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

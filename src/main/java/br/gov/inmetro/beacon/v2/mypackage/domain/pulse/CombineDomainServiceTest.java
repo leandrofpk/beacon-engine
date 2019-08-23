@@ -128,7 +128,8 @@ public class CombineDomainServiceTest {
 
         ZonedDateTime nowLast = ZonedDateTime.now()
                 .truncatedTo(ChronoUnit.MINUTES).minus(1,ChronoUnit.MINUTES)
-                .withZoneSameInstant((ZoneOffset.UTC).normalized());
+                .withZoneSameInstant((ZoneOffset.
+                        UTC).normalized());
 
         PulseDto recordLastDto = new PulseDto();
         recordLastDto.setTimeStamp(nowLast);
