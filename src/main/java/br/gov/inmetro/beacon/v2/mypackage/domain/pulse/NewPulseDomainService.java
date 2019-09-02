@@ -41,6 +41,8 @@ public class NewPulseDomainService {
 
     private final PastOutputValuesService pastOutputValuesService;
 
+    private final String certificateId = "04c5dc3b40d25294c55f9bc2496fd4fe9340c1308cd073900014e6c214933c7f7737227fc5e4527298b9e95a67ad92e0310b37a77557a10518ced0ce1743e132";
+
     @Autowired
     public NewPulseDomainService(Environment env, PulsesRepository pulsesRepository, EntropyRepository entropyRepository,
                                  CombinationErrors combinationErrors, PastOutputValuesService pastOutputValuesService) {
@@ -162,7 +164,7 @@ public class NewPulseDomainService {
         return new Pulse.Builder()
                 .setUri(uri)
                 .setChainValueObject(activeChain)
-                .setCertificateId("0")
+                .setCertificateId(this.certificateId)
                 .setPulseIndex(vPulseIndex)
                 .setTimeStamp(current.getTimeStamp())
                 .setLocalRandomValue(current.getValue())
@@ -194,7 +196,7 @@ public class NewPulseDomainService {
         return new Pulse.Builder()
                 .setUri(uri)
                 .setChainValueObject(activeChain)
-                .setCertificateId("0")
+                .setCertificateId(this.certificateId)
                 .setPulseIndex(1)
                 .setTimeStamp(localRandomValue.getTimeStamp())
                 .setLocalRandomValue(localRandomValue.getValue())
