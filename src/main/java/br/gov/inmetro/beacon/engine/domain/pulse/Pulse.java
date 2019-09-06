@@ -175,13 +175,8 @@ public class Pulse {
 
         private void calcSignAndOutputValue() {
             try {
-
-//                CipherSuiteBuilder.build(0);
                 ByteArrayOutputStream byteArrayOutputStream = byteSerializeFields();
-
-                String digest = sha512Util.getDigest(byteArrayOutputStream.toByteArray());
-
-                this.signatureValue = sha512Util.signBytes15(digest, privateKey);
+                this.signatureValue = sha512Util.sign(privateKey, byteArrayOutputStream.toByteArray());
 
                 //outputvalue
                 byteArrayOutputStream.write(byteSerializeSig(this.signatureValue));

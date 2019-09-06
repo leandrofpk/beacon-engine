@@ -1,9 +1,14 @@
 package br.gov.inmetro.beacon.engine.infra.util.suite0;
 
 import br.gov.inmetro.beacon.engine.infra.util.ICipherSuite;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.bouncycastle.util.encoders.Hex;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Cipher;
 import java.security.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -37,68 +42,34 @@ public class CipherSuiteZero implements ICipherSuite {
     }
 
     @Override
-    public String signBytes15(String plainText, PrivateKey privateKey) throws Exception {
+    public String sign(PrivateKey privateKey, byte[] message) throws Exception {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-            Signature privateSignature = Signature.getInstance("NONEwithRSA");
-            privateSignature.initSign(privateKey);
-            privateSignature.update(plainText.getBytes(UTF_8));
+        Signature signature = Signature.getInstance("SHA256withRSA", "BC");
+        signature.initSign(privateKey);
+        signature.update(message);
 
-            byte[] signature = privateSignature.sign();
+        byte[] sigBytes = signature.sign();
 
-            return Hex.toHexString(signature).toUpperCase();
-
+        return Hex.toHexString(sigBytes);
     }
 
     @Override
-    public boolean verifySignBytes15(String plainText, String signature, PublicKey publicKey) throws Exception {
-        Signature publicSignature = Signature.getInstance("NONEwithRSA");
-        publicSignature.initVerify(publicKey);
-        publicSignature.update(plainText.getBytes(UTF_8));
+    public boolean verify(PublicKey publicKey, String sign, byte[] message) throws Exception {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-        byte[] signatureBytes = Hex.decode(signature);
+        Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+        cipher.init(Cipher.DECRYPT_MODE, publicKey);
 
-        return publicSignature.verify(signatureBytes);
+        byte[] decSig = cipher.doFinal(ByteUtils.fromHexString(sign));
+        ASN1InputStream aIn = new ASN1InputStream(decSig);
+        ASN1Sequence seq = (ASN1Sequence) aIn.readObject();
 
+        MessageDigest hash = MessageDigest.getInstance("SHA-256", "BC");
+        hash.update(message);
+
+        ASN1OctetString sigHash = (ASN1OctetString) seq.getObjectAt(1);
+        return MessageDigest.isEqual(hash.digest(), sigHash.getOctets());
     }
-
-//    public String signBytes15(String plainText, Key privKey) {
-//        byte[] cipherText = null;
-//
-//        try {
-//            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-//
-//            byte[] input = plainText.getBytes();
-//            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-//            cipher.init(Cipher.ENCRYPT_MODE, privKey);
-//            cipherText = cipher.doFinal(input);
-//
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//        return Hex.toHexString(cipherText).toUpperCase();
-//    }
-
-//    public String verifySignBytes15(String cipherText, PublicKey pubKey) {
-//        byte [] plainText = null;
-//        try {
-//
-//            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-//
-////            byte[] input = cipherText.getBytes();
-//            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-//
-//            cipher.init(Cipher.DECRYPT_MODE, pubKey);
-//            plainText = cipher.doFinal(cipherText.getBytes(UTF_8));
-//
-//
-//
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//        return Hex.toHexString(plainText).toUpperCase();
-//    }
-
 
 }
