@@ -6,4 +6,4 @@ CREATE TABLE vdf_seed (
   PRIMARY KEY (id),
   KEY fk_vdf_seed_1 (vdf_pulse_id),
   CONSTRAINT fk_vdf_seed_1 FOREIGN KEY (vdf_pulse_id) REFERENCES vdf_pulse (id) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
