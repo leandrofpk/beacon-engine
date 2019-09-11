@@ -9,4 +9,5 @@ import java.time.ZonedDateTime;
 @Repository
 public interface EntropyRepository extends JpaRepository<EntropyEntity, Integer> {
     long deleteByTimeStamp(ZonedDateTime timeStamp);
+    EntropyEntity findByTimeStamp(ZonedDateTime timeStamp);
 }
