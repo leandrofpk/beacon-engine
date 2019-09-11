@@ -6,6 +6,7 @@ CREATE TABLE vdf_unicorn (
   period int(11) NOT NULL,
   pulse_index bigint(20) NOT NULL,
   signature_value varchar(2048) DEFAULT NULL,
+  combination varchar(10) DEFAULT NULL,
   time_stamp datetime DEFAULT NULL,
   x varchar(2048) DEFAULT NULL,
   y varchar(2048) DEFAULT NULL,

@@ -9,7 +9,10 @@ import br.gov.inmetro.beacon.engine.domain.chain.ChainValueObject;
 import br.gov.inmetro.beacon.engine.domain.repository.EntropyRepository;
 import br.gov.inmetro.beacon.engine.domain.service.PastOutputValuesService;
 import br.gov.inmetro.beacon.engine.infra.PulseEntity;
+import br.gov.inmetro.beacon.engine.queue.BeaconConsumer;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,8 @@ public class NewPulseDomainService {
     private final PastOutputValuesService pastOutputValuesService;
 
     private final String certificateId = "04c5dc3b40d25294c55f9bc2496fd4fe9340c1308cd073900014e6c214933c7f7737227fc5e4527298b9e95a67ad92e0310b37a77557a10518ced0ce1743e132";
+
+    private static final Logger logger = LoggerFactory.getLogger(BeaconConsumer.class);
 
     @Autowired
     public NewPulseDomainService(Environment env, PulsesRepository pulsesRepository, EntropyRepository entropyRepository,
@@ -212,6 +217,9 @@ public class NewPulseDomainService {
         pulsesRepository.save(new PulseEntity(pulse));
         combinationErrorsRepository.persist(combineDomainResult.getCombineErrorList());
         entropyRepository.deleteByTimeStamp(pulse.getTimeStamp());
+
+        logger.warn("Pulse released:" + pulse.getTimeStamp());
+
     }
 
 }

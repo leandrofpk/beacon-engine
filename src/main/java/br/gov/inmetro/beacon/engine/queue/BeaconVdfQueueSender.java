@@ -4,8 +4,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class BeaconVdfQueueSender {
 
@@ -22,13 +20,13 @@ public class BeaconVdfQueueSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendCombination(EntropyDto noiseDto) {
-        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_COMBINATION, noiseDto);
+    public void sendCombination(PrecommitmentQueueDto dto) {
+        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_COMBINATION, dto);
     }
 
-    public void sendUnicorn(EntropyDto noiseDto) {
-        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UNICORN, noiseDto);
-    }
+//    public void sendUnicorn(EntropyDto noiseDto) {
+//        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UNICORN, noiseDto);
+//    }
 
 
 }

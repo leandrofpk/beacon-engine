@@ -7,6 +7,7 @@ CREATE TABLE combination (
   pulse_index bigint(20) NOT NULL,
   signature_value varchar(2048) DEFAULT NULL,
   status_code int(11) NOT NULL,
+  combination varchar(10) DEFAULT NULL,
   time_stamp datetime DEFAULT NULL,
   x varchar(2048) DEFAULT NULL,
   y varchar(2048) DEFAULT NULL,

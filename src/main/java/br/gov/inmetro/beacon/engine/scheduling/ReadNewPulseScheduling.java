@@ -2,7 +2,10 @@ package br.gov.inmetro.beacon.engine.scheduling;
 
 import br.gov.inmetro.beacon.engine.domain.pulse.NewPulseDomainService;
 import br.gov.inmetro.beacon.engine.domain.repository.EntropyRepository;
+import br.gov.inmetro.beacon.engine.queue.BeaconConsumer;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,6 +21,7 @@ public class ReadNewPulseScheduling {
     private final NewPulseDomainService newPulseDomainService;
 
     private final EntropyRepository entropyRepository;
+
 
     @Autowired
     public ReadNewPulseScheduling(NewPulseDomainService newPulseDomainService, EntropyRepository entropyRepository) {
@@ -39,5 +43,6 @@ public class ReadNewPulseScheduling {
             return;
         }
         newPulseDomainService.begin(dtos);
+
     }
 }

@@ -8,6 +8,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+/*
+    DTO used to be transmitted via rabbitmq
+ */
 @Getter
 public final class EntropyDto implements Serializable {
 
