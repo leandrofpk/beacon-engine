@@ -1,4 +1,4 @@
-CREATE TABLE combination_seed (
+CREATE TABLE vdf_combination_seed (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   cumulative_hash varchar(255) DEFAULT NULL,
   description varchar(255) DEFAULT NULL,
@@ -9,4 +9,4 @@ CREATE TABLE combination_seed (
   combination_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY FKauf9e7qmnaldrn9lx5grp60fu (combination_id)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

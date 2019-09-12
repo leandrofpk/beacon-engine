@@ -9,4 +9,4 @@ CREATE TABLE vdf_unicorn_seed (
   vdf_unicorn_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY FKb0lg55201cjw35oxdmju8uejd (vdf_unicorn_id)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

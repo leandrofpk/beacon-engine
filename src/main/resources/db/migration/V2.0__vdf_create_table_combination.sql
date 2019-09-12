@@ -1,4 +1,4 @@
-CREATE TABLE combination (
+CREATE TABLE vdf_combination (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   certificate_id varchar(255) DEFAULT NULL,
   cipher_suite int(11) NOT NULL,
@@ -13,4 +13,4 @@ CREATE TABLE combination (
   x varchar(2048) DEFAULT NULL,
   y varchar(2048) DEFAULT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
