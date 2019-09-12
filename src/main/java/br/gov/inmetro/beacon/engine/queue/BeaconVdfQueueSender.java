@@ -24,9 +24,9 @@ public class BeaconVdfQueueSender {
         rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_COMBINATION, dto);
     }
 
-//    public void sendUnicorn(EntropyDto noiseDto) {
-//        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UNICORN, noiseDto);
-//    }
+    public void sendUnicorn(PrecommitmentQueueDto dto) {
+        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UNICORN, dto);
+    }
 
 
 }
