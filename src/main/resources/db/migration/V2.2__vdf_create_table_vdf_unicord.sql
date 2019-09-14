@@ -1,5 +1,7 @@
 CREATE TABLE vdf_unicorn (
   id bigint(20) NOT NULL AUTO_INCREMENT,
+  uri varchar(255) NULL,
+  version varchar(255) NULL,
   certificate_id varchar(255) DEFAULT NULL,
   cipher_suite int(11) NOT NULL,
   iterations int(11) NOT NULL,
@@ -8,6 +10,7 @@ CREATE TABLE vdf_unicorn (
   signature_value varchar(2048) DEFAULT NULL,
   combination varchar(10) DEFAULT NULL,
   time_stamp datetime DEFAULT NULL,
+  created_at TIMESTAMP(3) NULL,
   p varchar(2048) DEFAULT NULL,
   x varchar(2048) DEFAULT NULL,
   y varchar(2048) DEFAULT NULL,

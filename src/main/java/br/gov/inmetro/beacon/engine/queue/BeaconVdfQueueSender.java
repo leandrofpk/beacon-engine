@@ -1,13 +1,20 @@
 package br.gov.inmetro.beacon.engine.queue;
 
+import org.bouncycastle.util.Arrays;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import java.time.ZonedDateTime;
+import java.util.List;
 
 @Component
 public class BeaconVdfQueueSender {
 
     private final RabbitTemplate rabbitTemplate;
+
+    private final Environment env;
 
     private static final String EXCHANGE = "beacon_pulse_data";
 
@@ -16,17 +23,36 @@ public class BeaconVdfQueueSender {
     private static final String ROUTING_KEY_UNICORN = "pulse.unicorn";
 
     @Autowired
-    public BeaconVdfQueueSender(RabbitTemplate rabbitTemplate) {
+    public BeaconVdfQueueSender(RabbitTemplate rabbitTemplate, Environment env) {
         this.rabbitTemplate = rabbitTemplate;
+        this.env = env;
     }
 
     public void sendCombination(PrecommitmentQueueDto dto) {
         rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_COMBINATION, dto);
+        doUnicorn(dto);
+    }
+
+    private void doUnicorn(PrecommitmentQueueDto dto) {
+        boolean isSend = Boolean.parseBoolean(env.getProperty("beacon.unicorn.end-submission"));
+        if (!isSend){
+            return;
+        }
+
+        String minutes = env.getProperty("beacon.unicorn.submission.finalize");
+        String[] split = minutes.split(",");
+
+        Integer minute = ZonedDateTime.now().getMinute();
+
+        for (String s : split) {
+            if (s.equalsIgnoreCase(minute.toString())){
+                sendUnicorn(dto);
+            }
+        }
     }
 
     public void sendUnicorn(PrecommitmentQueueDto dto) {
         rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UNICORN, dto);
     }
-
 
 }

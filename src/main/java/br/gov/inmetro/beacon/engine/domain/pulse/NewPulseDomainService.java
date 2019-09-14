@@ -10,7 +10,9 @@ import br.gov.inmetro.beacon.engine.domain.repository.EntropyRepository;
 import br.gov.inmetro.beacon.engine.domain.service.PastOutputValuesService;
 import br.gov.inmetro.beacon.engine.infra.PulseEntity;
 import br.gov.inmetro.beacon.engine.queue.BeaconConsumer;
+import br.gov.inmetro.beacon.engine.queue.BeaconVdfQueueSender;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
+import br.gov.inmetro.beacon.engine.queue.PrecommitmentQueueDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,17 +47,20 @@ public class NewPulseDomainService {
 
     private final String certificateId = "04c5dc3b40d25294c55f9bc2496fd4fe9340c1308cd073900014e6c214933c7f7737227fc5e4527298b9e95a67ad92e0310b37a77557a10518ced0ce1743e132";
 
+    private final BeaconVdfQueueSender beaconVdfQueueSender;
+
     private static final Logger logger = LoggerFactory.getLogger(BeaconConsumer.class);
 
     @Autowired
     public NewPulseDomainService(Environment env, PulsesRepository pulsesRepository, EntropyRepository entropyRepository,
-                                 CombinationErrors combinationErrors, PastOutputValuesService pastOutputValuesService) {
+                                 CombinationErrors combinationErrors, PastOutputValuesService pastOutputValuesService, BeaconVdfQueueSender beaconVdfQueueSender) {
         this.env = env;
         this.pulsesRepository = pulsesRepository;
         this.entropyRepository = entropyRepository;
         this.combinationErrorsRepository = combinationErrors;
         this.pastOutputValuesService = pastOutputValuesService;
 
+        this.beaconVdfQueueSender = beaconVdfQueueSender;
     }
 
     @Transactional
@@ -86,6 +91,8 @@ public class NewPulseDomainService {
         if (combineDomainResult.getLocalRandomValueDtos().size() < 2){
             return;
         }
+
+        // TODO  Enviar aqui
 
         List<LocalRandomValueDto> localRandomValueDtos = combineDomainResult.getLocalRandomValueDtos();
 
@@ -137,6 +144,8 @@ public class NewPulseDomainService {
         long vPulseIndex = previous.getPulseIndex()+1;
         String uri = env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex;
 
+        long vPulseIndexNext = vPulseIndex+1;
+
         // gap de data
         int vStatusCode = 0;
         long between = ChronoUnit.MINUTES.between(previous.getTimeStamp(), current.getTimeStamp());
@@ -162,7 +171,6 @@ public class NewPulseDomainService {
             }
 
         }
-
 
 
         return new Pulse.Builder()
@@ -213,7 +221,15 @@ public class NewPulseDomainService {
     }
 
     @Transactional
-    protected void persistOnePulse(Pulse pulse) {
+    protected void persistOnePulse(Pulse pulse) throws InterruptedException {
+        boolean isSend = Boolean.parseBoolean(env.getProperty("beacon.vdf.combination.send.precom-to-queue"));
+        long pulseDelay = Long.parseLong(env.getProperty("beacon.pulse.release.delay"));
+
+        if (isSend){
+            beaconVdfQueueSender.sendCombination(new PrecommitmentQueueDto(pulse.getTimeStamp().toString(), pulse.getPrecommitmentValue(), pulse.getUri()));
+            Thread.sleep(pulseDelay);
+        }
+
         pulsesRepository.save(new PulseEntity(pulse));
         combinationErrorsRepository.persist(combineDomainResult.getCombineErrorList());
         entropyRepository.deleteByTimeStamp(pulse.getTimeStamp());

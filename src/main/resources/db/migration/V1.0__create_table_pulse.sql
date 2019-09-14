@@ -16,6 +16,7 @@ CREATE TABLE pulse (
   time_stamp datetime NOT NULL,
   uri varchar(255) NOT NULL,
   version varchar(255) NOT NULL,
+  created_at TIMESTAMP(3) NULL,
   PRIMARY KEY (id),
   UNIQUE KEY UK1t9peie90oq11xjedtedj2ea (time_stamp,chain_index)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

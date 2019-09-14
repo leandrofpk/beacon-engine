@@ -48,6 +48,8 @@ public class PulseEntity {
 
     private String outputValue;
 
+    private ZonedDateTime createdAt;
+
     public PulseEntity(){
     }
 
@@ -76,6 +78,11 @@ public class PulseEntity {
                                                             listValue.getUri(),
                                                             this)));
 
+    }
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = ZonedDateTime.now();
     }
 
 }

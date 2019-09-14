@@ -12,8 +12,11 @@ public class PrecommitmentQueueDto {
 
     private final String precommitment;
 
-    public PrecommitmentQueueDto(String timeStamp, String precommitment) {
+    private final String uri;
+
+    public PrecommitmentQueueDto(String timeStamp, String precommitment, String uri) {
         this.timeStamp = timeStamp;
         this.precommitment = precommitment;
+        this.uri = uri;
     }
 }
