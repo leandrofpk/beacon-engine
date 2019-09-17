@@ -45,29 +45,6 @@ public class CipherSuiteZeroTest {
             "21711CB2077CFB669077F3855C84C2C4330B4EC2987EB5E6C1FE5B344900570A" +
             "A30550C3B8B0592F1796602F40E713059BC732792C91678F2B6E5BD75FD38FEE";
 
-//    @Test
-//    public void signBytes15Test() throws Exception {
-//
-////        PrivateKey privKey = CriptoUtilService.loadPrivateKey("D:\\inmetro\\beacon-keys\\nova-chave\\priv-key-pkcs8.pem");
-//        PrivateKey privKey = CriptoUtilService.loadPrivateKey("D:\\inmetro\\beacon-keys\\4096-module\\beacon-priv-pkcs8.pem");
-//        ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
-//
-//        String result = cipherSuite.signBytes15(plainText, privKey);
-//        Assert.assertEquals(cipherText, result);
-//    }
-
-
-//    @Test
-//    public void verifySignBytes15Test() throws Exception {
-//        RSAPublicKey publicKey = RSA.getPublicKey("D:\\inmetro\\beacon-keys\\nova-chave\\pub-key.pem");
-//        ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
-//
-//        String result = cipherSuite.verifySignBytes15(cipherText, publicKey);
-//
-//        Assert.assertEquals(plainText, result);
-//    }
-
-
     @Test
     public void outroteste() throws Exception {
 
@@ -119,6 +96,7 @@ public class CipherSuiteZeroTest {
         System.out.println(privateKey);
 
         String hashSha512Hexa = "5C571D1B7641A359DE56A2498D4B972F4AFD6C85752381790E575E70B3BA7CBD7F5D6C646675F48C696884B0381FDC751C6153102EA14023F2719E23FE0C931C";
+//        String hashSha512Hexa = "5C571D1B7641A359DE56A2498D4B972F4AFD6C85752381790E575E70B3BA7CBD7F5D6C646675F48C696884B0381FDC751C6153102EA14023F2719E23FE0C931C";
 
         String signature = signReturnHex(hashSha512Hexa, privateKey);
         System.out.println(signature);
@@ -128,34 +106,16 @@ public class CipherSuiteZeroTest {
 //        PublicKey publicKey = loadPublicKeyFromCertificate("D:\\inmetro\\beacon-keys\\4096-module\\nist.cer");
 
 
-
-
-
-
-
         //Let's check the signature
         boolean isCorrect = CriptoUtilService.verifyReturnHex(hashSha512Hexa, signature, publicKey);
 
         assertTrue(isCorrect);
-
-
 
     }
 
     @Test
     public void testeHasCertificateId() throws NoSuchAlgorithmException, IOException {
 
-//        D:\inmetro\beacon-keys\4096-module
-
-//        PublicKey publicKey = loadPublicKeyFromCertificate("D:\\inmetro\\beacon-keys\\4096-module\\nist-v2.cer");
-
-//        System.out.println(publicKey.getAlgorithm());
-
-
-
-//        Base64.decode(publicKey.getEncoded());
-//        String s = Base64Utils.encodeToString(publicKey.getEncoded());
-//        String s1 = hashSha512Hexa(s);
 //        System.out.println(s1);
 
         ICipherSuite build = CipherSuiteBuilder.build(0);

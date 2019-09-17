@@ -5,6 +5,6 @@ import java.security.*;
 public interface ICipherSuite {
     String getDigest(String input);
     String getDigest(byte[] input);
-    String sign(PrivateKey privateKey, byte[] message) throws Exception;
-    boolean verify(PublicKey publicKey, String sign, byte[] message) throws Exception;
+    String signPkcs15(PrivateKey privateKey, byte[] message) throws Exception;
+    boolean verifyPkcs15(PublicKey publicKey, String sign, byte[] message) throws Exception;
 }

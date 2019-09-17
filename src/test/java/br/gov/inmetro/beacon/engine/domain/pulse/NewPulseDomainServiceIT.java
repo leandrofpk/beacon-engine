@@ -1,6 +1,14 @@
 package br.gov.inmetro.beacon.engine.domain.pulse;
 
+import br.gov.inmetro.beacon.engine.application.PulseDto;
 import br.gov.inmetro.beacon.engine.domain.repository.PulsesRepository;
+import br.gov.inmetro.beacon.engine.infra.PulseEntity;
+import br.gov.inmetro.beacon.engine.infra.util.ByteSerializationFieldsUtil;
+import br.gov.inmetro.beacon.engine.infra.util.ByteSerializationFieldsUtil2;
+import br.gov.inmetro.beacon.engine.infra.util.CipherSuiteBuilder;
+import br.gov.inmetro.beacon.engine.infra.util.ICipherSuite;
+import br.gov.inmetro.beacon.engine.infra.util.suite0.CipherSuiteZero;
+import br.gov.inmetro.beacon.engine.infra.util.suite0.CriptoUtilService;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
@@ -11,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -100,6 +109,28 @@ public class NewPulseDomainServiceIT {
 
     }
 
+    @Test
+    public void validarAssinaturaLocal() throws Exception {
+        List<EntropyDto> list = new ArrayList<>();
+        list.add(new EntropyDto("030b5d4e297262022390977e0d771762ceffd4ef9a79f7f7a0cb0439a347a46a5558969e8ded74de678f1a4d50e33bf68e5b317cbc523893fc987fca13ea84c0",60000, "1", "2019-01-30T18:45:00.000Z"));
+        list.add(new EntropyDto("4701694e62abddc3837cd8e309b8722e505f223aac4a3d4fc5b1fc080490e703cd630fe487abc803d4c0f2215c057207f349db70bfacfb75fd02491414d50e4f",60000, "1", "2019-01-30T18:46:00.000Z"));
+        list.add(new EntropyDto("0aae39eb9d82d158f3100b0e8ab4fb955c149ea5a14e43c311890c047b590d393fca197f25556c6abec7f1c38fe93fac0616a0ddc846f9a1f86d5ec9492efc46",60000, "1", "2019-08-22T23:56:00.000Z"));
+        list.add(new EntropyDto("98a3c8931de2c1957ce26c1a5efdf62774020c71dfb0b297dbd1aaab2cfa9154db335a30d0cbbb0db18eeae0da035ff61ab90664f3a1f652283b205ca1aa0155",60000, "1", "2019-08-22T23:57:00.000Z"));
+        newPulseDomainService.begin(list);
+
+        PulseEntity byChainAndPulseIndex = pulsesRepository.findByChainAndPulseIndex(1L, 3L);
+
+        PulseDto pulseDto = new PulseDto(byChainAndPulseIndex);
+
+        ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
+        PublicKey publicKey = CriptoUtilService.loadPublicKeyFromCertificate("D:\\inmetro\\beacon-keys\\4096-module\\beacon.cer");
+
+        ByteSerializationFieldsUtil2 serialized = new ByteSerializationFieldsUtil2(pulseDto);
+        boolean b = cipherSuite.verifyPkcs15(publicKey, pulseDto.getSignatureValue(), serialized.getBaos().toByteArray());
+
+        System.out.println(b);
+    }
+
     private String generateEntropy() throws NoSuchAlgorithmException {
         byte[] bytes = new byte[64];
         SecureRandom.getInstance("SHA1PRNG").nextBytes(bytes);
@@ -111,5 +142,7 @@ public class NewPulseDomainServiceIT {
         String format = timestamp.withZoneSameInstant((ZoneOffset.UTC).normalized()).format(dateTimeFormatter);
         return format;
     }
+
+
 
 }

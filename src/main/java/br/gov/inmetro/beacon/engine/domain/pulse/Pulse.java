@@ -6,20 +6,15 @@ import br.gov.inmetro.beacon.engine.infra.util.CipherSuiteBuilder;
 import br.gov.inmetro.beacon.engine.infra.util.ICipherSuite;
 import lombok.Getter;
 import lombok.NonNull;
-import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.security.PrivateKey;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import static br.gov.inmetro.beacon.engine.infra.util.ByteSerializationFieldsUtil.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Getter
 public class Pulse {
@@ -176,7 +171,7 @@ public class Pulse {
         private void calcSignAndOutputValue() {
             try {
                 ByteArrayOutputStream byteArrayOutputStream = byteSerializeFields();
-                this.signatureValue = sha512Util.sign(privateKey, byteArrayOutputStream.toByteArray());
+                this.signatureValue = sha512Util.signPkcs15(privateKey, byteArrayOutputStream.toByteArray());
 
                 //outputvalue
                 byteArrayOutputStream.write(byteSerializeSig(this.signatureValue));

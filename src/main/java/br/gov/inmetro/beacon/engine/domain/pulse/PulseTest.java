@@ -91,33 +91,8 @@ public class PulseTest {
 
     }
 
-//    private String uri;
-//    private String version;
-//    private int cipherSuite;
-//    private int period;
-//    private String certificateId;
-//    private long chainIndex;
-//    private long pulseIndex;
-//    private LocalDateTime timeStamp;
-
-//    public void tetarPKCS15(){
-//        Security.addProvider(BouncyCastleProvider());
-//        byte[] input = "Abc123".getBytes();
-//        Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-//        FileInputStream fin = new FileInputStream(new File("/test.cer"));
-//        CertificateFactory f = CertificateFactory.getInstance("X.509");
-//        X509Certificate certificate = (X509Certificate)f.generateCertificate(fin);
-//        PublicKey pk = certificate.getPublicKey();
-//        cipher.init(Cipher.ENCRYPT_MODE, pk, new SecureRandom());
-//        byte[] cipherText = cipher.doFinal(input);
-//    }
-
     @Test
     public void testarData(){
-//        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'h:m:ss.SZ");
-//        final String format = simpleDateFormat.format(LocalDateTime.now());
-//        System.out.println(format);
-
         Instant instant = Instant.parse( "2011-05-03T11:58:01Z" );
         System.out.println(instant);
 
@@ -158,17 +133,6 @@ public class PulseTest {
         LocalDateTime newTime = nowT.plusMinutes(1).minusNanos(1).withSecond(0).withNano(0000);
 
         System.out.println(newTime);
-
-
-
-
-
-//        ------------------------------------------------------------
-
-//        final Instant now = Instant.now().truncatedTo(ChronoUnit.MINUTES);
-//        System.out.println("teste");
-//        System.out.println(now.toString());
-//        System.out.println(now.atZone(ZoneId.of("America/Sao_Paulo")).toString());
     }
 
     @Test
@@ -188,9 +152,6 @@ public class PulseTest {
         Instant with = agora.with(ChronoField.MILLI_OF_SECOND, 0);
         System.out.println(with.get(ChronoField.MILLI_OF_SECOND));
     }
-
-
-
 
     @Test
     public void testingDate(){
@@ -246,20 +207,12 @@ public class PulseTest {
         byte[] bytesA1 = value.getBytes(UTF_8);
         byte[] bytesA2 = value.getBytes(UTF_8);
 
-
-
         byte[] concatenate = ByteUtils.concatenate(bytesA1, bytesA2);
-
-
-
 
         // page 15 Draft
         String uri = "https://beacon.nist.gov/beacon/2.0/chain/1/pulse/1";
         byte[] bytes3 = uri.getBytes(US_ASCII);
         System.out.println(bytes3.length);
-
-
-
     }
 
 }
