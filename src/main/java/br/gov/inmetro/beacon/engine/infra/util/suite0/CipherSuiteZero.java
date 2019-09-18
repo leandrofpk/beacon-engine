@@ -41,7 +41,6 @@ public class CipherSuiteZero implements ICipherSuite {
         return null;
     }
 
-//    http://www.java2s.com/Tutorial/Java/0490__Security/BasicclassforexploringPKCS1V15Signatures.htm
     @Override
     public String signPkcs15(PrivateKey privateKey, byte[] message) throws Exception {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
@@ -55,7 +54,6 @@ public class CipherSuiteZero implements ICipherSuite {
         return Hex.toHexString(sigBytes);
     }
 
-//    http://www.java2s.com/Tutorial/Java/0490__Security/BasicclassforexploringPKCS1V15Signatures.htm
     @Override
     public boolean verifyPkcs15(PublicKey publicKey, String sign, byte[] message) throws Exception {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());

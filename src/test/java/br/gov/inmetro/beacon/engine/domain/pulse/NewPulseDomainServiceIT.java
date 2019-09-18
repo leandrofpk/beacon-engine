@@ -3,11 +3,8 @@ package br.gov.inmetro.beacon.engine.domain.pulse;
 import br.gov.inmetro.beacon.engine.application.PulseDto;
 import br.gov.inmetro.beacon.engine.domain.repository.PulsesRepository;
 import br.gov.inmetro.beacon.engine.infra.PulseEntity;
-import br.gov.inmetro.beacon.engine.infra.util.ByteSerializationFieldsUtil;
-import br.gov.inmetro.beacon.engine.infra.util.ByteSerializationFieldsUtil2;
 import br.gov.inmetro.beacon.engine.infra.util.CipherSuiteBuilder;
 import br.gov.inmetro.beacon.engine.infra.util.ICipherSuite;
-import br.gov.inmetro.beacon.engine.infra.util.suite0.CipherSuiteZero;
 import br.gov.inmetro.beacon.engine.infra.util.suite0.CriptoUtilService;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
 import org.bouncycastle.util.encoders.Hex;
@@ -18,17 +15,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.ByteArrayOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static br.gov.inmetro.beacon.engine.infra.util.ByteSerializationFieldsUtil.*;
+import static br.gov.inmetro.beacon.engine.infra.util.DateUtil.getTimeStampFormated;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -123,12 +121,38 @@ public class NewPulseDomainServiceIT {
         PulseDto pulseDto = new PulseDto(byChainAndPulseIndex);
 
         ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
-        PublicKey publicKey = CriptoUtilService.loadPublicKeyFromCertificate("D:\\inmetro\\beacon-keys\\4096-module\\beacon.cer");
+        PublicKey publicKey = CriptoUtilService.loadPublicKeyFromCertificate("/home/leandro/dev/beacon-keys/4096-module/beacon.cer");
 
-        ByteSerializationFieldsUtil2 serialized = new ByteSerializationFieldsUtil2(pulseDto);
-        boolean b = cipherSuite.verifyPkcs15(publicKey, pulseDto.getSignatureValue(), serialized.getBaos().toByteArray());
+        byte[] serializar = serializar(pulseDto);
+
+        boolean b = cipherSuite.verifyPkcs15(publicKey, pulseDto.getSignatureValue(), serializar);
 
         System.out.println(b);
+    }
+
+    private byte[] serializar(PulseDto dto) throws Exception {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream(); // should be enough
+
+        baos.write(byteSerializeString(dto.getUri()));
+        baos.write(byteSerializeString(dto.getVersion()));
+        baos.write(encode4(dto.getCipherSuite()));
+        baos.write(encode4(dto.getPeriod()));
+        baos.write(byteSerializeHash(dto.getCertificateId()));
+        baos.write(encode8(dto.getChainIndex()));
+        baos.write(encode8(dto.getPulseIndex()));
+        baos.write(byteSerializeString(getTimeStampFormated(dto.getTimeStamp())));
+        baos.write(byteSerializeHash(dto.getLocalRandomValue()));
+        baos.write(byteSerializeHash(dto.getExternal().getSourceId()));
+        baos.write(encode4(dto.getExternal().getStatusCode()));
+        baos.write(byteSerializeHash(dto.getExternal().getValue()));
+        baos.write(byteSerializeHash(dto.getListValues().get(0).getValue()));
+        baos.write(byteSerializeHash(dto.getListValues().get(1).getValue()));
+        baos.write(byteSerializeHash(dto.getListValues().get(2).getValue()));
+        baos.write(byteSerializeHash(dto.getListValues().get(3).getValue()));
+        baos.write(byteSerializeHash(dto.getListValues().get(4).getValue()));
+        baos.write(byteSerializeHash(dto.getPrecommitmentValue()));
+        baos.write(encode4(dto.getStatusCode()));
+        return baos.toByteArray();
     }
 
     private String generateEntropy() throws NoSuchAlgorithmException {
@@ -136,13 +160,5 @@ public class NewPulseDomainServiceIT {
         SecureRandom.getInstance("SHA1PRNG").nextBytes(bytes);
         return Hex.toHexString(bytes);
     }
-
-    private String getTimeStampFormated(ZonedDateTime timestamp){
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz");
-        String format = timestamp.withZoneSameInstant((ZoneOffset.UTC).normalized()).format(dateTimeFormatter);
-        return format;
-    }
-
-
 
 }

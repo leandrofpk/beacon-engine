@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static br.gov.inmetro.beacon.engine.infra.util.ByteSerializationFieldsUtil.*;
+import static br.gov.inmetro.beacon.engine.infra.util.DateUtil.getTimeStampFormated;
 
 @Getter
 public class Pulse {
@@ -72,6 +73,8 @@ public class Pulse {
         this.outputValue = outputValue;
 
     }
+
+
 
     public static Pulse BuilderFromEntity(PulseEntity entity) {
         return new Pulse(entity.getUri(), entity.getVersion(), entity.getCipherSuite(), entity.getPeriod(), entity.getCertificateId(),
@@ -170,7 +173,7 @@ public class Pulse {
 
         private void calcSignAndOutputValue() {
             try {
-                ByteArrayOutputStream byteArrayOutputStream = byteSerializeFields();
+                ByteArrayOutputStream byteArrayOutputStream =  byteSerializeSignatureInput();
                 this.signatureValue = sha512Util.signPkcs15(privateKey, byteArrayOutputStream.toByteArray());
 
                 //outputvalue
@@ -183,11 +186,11 @@ public class Pulse {
 
         }
 
-        private ByteArrayOutputStream byteSerializeFields()  {
+        private ByteArrayOutputStream byteSerializeSignatureInput()  {
 
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream(8192); // should be enough
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {
-
+                // arrumar um lugar pra isso depois
                 baos.write(byteSerializeString(uri));
                 baos.write(byteSerializeString(chainValueObject.getVersion()));
                 baos.write(encode4(chainValueObject.getCipherSuite()));
@@ -196,9 +199,9 @@ public class Pulse {
                 baos.write(encode8(chainValueObject.getChainIndex()));
                 baos.write(encode8(pulseIndex));
                 baos.write(byteSerializeString(getTimeStampFormated(this.timeStamp)));
-                baos.write(byteSerializeHash(localRandomValue)); // verificar
+                baos.write(byteSerializeHash(localRandomValue));
                 baos.write(byteSerializeHash(external.getSourceId()));
-                baos.write(encode8(external.getStatusCode()));
+                baos.write(encode4(external.getStatusCode()));
                 baos.write(byteSerializeHash(external.getValue()));
                 baos.write(byteSerializeHash(listValue.get(0).getValue()));
                 baos.write(byteSerializeHash(listValue.get(1).getValue()));

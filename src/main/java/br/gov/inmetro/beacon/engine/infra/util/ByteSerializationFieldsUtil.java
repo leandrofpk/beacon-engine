@@ -2,6 +2,8 @@ package br.gov.inmetro.beacon.engine.infra.util;
 
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -11,47 +13,42 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class ByteSerializationFieldsUtil {
 
-    public static byte[] encode4(int value){
+    public static byte[] encode4(int value) throws IOException {
         return ByteBuffer.allocate(4).putInt(value).array();
     }
 
-    public static byte[] encode8(long value){
+    public static byte[] encode8(long value) throws IOException {
         return ByteBuffer.allocate(8).putLong(value).array();
     }
 
-    public static byte[] byteSerializeHash(String hash){
-        int bLenHash = 64;
-        byte[] bytes1 = ByteBuffer.allocate(4).putInt(bLenHash).array();
-        byte[] bytes2 = ByteUtils.fromHexString(hash);
-        byte[] concatenate = ByteUtils.concatenate(bytes1, bytes2);
+    public static byte[] byteSerializeHash(String hash) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        return concatenate;
+        int bLenHash =  ByteUtils.fromHexString(hash).length;
+        baos.write(ByteBuffer.allocate(4).putInt(bLenHash).array());
+        baos.write(ByteUtils.fromHexString(hash));
+
+        return baos.toByteArray();
     }
 
-    // conferir
-    public static byte[] byteSerializeString(String value){
+    public static byte[] byteSerializeString(String value) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
         int bytLen = value.getBytes(UTF_8).length;
-        byte[] bytes1 = ByteBuffer.allocate(4).putInt(bytLen).array();
-        byte[] bytes2 = value.getBytes(UTF_8);
+        baos.write(ByteBuffer.allocate(4).putInt(bytLen).array());
+        baos.write(value.getBytes(UTF_8));
 
-        byte[] concatenate = ByteUtils.concatenate(bytes1, bytes2);
-
-        return concatenate;
+        return baos.toByteArray();
     }
 
-    public static String getTimeStampFormated(ZonedDateTime timeStamp){
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz");
-        String format = timeStamp.withZoneSameInstant((ZoneOffset.UTC).normalized()).format(dateTimeFormatter);
-        return format;
-    }
+    public static byte[] byteSerializeSig(String hexString) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-    public static byte[] byteSerializeSig(String hexString){
         int bLenHash = 512;
-        byte[] bytes1 = ByteBuffer.allocate(4).putInt(bLenHash).array();
-        byte[] bytes2 = ByteUtils.fromHexString(hexString);
-        byte[] concatenate = ByteUtils.concatenate(bytes1, bytes2);
+        baos.write(ByteBuffer.allocate(4).putInt(bLenHash).array());
+        baos.write(ByteUtils.fromHexString(hexString));
 
-        return concatenate;
+        return baos.toByteArray();
     }
 
 

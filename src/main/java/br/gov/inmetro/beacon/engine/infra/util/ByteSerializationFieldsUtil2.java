@@ -7,18 +7,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import static br.gov.inmetro.beacon.engine.infra.util.ByteSerializationFieldsUtil.getTimeStampFormated;
+import static br.gov.inmetro.beacon.engine.infra.util.DateUtil.getTimeStampFormated;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class ByteSerializationFieldsUtil2 {
 
-    private final ByteArrayOutputStream baos = new ByteArrayOutputStream(8192); // should be enough
-
-    private final PulseDto pulse;
+    private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
     public ByteSerializationFieldsUtil2(PulseDto pulse) throws IOException {
-        this.pulse = pulse;
-
         byteSerializeString(pulse.getUri());
         byteSerializeString(pulse.getVersion());
         encode4(pulse.getCipherSuite());
@@ -29,7 +25,7 @@ public class ByteSerializationFieldsUtil2 {
         byteSerializeString(getTimeStampFormated(pulse.getTimeStamp()));
         byteSerializeHash(pulse.getLocalRandomValue());
         byteSerializeHash(pulse.getExternal().getSourceId());
-        encode8(pulse.getExternal().getStatusCode());
+        encode4(pulse.getExternal().getStatusCode());
         byteSerializeHash(pulse.getExternal().getValue());
         byteSerializeHash(pulse.getListValues().get(0).getValue());
         byteSerializeHash(pulse.getListValues().get(1).getValue());
@@ -44,25 +40,22 @@ public class ByteSerializationFieldsUtil2 {
         return baos;
     }
 
-    public void encode4(int value) throws IOException {
+    private void encode4(int value) throws IOException {
         baos.write(ByteBuffer.allocate(4).putInt(value).array());
     }
 
-    public void encode8(long value) throws IOException {
+    private void encode8(long value) throws IOException {
         baos.write(ByteBuffer.allocate(8).putLong(value).array());
     }
 
-    // TODO REVER o tamanho o no documento
-    public void byteSerializeHash(String hash) throws IOException {
+    private void byteSerializeHash(String hash) throws IOException {
         int bLenHash =  ByteUtils.fromHexString(hash).length;
         baos.write(ByteBuffer.allocate(4).putInt(bLenHash).array());
         baos.write(ByteUtils.fromHexString(hash));
-//        System.out.println(ByteUtils.fromHexString(hash).length);
     }
 
-    public void byteSerializeString(String value) throws IOException {
+    private void byteSerializeString(String value) throws IOException {
         int bytLen = value.getBytes(UTF_8).length;
-        System.out.println(bytLen);
         baos.write(ByteBuffer.allocate(4).putInt(bytLen).array());
         baos.write(value.getBytes(UTF_8));
     }
