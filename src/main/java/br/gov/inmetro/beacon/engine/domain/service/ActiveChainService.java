@@ -11,7 +11,7 @@ public class ActiveChainService {
 
     private final ChainRepository chainRepository;
 
-//    @Autowired
+    @Autowired
     public ActiveChainService(ChainRepository chainRepository) {
         this.chainRepository = chainRepository;
     }
