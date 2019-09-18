@@ -8,10 +8,12 @@ import br.gov.inmetro.beacon.engine.infra.util.ICipherSuite;
 import br.gov.inmetro.beacon.engine.infra.util.suite0.CriptoUtilService;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
 import org.bouncycastle.util.encoders.Hex;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -34,10 +36,14 @@ import static br.gov.inmetro.beacon.engine.infra.util.DateUtil.getTimeStampForma
 public class NewPulseDomainServiceIT {
 
     @Autowired
-    private NewPulseDomainService newPulseDomainService;
+    NewPulseDomainService newPulseDomainService;
 
     @Autowired
-    private PulsesRepository pulsesRepository;
+    PulsesRepository pulsesRepository;
+
+    @Autowired
+    Environment env;
+
 
     @Test
     public void teste() throws Exception {
@@ -121,17 +127,15 @@ public class NewPulseDomainServiceIT {
         PulseDto pulseDto = new PulseDto(byChainAndPulseIndex);
 
         ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
-        PublicKey publicKey = CriptoUtilService.loadPublicKeyFromCertificate("/home/leandro/dev/beacon-keys/4096-module/beacon.cer");
+        PublicKey publicKey = CriptoUtilService.loadPublicKeyFromCertificate(env.getProperty("beacon.x509.certificate"));
 
         byte[] serializar = serializar(pulseDto);
-
         boolean b = cipherSuite.verifyPkcs15(publicKey, pulseDto.getSignatureValue(), serializar);
-
-        System.out.println(b);
+        Assert.assertTrue(b);
     }
 
     private byte[] serializar(PulseDto dto) throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream(); // should be enough
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         baos.write(byteSerializeString(dto.getUri()));
         baos.write(byteSerializeString(dto.getVersion()));

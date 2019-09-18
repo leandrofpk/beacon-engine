@@ -3,7 +3,6 @@ package br.gov.inmetro.beacon.engine.domain.pulse;
 
 import br.gov.inmetro.beacon.engine.domain.chain.ChainValueObject;
 import org.apache.commons.lang3.time.DateUtils;
-import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.nio.ByteBuffer;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
@@ -20,9 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application-test.properties")
@@ -35,7 +30,7 @@ public class PulseTest {
 
 //    @Before
     public void init(){
-        ChainValueObject activeChain = new ChainValueObject("2.0", 0, 60000, 1);
+        ChainValueObject activeChain = new ChainValueObject("2.0" ,"Version 2.0", 0, 60000, 1);
 
         List<ListValue> listValue = new ArrayList<>();
         listValue.add(ListValue.getOneValue("000", "previous", "000"));
@@ -64,14 +59,9 @@ public class PulseTest {
      */
     @Test
     public void shouldBuildTheFirstPulseTest(){
-
 //        ChainValueObject
-
-
 //        System.out.println(newRegularPulse.toString());
-
 //        Assert.assertEquals();
-
     }
 
     /**
@@ -179,40 +169,6 @@ public class PulseTest {
         long between2 = ChronoUnit.MINUTES.between(date1.minus(1, ChronoUnit.MINUTES), date1.plus(2, ChronoUnit.MINUTES));
         System.out.println(between2);
 
-
-    }
-
-    @Test
-    public void testLenthSerializationHash(){
-        String hash =  "5C571D1B7641A359DE56A2498D4B972F4AFD6C85752381790E575E70B3BA7CBD7F5D6C646675F48C696884B0381FDC751C6153102EA14023F2719E23FE0C931C";
-        int bLenHash = 64;
-        byte[] bytes1 = ByteBuffer.allocate(4).putInt(bLenHash).array();
-        byte[] bytes2 = ByteUtils.fromHexString(hash);
-        byte[] concatenate = ByteUtils.concatenate(bytes1, bytes2);
-        System.out.println(concatenate.length);
-    }
-
-    @Test
-    public void testSerializeString(){
-        //aqui
-//        aqui
-
-        String dateStr = "2019-08-21T02:50:00.000Z";
-
-        byte[] bytes1 = dateStr.getBytes(US_ASCII);
-        System.out.println(bytes1.length);
-
-        String value = "2.0";
-        int bytLen = value.getBytes(UTF_8).length;
-        byte[] bytesA1 = value.getBytes(UTF_8);
-        byte[] bytesA2 = value.getBytes(UTF_8);
-
-        byte[] concatenate = ByteUtils.concatenate(bytesA1, bytesA2);
-
-        // page 15 Draft
-        String uri = "https://beacon.nist.gov/beacon/2.0/chain/1/pulse/1";
-        byte[] bytes3 = uri.getBytes(US_ASCII);
-        System.out.println(bytes3.length);
     }
 
 }

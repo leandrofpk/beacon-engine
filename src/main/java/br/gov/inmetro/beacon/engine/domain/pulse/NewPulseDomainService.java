@@ -142,7 +142,7 @@ public class NewPulseDomainService {
                 "previous", previous.getUri()));
 
         long vPulseIndex = previous.getPulseIndex()+1;
-        String uri = env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex;
+        String uri = env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersionUri() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex;
 
         long vPulseIndexNext = vPulseIndex+1;
 
@@ -171,7 +171,6 @@ public class NewPulseDomainService {
             }
 
         }
-
 
         return new Pulse.Builder()
                 .setUri(uri)
@@ -202,7 +201,7 @@ public class NewPulseDomainService {
         list.add(ListValue.getOneValue("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
                 "year", null));
 
-        String uri = env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersion() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + 1;
+        String uri = env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersionUri() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + 1;
 
 
         return new Pulse.Builder()

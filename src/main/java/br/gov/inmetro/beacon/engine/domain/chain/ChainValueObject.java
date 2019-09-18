@@ -6,7 +6,9 @@ import lombok.NonNull;
 @Getter
 public class ChainValueObject {
 
-    private final String version;
+    private final String versionUri;
+
+    private final String versionPulse;
 
     private final int cipherSuite;
 
@@ -14,9 +16,10 @@ public class ChainValueObject {
 
     private final long chainIndex;
 
-    public ChainValueObject(@NonNull String version, int cipherSuite,
+    public ChainValueObject(@NonNull String versionUri, String versionPulse,  int cipherSuite,
                             int period, long chainIndex) {
-        this.version = version;
+        this.versionUri = versionUri;
+        this.versionPulse = versionPulse;
         this.cipherSuite = cipherSuite;
         this.period = period;
         this.chainIndex = chainIndex;

@@ -8,12 +8,12 @@ CREATE TABLE vdf_combination (
   period int(11) NOT NULL,
   pulse_index bigint(20) NOT NULL,
   signature_value varchar(2048) DEFAULT NULL,
-  status_code int(11) NOT NULL,
   combination varchar(10) DEFAULT NULL,
   time_stamp datetime DEFAULT NULL,
-  created_at TIMESTAMP(3) NULL,
   p varchar(2048) DEFAULT NULL,
   x varchar(2048) DEFAULT NULL,
   y varchar(2048) DEFAULT NULL,
+  output_value varchar(255) NOT NULL,
+  created_at TIMESTAMP(3) NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

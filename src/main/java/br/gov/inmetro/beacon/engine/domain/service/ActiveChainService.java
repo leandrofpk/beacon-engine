@@ -11,14 +11,14 @@ public class ActiveChainService {
 
     private final ChainRepository chainRepository;
 
-    @Autowired
+//    @Autowired
     public ActiveChainService(ChainRepository chainRepository) {
         this.chainRepository = chainRepository;
     }
 
     public ChainValueObject get(){
         ChainEntity entity = chainRepository.findTop1ByActive(true);
-        return new ChainValueObject(entity.getVersion(), entity.getCipherSuite(), entity.getPeriod(), entity.getChainIndex());
+        return new ChainValueObject(entity.getVersionUri(),entity.getVersionPulse(), entity.getCipherSuite(), entity.getPeriod(), entity.getChainIndex());
     }
 
 }

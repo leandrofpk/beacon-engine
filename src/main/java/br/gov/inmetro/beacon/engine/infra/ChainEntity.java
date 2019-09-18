@@ -17,7 +17,10 @@ public class ChainEntity {
     private int id;
 
     @NotNull
-    private String version;
+    private String versionUri;
+
+    @NotNull
+    private String versionPulse;
 
     @NotNull
     private int cipherSuite;

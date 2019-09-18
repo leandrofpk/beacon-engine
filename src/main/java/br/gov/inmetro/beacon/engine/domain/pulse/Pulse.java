@@ -166,7 +166,7 @@ public class Pulse {
 
             calcSignAndOutputValue();
 
-            return new Pulse(uri, chainValueObject.getVersion(), chainValueObject.getCipherSuite(), chainValueObject.getPeriod(), certificateId,
+            return new Pulse(uri, chainValueObject.getVersionPulse(), chainValueObject.getCipherSuite(), chainValueObject.getPeriod(), certificateId,
                     chainValueObject.getChainIndex(), pulseIndex, timeStamp, localRandomValue, external, listValue,
                     precommitmentValue, statusCode, signatureValue, outputValue);
         }
@@ -192,7 +192,7 @@ public class Pulse {
             try {
                 // arrumar um lugar pra isso depois
                 baos.write(byteSerializeString(uri));
-                baos.write(byteSerializeString(chainValueObject.getVersion()));
+                baos.write(byteSerializeString(chainValueObject.getVersionPulse()));
                 baos.write(encode4(chainValueObject.getCipherSuite()));
                 baos.write(encode4(chainValueObject.getPeriod()));
                 baos.write(byteSerializeHash(certificateId));

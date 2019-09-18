@@ -4,7 +4,7 @@ CREATE TABLE vdf_unicorn_seed (
   description varchar(255) DEFAULT NULL,
   seed varchar(255) DEFAULT NULL,
   seed_index int(11) NOT NULL,
-  time_stamp datetime DEFAULT NULL,
+  time_stamp TIMESTAMP(3) NULL,
   uri varchar(255) DEFAULT NULL,
   vdf_unicorn_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),

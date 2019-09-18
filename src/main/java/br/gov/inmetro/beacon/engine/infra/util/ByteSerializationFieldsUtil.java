@@ -13,11 +13,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class ByteSerializationFieldsUtil {
 
-    public static byte[] encode4(int value) throws IOException {
+    public static byte[] encode4(int value) {
         return ByteBuffer.allocate(4).putInt(value).array();
     }
 
-    public static byte[] encode8(long value) throws IOException {
+    public static byte[] encode8(long value) {
         return ByteBuffer.allocate(8).putLong(value).array();
     }
 
@@ -43,8 +43,7 @@ public class ByteSerializationFieldsUtil {
 
     public static byte[] byteSerializeSig(String hexString) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        int bLenHash = 512;
+        int bLenHash = ByteUtils.fromHexString(hexString).length;
         baos.write(ByteBuffer.allocate(4).putInt(bLenHash).array());
         baos.write(ByteUtils.fromHexString(hexString));
 
