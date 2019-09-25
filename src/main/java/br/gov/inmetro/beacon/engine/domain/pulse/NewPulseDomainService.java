@@ -92,8 +92,6 @@ public class NewPulseDomainService {
             return;
         }
 
-        // TODO  Enviar aqui
-
         List<LocalRandomValueDto> localRandomValueDtos = combineDomainResult.getLocalRandomValueDtos();
 
         // tratando primeiro registro do banco

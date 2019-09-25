@@ -16,10 +16,6 @@ public final class LocalRandomValueDto implements Serializable {
     public LocalRandomValueDto(ZonedDateTime timeStamp, String value) {
         this.timeStamp = timeStamp;
         this.value = value;
-
-        // TODO Aplicar o Hash aqui
-//        CriptoUtilService.hashSha512Hexa(value);
-
     }
 
     @Override
