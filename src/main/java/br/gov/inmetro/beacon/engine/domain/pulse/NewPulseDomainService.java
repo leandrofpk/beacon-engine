@@ -82,8 +82,10 @@ public class NewPulseDomainService {
             pulseDto = new PulseDto(this.lastPulseEntity);
         }
 
+        CombinationEnum combinationEnum = CombinationEnum.valueOf(env.getProperty("beacon.combination"));
+
         CombineDomainService combineDomainService = new CombineDomainService(regularNoises, activeChain,
-                new Integer(numberOfSources), pulseDto);
+                new Integer(numberOfSources), pulseDto, combinationEnum);
         this.combineDomainResult = combineDomainService.processar();
     }
 
@@ -142,7 +144,7 @@ public class NewPulseDomainService {
         long vPulseIndex = previous.getPulseIndex()+1;
         String uri = env.getProperty("beacon.url") +  "/beacon/" + activeChain.getVersionUri() + "/chain/" + activeChain.getChainIndex() + "/pulse/" + vPulseIndex;
 
-        long vPulseIndexNext = vPulseIndex+1;
+//        long vPulseIndexNext = vPulseIndex+1;
 
         // gap de data
         int vStatusCode = 0;

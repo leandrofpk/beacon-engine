@@ -23,11 +23,15 @@ public class CombineDomainService {
 
     private final PulseDto lastPulseDto;
 
-    public CombineDomainService(List<EntropyDto> regularNoises, long chain, int numberOfSources,  PulseDto lastRecordDto) {
+    private CombinationEnum combinationEnum;
+
+    public CombineDomainService(List<EntropyDto> regularNoises, long chain, int numberOfSources,
+                                PulseDto lastRecordDto, CombinationEnum combinationEnum) {
         this.regularNoisesChainOne = regularNoises;
         this.chain = chain;
         this.numberOfSources = numberOfSources;
         this.lastPulseDto = lastRecordDto;
+        this.combinationEnum = combinationEnum;
     }
 
     public CombineDomainResult processar(){
@@ -56,7 +60,11 @@ public class CombineDomainService {
             List<String> listRawData = new ArrayList<>();
             value.forEach(noiseDto -> listRawData.add(noiseDto.getRawData()));
 
-            localRandomValueDtos.add(new LocalRandomValueDto(key, combine(listRawData)));
+            if (this.combinationEnum.equals(CombinationEnum.XOR)){
+                localRandomValueDtos.add(new LocalRandomValueDto(key, combineXor(listRawData)));
+            } else {
+                localRandomValueDtos.add(new LocalRandomValueDto(key, combineConcat(listRawData)));
+            }
 
             // combining errors
             if (value.size() != numberOfSources){
@@ -71,7 +79,7 @@ public class CombineDomainService {
         return new CombineDomainResult(localRandomValueDtos, combineErrorList);
     }
 
-    private String combine(List<String> rawDataList) {
+    private String combineXor(List<String> rawDataList) {
         byte[] xor = null;
 
         if (rawDataList.size() == 1){
@@ -87,6 +95,18 @@ public class CombineDomainService {
         }
 
         return ByteUtils.toHexString(xor);
+    }
+
+    private String combineConcat(List<String> rawDataList) {
+        String value = "";
+//        if (rawDataList.size() == 1){
+//            return rawDataList.get(0);
+//        }
+        for (int i = 0; i < rawDataList.size(); i++) {
+            value = value + rawDataList.get(i);
+        }
+
+        return value;
     }
 
 }
