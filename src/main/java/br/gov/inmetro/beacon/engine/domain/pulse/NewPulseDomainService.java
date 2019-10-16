@@ -24,6 +24,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import static br.gov.inmetro.beacon.engine.infra.util.DateUtil.getTimeStampFormated;
+
 @Service
 public class NewPulseDomainService {
 
@@ -225,7 +227,7 @@ public class NewPulseDomainService {
         long pulseDelay = Long.parseLong(env.getProperty("beacon.pulse.release.delay"));
 
         if (isSend){
-            beaconVdfQueueSender.sendCombination(new PrecommitmentQueueDto(pulse.getTimeStamp().toString(), pulse.getPrecommitmentValue(), pulse.getUri()));
+            beaconVdfQueueSender.sendCombination(new PrecommitmentQueueDto(getTimeStampFormated(pulse.getTimeStamp()), pulse.getPrecommitmentValue(), pulse.getUri()));
             Thread.sleep(pulseDelay);
         }
 
