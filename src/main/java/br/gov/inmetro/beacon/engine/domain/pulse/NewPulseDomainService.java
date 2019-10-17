@@ -20,6 +20,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -227,8 +228,18 @@ public class NewPulseDomainService {
         long pulseDelay = Long.parseLong(env.getProperty("beacon.pulse.release.delay"));
 
         if (isSend){
-            beaconVdfQueueSender.sendCombination(new PrecommitmentQueueDto(getTimeStampFormated(pulse.getTimeStamp()), pulse.getPrecommitmentValue(), pulse.getUri()));
-            Thread.sleep(pulseDelay);
+            String minutes = env.getProperty("beacon.vdf.combination.send.minutes");
+            String[] split = minutes.split(",");
+
+            Integer minute = ZonedDateTime.now().getMinute();
+
+            for (String s : split) {
+                if (s.equalsIgnoreCase(minute.toString())){
+                    beaconVdfQueueSender.sendCombination(new PrecommitmentQueueDto(getTimeStampFormated(pulse.getTimeStamp()), pulse.getPrecommitmentValue(), pulse.getUri()));
+                    Thread.sleep(pulseDelay);
+                }
+            }
+
         }
 
         pulsesRepository.save(new PulseEntity(pulse));
@@ -236,7 +247,6 @@ public class NewPulseDomainService {
         entropyRepository.deleteByTimeStamp(pulse.getTimeStamp());
 
         logger.warn("Pulse released:" + pulse.getTimeStamp());
-
     }
 
 }

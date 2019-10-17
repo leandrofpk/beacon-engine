@@ -1,13 +1,11 @@
 package br.gov.inmetro.beacon.engine.queue;
 
-import org.bouncycastle.util.Arrays;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 
 @Component
 public class BeaconVdfQueueSender {
@@ -33,6 +31,7 @@ public class BeaconVdfQueueSender {
         doUnicorn(dto);
     }
 
+    @Deprecated
     private void doUnicorn(PrecommitmentQueueDto dto) {
         boolean isSend = Boolean.parseBoolean(env.getProperty("beacon.unicorn.end-submission"));
         if (!isSend){
