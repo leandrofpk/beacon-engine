@@ -3,6 +3,7 @@ package br.gov.inmetro.beacon.engine.queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
@@ -26,6 +27,7 @@ public class BeaconVdfQueueSender {
         this.env = env;
     }
 
+    @Async
     public void sendCombination(PrecommitmentQueueDto dto) {
         rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_COMBINATION, dto);
         doUnicorn(dto);
