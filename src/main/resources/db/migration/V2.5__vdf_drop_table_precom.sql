@@ -1,0 +1,1 @@
+DROP TABLE vdf_precom;
