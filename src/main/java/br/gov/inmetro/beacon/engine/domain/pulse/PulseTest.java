@@ -1,6 +1,5 @@
 package br.gov.inmetro.beacon.engine.domain.pulse;
 
-
 import br.gov.inmetro.beacon.engine.domain.chain.ChainValueObject;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;

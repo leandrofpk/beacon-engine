@@ -3,10 +3,10 @@ package br.gov.inmetro.beacon.engine.domain.pulse;
 import br.gov.inmetro.beacon.engine.application.PulseDto;
 import br.gov.inmetro.beacon.engine.domain.repository.PulsesRepository;
 import br.gov.inmetro.beacon.engine.infra.PulseEntity;
-import br.gov.inmetro.beacon.engine.infra.util.CipherSuiteBuilder;
-import br.gov.inmetro.beacon.engine.infra.util.ICipherSuite;
-import br.gov.inmetro.beacon.engine.infra.util.suite0.CriptoUtilService;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
+import br.gov.inmetro.beacon.library.ciphersuite.suite0.CipherSuiteBuilder;
+import br.gov.inmetro.beacon.library.ciphersuite.suite0.CriptoUtilService;
+import br.gov.inmetro.beacon.library.ciphersuite.suite0.ICipherSuite;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,9 +26,9 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-
-import static br.gov.inmetro.beacon.engine.infra.util.ByteSerializationFieldsUtil.*;
+import static br.gov.inmetro.beacon.library.serialization.ByteSerializationFieldsUtil.*;
 import static br.gov.inmetro.beacon.engine.infra.util.DateUtil.getTimeStampFormated;
+import static br.gov.inmetro.beacon.library.serialization.ByteSerializationFieldsUtil.byteSerializeString;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,7 +43,6 @@ public class NewPulseDomainServiceIT {
 
     @Autowired
     Environment env;
-
 
     @Test
     public void teste() throws Exception {

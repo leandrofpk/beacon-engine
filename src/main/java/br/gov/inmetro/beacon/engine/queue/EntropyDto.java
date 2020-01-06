@@ -25,8 +25,7 @@ public final class EntropyDto implements Serializable {
     public EntropyDto(@JsonProperty("rawData") String rawData,
                       @JsonProperty("period") int period,
                       @JsonProperty("noiseSource") String noiseSource,
-                      @JsonProperty("timeStamp") String timeStamp
-                      ) {
+                      @JsonProperty("timeStamp") String timeStamp) {
         this.timeStamp = ZonedDateTime.parse(timeStamp, DateTimeFormatter.ISO_DATE_TIME);
         this.rawData = rawData;
         this.period = period;

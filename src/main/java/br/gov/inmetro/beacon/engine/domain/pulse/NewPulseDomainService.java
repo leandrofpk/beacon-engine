@@ -2,7 +2,8 @@ package br.gov.inmetro.beacon.engine.domain.pulse;
 
 import br.gov.inmetro.beacon.engine.domain.repository.CombinationErrors;
 import br.gov.inmetro.beacon.engine.domain.repository.PulsesRepository;
-import br.gov.inmetro.beacon.engine.infra.util.suite0.CriptoUtilService;
+import br.gov.inmetro.beacon.library.ciphersuite.suite0.CriptoUtilService;
+
 import br.gov.inmetro.beacon.engine.application.PulseDto;
 import br.gov.inmetro.beacon.engine.domain.chain.ChainDomainService;
 import br.gov.inmetro.beacon.engine.domain.chain.ChainValueObject;

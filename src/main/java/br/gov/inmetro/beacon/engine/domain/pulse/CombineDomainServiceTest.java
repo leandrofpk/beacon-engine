@@ -2,7 +2,6 @@ package br.gov.inmetro.beacon.engine.domain.pulse;
 
 import br.gov.inmetro.beacon.engine.application.PulseDto;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
-import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.junit.Test;
 
 import java.time.ZoneOffset;

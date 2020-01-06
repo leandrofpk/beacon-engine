@@ -2,8 +2,8 @@ package br.gov.inmetro.beacon.engine.domain.pulse;
 
 import br.gov.inmetro.beacon.engine.domain.chain.ChainValueObject;
 import br.gov.inmetro.beacon.engine.infra.PulseEntity;
-import br.gov.inmetro.beacon.engine.infra.util.CipherSuiteBuilder;
-import br.gov.inmetro.beacon.engine.infra.util.ICipherSuite;
+import br.gov.inmetro.beacon.library.ciphersuite.suite0.CipherSuiteBuilder;
+import br.gov.inmetro.beacon.library.ciphersuite.suite0.ICipherSuite;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -14,8 +14,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.gov.inmetro.beacon.engine.infra.util.ByteSerializationFieldsUtil.*;
 import static br.gov.inmetro.beacon.engine.infra.util.DateUtil.getTimeStampFormated;
+import static br.gov.inmetro.beacon.library.serialization.ByteSerializationFieldsUtil.*;
 
 @Getter
 public class Pulse {
