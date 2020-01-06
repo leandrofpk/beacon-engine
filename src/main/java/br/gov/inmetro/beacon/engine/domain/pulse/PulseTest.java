@@ -103,7 +103,7 @@ public class PulseTest {
         System.out.println(now);
 
 
-        System.out.println("Instant sertado pra zero");
+        System.out.println("Instant setado pra zero");
         Instant instant1 = now.truncatedTo(ChronoUnit.MINUTES);
 
         System.out.println(instant1);
