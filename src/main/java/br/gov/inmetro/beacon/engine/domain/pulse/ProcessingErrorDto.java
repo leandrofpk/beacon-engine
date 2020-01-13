@@ -33,4 +33,16 @@ public class ProcessingErrorDto {
         this.timeStampError = timeStampError;
         this.processingErrorTypeEnum = processingErrorTypeEnum;
     }
+
+    @Override
+    public String toString() {
+        return "ProcessingErrorDto{" +
+                "timeStamp=" + timeStamp +
+                ", qtdSourcesExpected=" + qtdSourcesExpected +
+                ", usedOrDiscardedFonts='" + usedOrDiscardedFonts + '\'' +
+                ", chain='" + chain + '\'' +
+                ", timeStampError=" + timeStampError +
+                ", processingErrorTypeEnum=" + processingErrorTypeEnum +
+                '}';
+    }
 }

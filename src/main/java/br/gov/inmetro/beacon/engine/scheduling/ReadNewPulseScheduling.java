@@ -2,7 +2,6 @@ package br.gov.inmetro.beacon.engine.scheduling;
 
 import br.gov.inmetro.beacon.engine.domain.pulse.NewPulseDomainService;
 import br.gov.inmetro.beacon.engine.domain.repository.EntropyRepository;
-import br.gov.inmetro.beacon.engine.infra.alerts.SendAlertEmailImpl;
 import br.gov.inmetro.beacon.engine.infra.alerts.SendAlertMailService;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,13 +42,23 @@ public class ReadNewPulseScheduling {
                                          entity.getPeriod(),
                                          entity.getNoiseSource(),
                                          entity.getTimeStamp(). toString())));
+
+        if (dtos.isEmpty() || dtos.size() == 1){
+            ZonedDateTime timeStamp = dtos.get(0).getTimeStamp();
+
+            if (!timeStamp.isEqual(ZonedDateTime.now()
+                    .truncatedTo(ChronoUnit.MINUTES)
+                    .withZoneSameInstant((ZoneOffset.UTC)
+                            .normalized()))) {
+
+            }
+            mailService.sendError();
+        }
+
         if (dtos.isEmpty()){
-
-            mailService.send("No number received");
-
             return;
         }
-        newPulseDomainService.begin(dtos);
 
+        newPulseDomainService.begin(dtos);
     }
 }

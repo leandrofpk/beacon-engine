@@ -17,8 +17,12 @@ public class SendAlertMailService {
         this.sendAlertEmail = sendAlertEmail;
     }
 
-    public void send(String message){
-        sendAlertEmail.send(message);
+    public void sendError(){
+        sendAlertEmail.sendError();
+    }
+
+    public void sendWarning(){
+
     }
 
 

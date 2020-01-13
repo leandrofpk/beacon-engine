@@ -15,4 +15,6 @@ public final class CombineDomainResult {
         this.localRandomValueDtos = localRandomValueDtos;
         this.combineErrorList = combineErrorList;
     }
+
+
 }
