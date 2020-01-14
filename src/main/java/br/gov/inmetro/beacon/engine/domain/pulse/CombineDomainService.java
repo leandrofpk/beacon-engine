@@ -3,6 +3,8 @@ package br.gov.inmetro.beacon.engine.domain.pulse;
 import br.gov.inmetro.beacon.engine.infra.ProcessingErrorTypeEnum;
 import br.gov.inmetro.beacon.engine.application.PulseDto;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
+import br.gov.inmetro.beacon.library.ciphersuite.suite0.CipherSuiteBuilder;
+import br.gov.inmetro.beacon.library.ciphersuite.suite0.ICipherSuite;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 
 import java.time.ZoneOffset;
@@ -24,6 +26,8 @@ public class CombineDomainService {
     private final PulseDto lastPulseDto;
 
     private CombinationEnum combinationEnum;
+
+    private final ICipherSuite cipherSuite = CipherSuiteBuilder.build(0);
 
     public CombineDomainService(List<EntropyDto> regularNoises, long chain, int numberOfSources,
                                 PulseDto lastRecordDto, CombinationEnum combinationEnum) {
@@ -99,14 +103,11 @@ public class CombineDomainService {
 
     private String combineConcat(List<String> rawDataList) {
         String value = "";
-//        if (rawDataList.size() == 1){
-//            return rawDataList.get(0);
-//        }
         for (int i = 0; i < rawDataList.size(); i++) {
             value = value + rawDataList.get(i);
         }
 
-        return value;
+        return cipherSuite.getDigest(value);
     }
 
 }
