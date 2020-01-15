@@ -8,6 +8,7 @@ import br.gov.inmetro.beacon.engine.domain.repository.EntropyRepository;
 import br.gov.inmetro.beacon.engine.domain.repository.PulsesRepository;
 import br.gov.inmetro.beacon.engine.domain.service.PastOutputValuesService;
 import br.gov.inmetro.beacon.engine.infra.PulseEntity;
+import br.gov.inmetro.beacon.engine.infra.alerts.ISendAlert;
 import br.gov.inmetro.beacon.engine.infra.alerts.SendAlertEmailImpl;
 import br.gov.inmetro.beacon.engine.queue.BeaconVdfQueueSender;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
@@ -52,21 +53,21 @@ public class NewPulseDomainService {
 
     private final BeaconVdfQueueSender beaconVdfQueueSender;
 
-    private final SendAlertEmailImpl sendAlertEmail;
+    private final ISendAlert iSendAlert;
 
     private static final Logger logger = LoggerFactory.getLogger(NewPulseDomainService.class);
 
     @Autowired
     public NewPulseDomainService(Environment env, PulsesRepository pulsesRepository, EntropyRepository entropyRepository,
                                  CombinationErrors combinationErrors, PastOutputValuesService pastOutputValuesService,
-                                 BeaconVdfQueueSender beaconVdfQueueSender, SendAlertEmailImpl sendAlertEmail) {
+                                 BeaconVdfQueueSender beaconVdfQueueSender, ISendAlert iSendAlert) {
         this.env = env;
         this.pulsesRepository = pulsesRepository;
         this.entropyRepository = entropyRepository;
         this.combinationErrorsRepository = combinationErrors;
         this.pastOutputValuesService = pastOutputValuesService;
         this.beaconVdfQueueSender = beaconVdfQueueSender;
-        this.sendAlertEmail = sendAlertEmail;
+        this.iSendAlert = iSendAlert;
     }
 
     @Transactional
@@ -95,7 +96,7 @@ public class NewPulseDomainService {
         this.combineDomainResult = combineDomainService.processar();
 
         //
-        sendAlertEmail.sendWarning(combineDomainResult);
+        iSendAlert.sendWarning(combineDomainResult);
         //
     }
 
@@ -252,7 +253,6 @@ public class NewPulseDomainService {
         combinationErrorsRepository.persist(combineDomainResult.getCombineErrorList());
         entropyRepository.deleteByTimeStamp(pulse.getTimeStamp());
 
-//        sendAlertEmail.sendWarning(combineDomainResult);
         logger.warn("Pulse released:" + pulse.getTimeStamp());
     }
 

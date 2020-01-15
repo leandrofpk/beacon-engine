@@ -42,10 +42,7 @@ public class SendAlertEmailImpl implements ISendAlert {
 
         if (Boolean.parseBoolean(env.getProperty("beacon.send.alerts.by.email"))) {
             if (sendAlertAgain()){
-                String from = env.getProperty("beacon.mail.from");
-                String to = env.getProperty("beacon.mail.to");
-
-                sendSimpleMessage(from, to, null, "Inmetro Beacon - ERROR", stringBuilder.toString());
+                sendList("Inmetro Beacon - Entropy source ERROR", stringBuilder.toString());
             }
         }
     }
@@ -53,16 +50,20 @@ public class SendAlertEmailImpl implements ISendAlert {
     @Override
     public void sendWarning(CombineDomainResult combineDomainResult) throws SendAlertMailException {
         StringBuilder sb = new StringBuilder("WARNING: One or more sources were not received\n");
-
         combineDomainResult.getCombineErrorList().forEach( result -> sb.append("\n" + result) );
-
         if (Boolean.parseBoolean(env.getProperty("beacon.send.alerts.by.email"))) {
             if (sendAlertAgain()){
-                String from = env.getProperty("beacon.mail.from");
-                String to = env.getProperty("beacon.mail.to");
-                sendSimpleMessage(from, to, null, "Inmetro Beacon - WARNING", sb.toString());
+                sendList("Inmetro Beacon - Entropy source WARNING", sb.toString());
             }
+        }
+    }
 
+    private void sendList(String subject, String body){
+        String from = env.getProperty("beacon.mail.from");
+        String[] to = env.getProperty("beacon.mail.to").split(",");
+
+        for (String email: to) {
+            sendSimpleMessage(from, email, null, subject, body);
         }
     }
 

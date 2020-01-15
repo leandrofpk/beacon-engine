@@ -2,7 +2,7 @@ package br.gov.inmetro.beacon.engine.scheduling;
 
 import br.gov.inmetro.beacon.engine.domain.pulse.NewPulseDomainService;
 import br.gov.inmetro.beacon.engine.domain.repository.EntropyRepository;
-import br.gov.inmetro.beacon.engine.infra.alerts.SendAlertMailService;
+import br.gov.inmetro.beacon.engine.infra.alerts.ISendAlert;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -23,13 +23,13 @@ public class ReadNewPulseScheduling {
 
     private final EntropyRepository entropyRepository;
 
-    private final SendAlertMailService mailService;
+    private final ISendAlert iSendAlert;
 
     @Autowired
-    public ReadNewPulseScheduling(NewPulseDomainService newPulseDomainService, EntropyRepository entropyRepository, SendAlertMailService mailService) {
+    public ReadNewPulseScheduling(NewPulseDomainService newPulseDomainService, EntropyRepository entropyRepository, ISendAlert iSendAlert) {
         this.newPulseDomainService = newPulseDomainService;
         this.entropyRepository = entropyRepository;
-        this.mailService = mailService;
+        this.iSendAlert = iSendAlert;
     }
 
     @Scheduled(cron = "00 * * * * *")
@@ -51,8 +51,8 @@ public class ReadNewPulseScheduling {
                     .withZoneSameInstant((ZoneOffset.UTC)
                             .normalized()))) {
 
+                iSendAlert.sendError();
             }
-            mailService.sendError();
         }
 
         if (dtos.isEmpty()){
