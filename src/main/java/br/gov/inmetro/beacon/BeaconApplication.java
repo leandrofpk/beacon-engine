@@ -23,12 +23,5 @@ public class BeaconApplication {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
-//	@EventListener(ApplicationReadyEvent.class)
-//	public void doSomethingAfterStartup() throws Exception {
-//		System.out.println("hello world, I have just started up");
-//		testSerie();
-//	}
-
-
 }
 

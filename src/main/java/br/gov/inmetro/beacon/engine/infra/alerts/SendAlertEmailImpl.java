@@ -81,7 +81,7 @@ public class SendAlertEmailImpl implements ISendAlert {
 
             message.setSubject(subject);
 
-            message.setText(text + "\n\nSent from: " + getActiveProfiles() );
+            message.setText(text + "\n\nSent from: " + env.getProperty("beacon.url"));
 
             javaMailSender.send(message);
         } catch (SendAlertMailException exception) {
@@ -91,7 +91,7 @@ public class SendAlertEmailImpl implements ISendAlert {
 
     private String getActiveProfiles(){
         String[] activeProfiles = env.getActiveProfiles();
-        String out = null;
+        String out = "";
         for (String activeProfile : activeProfiles) {
             out = out + activeProfile;
         }
