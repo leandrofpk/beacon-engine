@@ -96,7 +96,9 @@ public class NewPulseDomainService {
         this.combineDomainResult = combineDomainService.processar();
 
         //
-        iSendAlert.sendWarning(combineDomainResult);
+        if (!combineDomainResult.getCombineErrorList().isEmpty()){
+            iSendAlert.sendWarning(combineDomainResult);
+        }
         //
     }
 

@@ -81,21 +81,12 @@ public class SendAlertEmailImpl implements ISendAlert {
 
             message.setSubject(subject);
 
-            message.setText(text + "\n\nSent from: " + env.getProperty("beacon.url"));
+            message.setText(text + "\n\nSent from: " + env.getProperty("beacon.url") + "\n\n");
 
             javaMailSender.send(message);
         } catch (SendAlertMailException exception) {
             logger.error(exception.getMessage());
         }
-    }
-
-    private String getActiveProfiles(){
-        String[] activeProfiles = env.getActiveProfiles();
-        String out = "";
-        for (String activeProfile : activeProfiles) {
-            out = out + activeProfile;
-        }
-        return out;
     }
 
     private boolean sendAlertAgain(){
