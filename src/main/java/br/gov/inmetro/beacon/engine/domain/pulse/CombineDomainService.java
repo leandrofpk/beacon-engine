@@ -43,7 +43,7 @@ public class CombineDomainService {
         List<ProcessingErrorDto> combineErrorList = new ArrayList<>();
 
         Map<ZonedDateTime, List<EntropyDto>> collect = regularNoisesChainOne
-                .stream()
+                .stream().sorted((Comparator.comparing(EntropyDto::getNoiseSource)))
                 .collect(Collectors.groupingBy(EntropyDto::getTimeStamp));
 
         collect.forEach((key, value) -> {

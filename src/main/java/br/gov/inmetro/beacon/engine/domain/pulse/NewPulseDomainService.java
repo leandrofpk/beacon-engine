@@ -124,23 +124,23 @@ public class NewPulseDomainService {
         for (int currentIndex = 0; currentIndex < localRandomValueDtos.size(); currentIndex++) {
             // tratar previous pulse
 
-            LocalRandomValueDto localRandomValue1 = localRandomValueDtos.get(currentIndex);
-            LocalRandomValueDto localRandomValue2;
+            LocalRandomValueDto currentLocalRandom = localRandomValueDtos.get(currentIndex);
+            LocalRandomValueDto nextLocalRandomValue;
             int nextIndex = currentIndex + 1;
 
             if (nextIndex < localRandomValueDtos.size()){
-                localRandomValue2 = localRandomValueDtos.get(nextIndex);
+                nextLocalRandomValue = localRandomValueDtos.get(nextIndex);
             } else {
                 return;
             }
 
             Pulse pulso;
             if (firstPulseInBd){
-                pulso = getFirstPulse(localRandomValue1);
+                pulso = getFirstPulse(currentLocalRandom);
                 firstPulseInBd = false;
                 previousPulse = pulso;
             } else {
-                pulso = getRegularPulse( previousPulse, localRandomValue1, localRandomValue2);
+                pulso = getRegularPulse( previousPulse, currentLocalRandom, nextLocalRandomValue);
                 previousPulse = pulso;
             }
             persistOnePulse(pulso);
@@ -190,7 +190,8 @@ public class NewPulseDomainService {
                 .setCertificateId(this.certificateId)
                 .setPulseIndex(vPulseIndex)
                 .setTimeStamp(current.getTimeStamp())
-                .setLocalRandomValue(current.getValue())
+//                .setLocalRandomValue(current.getValue())
+                .setLocalRandomValue(previous.getPrecommitmentValue())
                 .setListValue(list)
                 .setExternal(External.newExternal())
                 .setPrecommitmentValue(next.getValue())
