@@ -43,7 +43,7 @@ public final class CombineDomainResult {
             text.add(String.format("List of numbers not received(%s):", errors1.size()));
 
             for (ProcessingErrorDto dto: errors1) {
-               text.add(String.format("|Pulse timestamp: %s | Source received: %s|", getTimeStampFormated(dto.getTimeStamp()), dto.getUsedOrDiscardedFonts()));
+               text.add(String.format("|Pulse timestamp: %s | Source received: %s|\n", getTimeStampFormated(dto.getTimeStamp()), dto.getUsedOrDiscardedFonts()));
             }
         }
 
@@ -57,7 +57,7 @@ public final class CombineDomainResult {
             text.add(String.format("List of discarded numbers(%s):", errors2.size()));
 
             for (ProcessingErrorDto dto: errors2) {
-                text.add(String.format("|Pulse timestamp: %s | Source(s) discarded: %s|", getTimeStampFormated(dto.getTimeStamp()), dto.getUsedOrDiscardedFonts()));
+                text.add(String.format("|Pulse timestamp: %s | Source(s) discarded: %s|\n", getTimeStampFormated(dto.getTimeStamp()), dto.getUsedOrDiscardedFonts()));
             }
         }
 //
