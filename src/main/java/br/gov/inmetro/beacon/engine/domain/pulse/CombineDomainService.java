@@ -80,7 +80,7 @@ public class CombineDomainService {
         localRandomValueDtos.sort(Comparator.comparing(LocalRandomValueDto::getTimeStamp));
         combineErrorList.sort(Comparator.comparing(ProcessingErrorDto::getTimeStamp));
 
-        return new CombineDomainResult(localRandomValueDtos, combineErrorList);
+        return new CombineDomainResult(localRandomValueDtos, combineErrorList, numberOfSources);
     }
 
     private String combineXor(List<String> rawDataList) {

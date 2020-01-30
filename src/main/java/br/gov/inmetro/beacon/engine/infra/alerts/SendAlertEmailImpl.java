@@ -36,7 +36,7 @@ public class SendAlertEmailImpl implements ISendAlert {
 
     @Override
     public void sendError() throws SendAlertMailException {
-        StringBuilder stringBuilder = new StringBuilder("ERROR: No number received");
+        StringBuilder stringBuilder = new StringBuilder("ERROR: No numbers received");
 
         logger.error(stringBuilder.toString());
 
@@ -50,7 +50,8 @@ public class SendAlertEmailImpl implements ISendAlert {
     @Override
     public void sendWarning(CombineDomainResult combineDomainResult) throws SendAlertMailException {
         StringBuilder sb = new StringBuilder("WARNING: One or more sources were not received\n");
-        combineDomainResult.getCombineErrorList().forEach( result -> sb.append("\n" + result) );
+
+        combineDomainResult.getDomainResultInText().forEach( result -> sb.append("\n" + result) );
         if (Boolean.parseBoolean(env.getProperty("beacon.send.alerts.by.email"))) {
             if (sendAlertAgain()){
                 sendList("Inmetro Beacon - Entropy source WARNING", sb.toString());

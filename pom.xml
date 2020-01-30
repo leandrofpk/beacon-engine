@@ -5,11 +5,11 @@
 
 	<groupId>br.gov.inmetro.beacon</groupId>
 	<artifactId>beacon-engine</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.2.RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>beacon-engine</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Inmetro Randomness Beacon - An implementation of NISTIR 8213</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
