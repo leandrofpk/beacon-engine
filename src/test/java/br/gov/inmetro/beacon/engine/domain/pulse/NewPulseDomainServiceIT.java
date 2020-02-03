@@ -167,6 +167,8 @@ public class NewPulseDomainServiceIT {
         PulseEntity pulse4 = pulsesRepository.findByTimestamp(ZonedDateTime.parse("2019-08-30T18:48:00.000Z"));
         Assert.assertEquals("211b3bdeea4bd7841fbff9b6aff755bfa76b1c92a7376f63c447a9c1c7155c4e96ea90020a67fa9277610bb2673c6604f1acd780679477dae9c8378947efdd8b",
                 pulse4.getLocalRandomValue());
+
+        //  2019-08-30T18:48:00.000Z = hash(raw-data(2019-08-30T18:49:00.000Z)|raw-data(2019-08-30T18:49:00.000Z))
         Assert.assertEquals("9fac54f7ed1d1ffa90f69ff06456b3d2db7890c0d527276b08aa6d562ed22caed14f27532f3738e4c52bb054caa7942d6a76bb334be26982a283fc2a2d72ed2e",
                 pulse4.getPrecommitmentValue());
 
