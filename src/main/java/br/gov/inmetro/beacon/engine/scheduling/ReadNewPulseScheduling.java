@@ -37,11 +37,11 @@ public class ReadNewPulseScheduling {
 
         List<EntropyDto> dtos = new ArrayList<>();
 
-        entropyRepository.findAll().forEach(
+        entropyRepository.getOrderedList().forEach(
                 entity -> dtos.add(new EntropyDto(entity.getRawData(),
                                          entity.getPeriod(),
                                          entity.getNoiseSource(),
-                                         entity.getTimeStamp(). toString())));
+                                         entity.getTimeStamp().toString())));
 
         if (dtos.isEmpty() || dtos.size() == 1){
             ZonedDateTime timeStamp = dtos.get(0).getTimeStamp();

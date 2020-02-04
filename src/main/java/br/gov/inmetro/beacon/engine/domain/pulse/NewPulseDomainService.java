@@ -7,9 +7,9 @@ import br.gov.inmetro.beacon.engine.domain.repository.CombinationErrors;
 import br.gov.inmetro.beacon.engine.domain.repository.EntropyRepository;
 import br.gov.inmetro.beacon.engine.domain.repository.PulsesRepository;
 import br.gov.inmetro.beacon.engine.domain.service.PastOutputValuesService;
+import br.gov.inmetro.beacon.engine.infra.ProcessingErrorTypeEnum;
 import br.gov.inmetro.beacon.engine.infra.PulseEntity;
 import br.gov.inmetro.beacon.engine.infra.alerts.ISendAlert;
-import br.gov.inmetro.beacon.engine.infra.alerts.SendAlertEmailImpl;
 import br.gov.inmetro.beacon.engine.queue.BeaconVdfQueueSender;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
 import br.gov.inmetro.beacon.engine.queue.PrecommitmentQueueDto;
@@ -80,6 +80,7 @@ public class NewPulseDomainService {
 
         combinar(activeChain.getChainIndex(), property);
         processarAndPersistir();
+        cleanDiscardedNumbers();
     }
 
     private void combinar(long activeChain, String numberOfSources) {
@@ -259,4 +260,11 @@ public class NewPulseDomainService {
         logger.warn("Pulse released:" + pulse.getTimeStamp());
     }
 
+    private void cleanDiscardedNumbers(){
+        for (ProcessingErrorDto dto: combineDomainResult.getCombineErrorList()){
+            if (dto.getProcessingErrorTypeEnum().equals(ProcessingErrorTypeEnum.DISCARDED_NUMBER)){
+                entropyRepository.deleteByTimeStamp(dto.getTimeStamp());
+            }
+        }
+    }
 }

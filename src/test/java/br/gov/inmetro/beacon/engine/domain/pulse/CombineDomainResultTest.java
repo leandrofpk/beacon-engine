@@ -29,7 +29,7 @@ public class CombineDomainResultTest {
         assertEquals("Number of expected sources: 2", domainResultInText.get(0));
         assertEquals("Local timestamp:", domainResultInText.get(1).substring(0,16));
         assertEquals("List of numbers not received(1):", domainResultInText.get(3));
-        assertEquals("|Pulse timestamp: 2019-08-30T18:46:00.000Z | Source received: 2-LAINF|", domainResultInText.get(4));
+        assertEquals("|Pulse timestamp: 2019-08-30T18:46:00.000Z | Source received: 2-LAINF|\n", domainResultInText.get(4));
 
     }
 
@@ -58,13 +58,13 @@ public class CombineDomainResultTest {
         assertEquals("Number of expected sources: 2", domainResultInText.get(0));
         assertEquals("Local timestamp:", domainResultInText.get(1).substring(0,16));
         assertEquals("List of numbers not received(4):", domainResultInText.get(3));
-        assertEquals("|Pulse timestamp: 2019-08-30T18:46:00.000Z | Source received: 1-Data Center Xerem|", domainResultInText.get(4));
-        assertEquals("|Pulse timestamp: 2019-08-30T18:47:00.000Z | Source received: 1-Data Center Xerem|", domainResultInText.get(5));
-        assertEquals("|Pulse timestamp: 2019-08-30T18:48:00.000Z | Source received: 2-LAINF|", domainResultInText.get(6));
-        assertEquals("|Pulse timestamp: 2019-08-30T18:49:00.000Z | Source received: 2-LAINF|", domainResultInText.get(7));
+        assertEquals("|Pulse timestamp: 2019-08-30T18:46:00.000Z | Source received: 1-Data Center Xerem|\n", domainResultInText.get(4));
+        assertEquals("|Pulse timestamp: 2019-08-30T18:47:00.000Z | Source received: 1-Data Center Xerem|\n", domainResultInText.get(5));
+        assertEquals("|Pulse timestamp: 2019-08-30T18:48:00.000Z | Source received: 2-LAINF|\n", domainResultInText.get(6));
+        assertEquals("|Pulse timestamp: 2019-08-30T18:49:00.000Z | Source received: 2-LAINF|\n", domainResultInText.get(7));
 
         assertEquals("List of discarded numbers(1):", domainResultInText.get(9));
-        assertEquals("|Pulse timestamp: 2019-08-30T18:45:00.000Z | Source(s) discarded: 1-Data Center Xerem;2-LAINF|", domainResultInText.get(10));
+        assertEquals("|Pulse timestamp: 2019-08-30T18:45:00.000Z | Source(s) discarded: 1-Data Center Xerem;2-LAINF|\n", domainResultInText.get(10));
     }
 
 }

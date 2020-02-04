@@ -1,7 +1,7 @@
 package br.gov.inmetro.beacon.engine.domain.pulse;
 
-import br.gov.inmetro.beacon.engine.infra.ProcessingErrorTypeEnum;
 import br.gov.inmetro.beacon.engine.application.PulseDto;
+import br.gov.inmetro.beacon.engine.infra.ProcessingErrorTypeEnum;
 import br.gov.inmetro.beacon.engine.queue.EntropyDto;
 import br.gov.inmetro.beacon.library.ciphersuite.suite0.CipherSuiteBuilder;
 import br.gov.inmetro.beacon.library.ciphersuite.suite0.ICipherSuite;
@@ -43,7 +43,8 @@ public class CombineDomainService {
         List<ProcessingErrorDto> combineErrorList = new ArrayList<>();
 
         Map<ZonedDateTime, List<EntropyDto>> collect = regularNoisesChainOne
-                .stream().sorted((Comparator.comparing(EntropyDto::getNoiseSource)))
+                .stream()
+                .sorted((Comparator.comparing(EntropyDto::getNoiseSource)).thenComparing(EntropyDto::getNoiseSource))
                 .collect(Collectors.groupingBy(EntropyDto::getTimeStamp));
 
         collect.forEach((key, value) -> {
