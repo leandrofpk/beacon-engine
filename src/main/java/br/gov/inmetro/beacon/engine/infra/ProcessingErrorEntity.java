@@ -23,7 +23,7 @@ public class ProcessingErrorEntity {
     private int qtdSourcesExpected;
 
     @NotNull
-    @Column(length = 20)
+    @Column(length = 200)
     private String usedOrDiscardedFonts;
 
     @NotNull
