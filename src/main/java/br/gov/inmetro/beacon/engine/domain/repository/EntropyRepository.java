@@ -12,6 +12,6 @@ import java.util.List;
 public interface EntropyRepository extends JpaRepository<EntropyEntity, Integer> {
     long deleteByTimeStamp(ZonedDateTime timeStamp);
 
-    @Query(value = "SELECT p from EntropyEntity p order by p.timeStamp, p.noiseSource")
+    @Query(value = "SELECT e FROM EntropyEntity e ORDER BY e.timeStamp, e.noiseSource")
     List<EntropyEntity> getOrderedList();
 }
