@@ -25,6 +25,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static br.gov.inmetro.beacon.engine.infra.util.DateUtil.getTimeStampFormated;
 
@@ -71,16 +72,23 @@ public class NewPulseDomainService {
     }
 
     @Transactional
-    public void begin(List<EntropyDto> regularNoises) throws Exception {
-        this.regularNoises = regularNoises;
+    public void begin(List<EntropyDto> regularNoises) {
+        try {
 
-        this.activeChain = ChainDomainService.getActiveChain();
-        this.lastPulseEntity = pulsesRepository.last(activeChain.getChainIndex());
-        String property = env.getProperty("beacon.number-of-entropy-sources");
+            this.regularNoises = regularNoises;
 
-        combinar(activeChain.getChainIndex(), property);
-        processarAndPersistir();
-        cleanDiscardedNumbers();
+            this.activeChain = ChainDomainService.getActiveChain();
+            this.lastPulseEntity = pulsesRepository.last(activeChain.getChainIndex());
+            String property = env.getProperty("beacon.number-of-entropy-sources");
+
+            combinar(activeChain.getChainIndex(), property);
+            processarAndPersistir();
+            cleanDiscardedNumbers();
+
+        } catch (Exception e){
+            e.printStackTrace();
+            iSendAlert.sendException(e);
+        }
     }
 
     private void combinar(long activeChain, String numberOfSources) {
@@ -235,6 +243,24 @@ public class NewPulseDomainService {
 
     @Transactional
     protected void persistOnePulse(Pulse pulse) throws InterruptedException {
+        sendPulseForCombinationQueue(pulse);
+
+        Optional<PulseEntity> byChainAndTimestamp = pulsesRepository.findByChainAndTimestamp(1, pulse.getTimeStamp());
+
+        if (!byChainAndTimestamp.isPresent()){
+            pulsesRepository.save(new PulseEntity(pulse));
+            combinationErrorsRepository.persist(combineDomainResult.getCombineErrorList());
+            entropyRepository.deleteByTimeStamp(pulse.getTimeStamp());
+
+            logger.warn("Pulse released:" + pulse.getTimeStamp());
+        } else {
+            entropyRepository.deleteByTimeStamp(pulse.getTimeStamp());
+            iSendAlert.sendTimestampAlreadyPublishedException(pulse);
+        }
+
+    }
+
+    private void sendPulseForCombinationQueue(Pulse pulse) throws InterruptedException{
         boolean isSend = Boolean.parseBoolean(env.getProperty("beacon.vdf.combination.send.precom-to-queue"));
         long pulseDelay = Long.parseLong(env.getProperty("beacon.pulse.release.delay"));
 
@@ -252,12 +278,6 @@ public class NewPulseDomainService {
             }
 
         }
-
-        pulsesRepository.save(new PulseEntity(pulse));
-        combinationErrorsRepository.persist(combineDomainResult.getCombineErrorList());
-        entropyRepository.deleteByTimeStamp(pulse.getTimeStamp());
-
-        logger.warn("Pulse released:" + pulse.getTimeStamp());
     }
 
     private void cleanDiscardedNumbers(){

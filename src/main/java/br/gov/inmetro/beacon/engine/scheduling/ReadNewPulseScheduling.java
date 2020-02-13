@@ -33,7 +33,7 @@ public class ReadNewPulseScheduling {
     }
 
     @Scheduled(cron = "00 * * * * *")
-    private void getNumber() throws Exception {
+    private void getNumber() {
 
         List<EntropyDto> dtos = new ArrayList<>();
 

@@ -27,8 +27,8 @@ public class CombineDomainResultTest {
         List<String> domainResultInText = combineDomainResult.getDomainResultInText();
 
         assertEquals("Number of expected sources: 2", domainResultInText.get(0));
-        assertEquals("Local timestamp:", domainResultInText.get(1).substring(0,16));
-        assertEquals("List of numbers not received(1):", domainResultInText.get(3));
+        assertEquals("Timestamp:", domainResultInText.get(1).substring(0,10));
+        assertEquals("List of numbers received(1):", domainResultInText.get(3));
         assertEquals("|Pulse timestamp: 2019-08-30T18:46:00.000Z | Source received: 2-LAINF|\n", domainResultInText.get(4));
 
     }
@@ -56,8 +56,8 @@ public class CombineDomainResultTest {
         List<String> domainResultInText = combineDomainResult.getDomainResultInText();
 
         assertEquals("Number of expected sources: 2", domainResultInText.get(0));
-        assertEquals("Local timestamp:", domainResultInText.get(1).substring(0,16));
-        assertEquals("List of numbers not received(4):", domainResultInText.get(3));
+        assertEquals("Timestamp:", domainResultInText.get(1).substring(0,10));
+        assertEquals("List of numbers received(4):", domainResultInText.get(3));
         assertEquals("|Pulse timestamp: 2019-08-30T18:46:00.000Z | Source received: 1-Data Center Xerem|\n", domainResultInText.get(4));
         assertEquals("|Pulse timestamp: 2019-08-30T18:47:00.000Z | Source received: 1-Data Center Xerem|\n", domainResultInText.get(5));
         assertEquals("|Pulse timestamp: 2019-08-30T18:48:00.000Z | Source received: 2-LAINF|\n", domainResultInText.get(6));

@@ -1,6 +1,7 @@
 package br.gov.inmetro.beacon.engine.infra.alerts;
 
 import br.gov.inmetro.beacon.engine.domain.pulse.CombineDomainResult;
+import br.gov.inmetro.beacon.engine.domain.pulse.Pulse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -35,26 +37,44 @@ public class SendAlertEmailImpl implements ISendAlert {
     }
 
     @Override
+    public void sendException(Exception exception) throws SendAlertMailException {
+        String subject = "Inmetro Beacon - Beacon Engine EXCEPTION";
+        StringBuilder body = new StringBuilder();
+        body.append(exception.getMessage());
+        body.append(exception.getCause().getCause().toString());
+        send(subject, body);
+    }
+
+    @Override
+    public void sendTimestampAlreadyPublishedException(Pulse pulse) throws SendAlertMailException {
+        String subject = "Inmetro Beacon - Beacon Engine EXCEPTION (Timestamp Already Published)";
+        StringBuilder body = new StringBuilder();
+        body.append(String.format("Timestamp: %s\n\n", LocalDateTime.now()));
+        body.append(pulse.toString());
+        logger.error(subject + ": timestamp:" + pulse.getTimeStamp());
+        send(subject, body);
+    }
+
+    @Override
     public void sendError() throws SendAlertMailException {
         StringBuilder stringBuilder = new StringBuilder("ERROR: No numbers received");
-
         logger.error(stringBuilder.toString());
-
-        if (Boolean.parseBoolean(env.getProperty("beacon.send.alerts.by.email"))) {
-            if (sendAlertAgain()){
-                sendList("Inmetro Beacon - Entropy source ERROR", stringBuilder.toString());
-            }
-        }
+        String subject = "Inmetro Beacon - Entropy source ERROR";
+        send(subject, new StringBuilder());
     }
 
     @Override
     public void sendWarning(CombineDomainResult combineDomainResult) throws SendAlertMailException {
-        StringBuilder sb = new StringBuilder("WARNING: One or more sources were not received\n");
+        String subject = "Inmetro Beacon - Entropy source ERROR";
+        StringBuilder body = new StringBuilder("WARNING: One or more sources were not received\n");
+        combineDomainResult.getDomainResultInText().forEach( result -> body.append("\n" + result) );
+        send(subject, body);
+    }
 
-        combineDomainResult.getDomainResultInText().forEach( result -> sb.append("\n" + result) );
+    public void send(String subject, StringBuilder body){
         if (Boolean.parseBoolean(env.getProperty("beacon.send.alerts.by.email"))) {
             if (sendAlertAgain()){
-                sendList("Inmetro Beacon - Entropy source WARNING", sb.toString());
+                sendList(subject, body.toString());
             }
         }
     }

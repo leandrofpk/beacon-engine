@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static br.gov.inmetro.beacon.engine.infra.util.DateUtil.getTimeStampFormated;
 
@@ -31,7 +30,7 @@ public final class CombineDomainResult {
         List<String> text = new ArrayList();
 
         text.add(String.format("Number of expected sources: %s", numberOfSources));
-        text.add(String.format("Local timestamp: %s", LocalDateTime.now()));
+        text.add(String.format("Timestamp: %s", LocalDateTime.now()));
 
         List<ProcessingErrorDto> errors1 = combineErrorList
                 .stream()
@@ -40,7 +39,7 @@ public final class CombineDomainResult {
 
         if (errors1.size() > 0){
             text.add("");
-            text.add(String.format("List of numbers not received(%s):", errors1.size()));
+            text.add(String.format("List of numbers received(%s):", errors1.size()));
 
             for (ProcessingErrorDto dto: errors1) {
                text.add(String.format("|Pulse timestamp: %s | Source received: %s|\n", getTimeStampFormated(dto.getTimeStamp()), dto.getUsedOrDiscardedFonts()));

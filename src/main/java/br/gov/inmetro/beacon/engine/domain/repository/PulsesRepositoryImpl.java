@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PulsesRepositoryImpl implements PulsesQueries {
@@ -91,16 +92,31 @@ public class PulsesRepositoryImpl implements PulsesQueries {
     @Transactional(readOnly = true)
     public PulseEntity findByTimestamp(ZonedDateTime timeStamp){
         try {
-            PulseEntity pulseEntity = (PulseEntity) manager
+            return (PulseEntity) manager
                     .createQuery("from PulseEntity p " +
                             "join fetch p.listValueEntities lve " +
                             "where p.timeStamp = :timeStamp")
                     .setParameter("timeStamp", timeStamp)
                     .getSingleResult();
-            return pulseEntity;
         } catch (NoResultException e){
             return null;
         }
     }
 
+    @Transactional(readOnly = true)
+    public Optional<PulseEntity> findByChainAndTimestamp(long chainIndex, ZonedDateTime timeStamp){
+        PulseEntity pulseEntity = null;
+        try {
+            pulseEntity = (PulseEntity) manager.createQuery("from PulseEntity p " +
+                    "where p.chainIndex = :chainIndex " +
+                    "and p.timeStamp = :timeStamp")
+                    .setParameter("chainIndex", chainIndex)
+                    .setParameter("timeStamp", timeStamp)
+                    .getSingleResult();
+
+            return Optional.ofNullable(pulseEntity);
+        } catch (NoResultException e){
+                return Optional.ofNullable(pulseEntity);
+        }
+    }
 }
