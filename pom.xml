@@ -5,7 +5,7 @@
 
 	<groupId>br.gov.inmetro.beacon</groupId>
 	<artifactId>beacon-engine</artifactId>
-	<version>1.0.2.RELEASE</version>
+	<version>1.0.3.RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>beacon-engine</name>
@@ -128,16 +128,47 @@
 	</dependencies>
 
 	<build>
+		<finalName>beacon-engine</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!-- Docker -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.10</version>
+				<executions>
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>build</goal>
+							<!-- <goal>push</goal> -->
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<executable>true</executable>
+					<repository>lpcorrea/${project.name}</repository>
+					<tag>${project.version}</tag>
+					<skipDockerInfo>true</skipDockerInfo>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
+
+
+<!--	<build>-->
+<!--		<plugins>-->
+<!--			<plugin>-->
+<!--				<groupId>org.springframework.boot</groupId>-->
+<!--				<artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--				<configuration>-->
+<!--					<executable>true</executable>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
+
+<!--		</plugins>-->
+<!--	</build>-->
 
 </project>
