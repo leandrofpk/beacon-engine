@@ -42,7 +42,7 @@ public class SendAlertEmailImpl implements ISendAlert {
         StringBuilder body = new StringBuilder();
         body.append(exception.getMessage());
         body.append(exception.getCause().getCause().toString());
-        send(subject, body);
+        send(subject, body, true);
     }
 
     @Override
@@ -50,9 +50,10 @@ public class SendAlertEmailImpl implements ISendAlert {
         String subject = "Inmetro Beacon - Beacon Engine EXCEPTION (Timestamp Already Published)";
         StringBuilder body = new StringBuilder();
         body.append(String.format("Timestamp: %s\n\n", LocalDateTime.now()));
+        body.append("The following pulse was discarded:\n\n");
         body.append(pulse.toString());
         logger.error(subject + ": timestamp:" + pulse.getTimeStamp());
-        send(subject, body);
+        send(subject, body, true);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class SendAlertEmailImpl implements ISendAlert {
         StringBuilder stringBuilder = new StringBuilder("ERROR: No numbers received");
         logger.error(stringBuilder.toString());
         String subject = "Inmetro Beacon - Entropy source ERROR";
-        send(subject, new StringBuilder());
+        send(subject, new StringBuilder(), true);
     }
 
     @Override
@@ -68,13 +69,18 @@ public class SendAlertEmailImpl implements ISendAlert {
         String subject = "Inmetro Beacon - Entropy source ERROR";
         StringBuilder body = new StringBuilder("WARNING: One or more sources were not received\n");
         combineDomainResult.getDomainResultInText().forEach( result -> body.append("\n" + result) );
-        send(subject, body);
+        send(subject, body, false);
     }
 
-    public void send(String subject, StringBuilder body){
+    public void send(String subject, StringBuilder body, boolean sendImmediately){
         if (Boolean.parseBoolean(env.getProperty("beacon.send.alerts.by.email"))) {
-            if (sendAlertAgain()){
+
+            if (sendImmediately){
                 sendList(subject, body.toString());
+            } else {
+                if (sendAlertAgain()){
+                    sendList(subject, body.toString());
+                }
             }
         }
     }
