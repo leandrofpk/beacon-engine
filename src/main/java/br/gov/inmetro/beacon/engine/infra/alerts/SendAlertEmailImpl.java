@@ -38,7 +38,7 @@ public class SendAlertEmailImpl implements ISendAlert {
 
     @Override
     public void sendException(Exception exception) throws SendAlertMailException {
-        String subject = "Inmetro Beacon - Beacon Engine EXCEPTION";
+        String subject = "Inmetro Beacon - EXCEPTION (BUG in pulse generation)";
         StringBuilder body = new StringBuilder();
         body.append(exception.getMessage());
         body.append(exception.getCause().getCause().toString());
@@ -47,7 +47,7 @@ public class SendAlertEmailImpl implements ISendAlert {
 
     @Override
     public void sendTimestampAlreadyPublishedException(Pulse pulse) throws SendAlertMailException {
-        String subject = "Inmetro Beacon - Beacon Engine EXCEPTION (Timestamp Already Published)";
+        String subject = "Inmetro Beacon - EXCEPTION (Timestamp Already Published)";
         StringBuilder body = new StringBuilder();
         body.append(String.format("Timestamp: %s\n\n", LocalDateTime.now()));
         body.append("The following pulse was discarded:\n\n");
@@ -60,13 +60,13 @@ public class SendAlertEmailImpl implements ISendAlert {
     public void sendError() throws SendAlertMailException {
         StringBuilder stringBuilder = new StringBuilder("ERROR: No numbers received");
         logger.error(stringBuilder.toString());
-        String subject = "Inmetro Beacon - Entropy source ERROR";
+        String subject = "Inmetro Beacon - ERROR (No numbers received)";
         send(subject, new StringBuilder(), true);
     }
 
     @Override
     public void sendWarning(CombineDomainResult combineDomainResult) throws SendAlertMailException {
-        String subject = "Inmetro Beacon - Entropy source ERROR";
+        String subject = "Inmetro Beacon - WARNING";
         StringBuilder body = new StringBuilder("WARNING: One or more sources were not received\n");
         combineDomainResult.getDomainResultInText().forEach( result -> body.append("\n" + result) );
         send(subject, body, false);
