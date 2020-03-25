@@ -1,0 +1,103 @@
+version: '3.7'
+services:
+  rabbitmq:
+    image: rabbitmq:3.8.2-management    
+    ports:
+      - "5672:5672"
+      - "15672:15672"    
+    restart: always
+    volumes:      
+      - ${DATA_PATH_HOST}/rabbitmq:/var/lib/rabbitmq/mnesia:rw
+      - ./docker-files/definitions.json:/opt/definitions.json:ro
+      - ./docker-files/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+    networks:
+      - beacon-network
+  
+  mysql-beacon-db:
+    image: mysql:5.7     
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:   
+      MYSQL_ROOT_PASSWORD: ZT9HHR953OJRFANH      
+      MYSQL_DATABASE: beacon_input
+    volumes:
+      - mysql-beacon-data-volume:/var/lib/mysql
+      - ./docker-files/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - beacon-network
+  
+  beacon-input:
+    image: lpcorrea/beacon-input:1.0.1.RELEASE
+    ports:
+      - "8091:8091"
+    restart: always
+    depends_on: # Start the depends_on first
+      - mysql-beacon-db 
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      RDS_HOSTNAME: mysql-beacon-db
+      RDS_PORT: 3306
+      RDS_DB_NAME: beacon_input
+      RDS_USERNAME: root
+      RDS_PASSWORD: ZT9HHR953OJRFANH
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      BEACON_RABBIT_HOSTNAME: rabbitmq
+    depends_on:
+      - rabbitmq
+      - mysql-beacon-db
+    networks:
+      - beacon-network
+      
+  beacon-engine:
+    image: lpcorrea/beacon-engine:1.0.3.RELEASE   
+    ports:
+      - "8081:8081"
+    restart: always    
+    environment:
+      RDS_HOSTNAME: mysql-beacon-db
+      RDS_PORT: 3306
+      RDS_DB_NAME: beacon2
+      RDS_USERNAME: root
+      RDS_PASSWORD: ZT9HHR953OJRFANH
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672      
+      BEACON_RABBIT_HOSTNAME: rabbitmq
+      BEACON_NUMBER_OF_ENTROPY_SOURCES: 1           
+      BEACON_MAIL_TEST_CONNECTION: "false"
+      BEACON_SEND_ALERTS_BY_EMAIL: "false"
+      BEACON_X509_CERTIFICATE: beacon.cer
+      BEACON_X509_PRIVATEKEY: beacon-priv.pem
+      BEACON_ENGINE_LOG_LEVEL: warn
+    depends_on: # Start the depends_on first
+      - rabbitmq
+      - mysql-beacon-db
+    networks:
+      - beacon-network 
+      
+  beacon-interface:
+    image: lpcorrea/beacon-interface:1.0.0.RELEASE   
+    ports:
+      - "8080:8080"
+    restart: always    
+    environment:
+      RDS_HOSTNAME: mysql-beacon-db
+      RDS_PORT: 3306
+      RDS_DB_NAME: beacon2
+      RDS_USERNAME: root
+      RDS_PASSWORD: ZT9HHR953OJRFANH
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672      
+      BEACON_RABBIT_HOSTNAME: rabbitmq      
+      BEACON_X509_CERTIFICATE: beacon.cer
+      BEACON_X509_PRIVATEKEY: beacon-priv.pem
+      BEACON_ENGINE_LOG_LEVEL: warn
+    depends_on: # Start the depends_on first
+      - beacon-engine      
+    networks:
+      - beacon-network 
+
+volumes:
+  mysql-beacon-data-volume:
+  
+# Networks to be created to facilitate communication between containers
+networks:
+  beacon-network:
