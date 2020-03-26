@@ -22,3 +22,7 @@ Entrar em localhost:8080
  * [Beacon Engine](https://github.com/leandrofpk/beacon-engine)
  * [Beacon Interface](https://github.com/leandrofpk/beacon-interface) 
  * [Beacon libs](https://github.com/leandrofpk/beacon-libs)
+
+## Arquitetura da solução
+
+![Teste](https://github.com/leandrofpk/beacon-engine/blob/master/docs/c4-beacon-conteiner-v1.png)
