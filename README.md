@@ -10,13 +10,7 @@ Uma descrição...
 
 ```
 git clone https://github.com/leandrofpk/beacon-engine.git
-```
-
-```
 docker-compose up
-```
-
-```
 Entrar em localhost:8080
 ```
 
