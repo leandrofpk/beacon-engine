@@ -9,10 +9,12 @@ Uma descrição...
 ## Executar o projeto
 
 ```
-git clone https://github.com/leandrofpk/beacon-engine.git
-docker-compose up
-Entrar em localhost:8080
+1. git clone https://github.com/leandrofpk/beacon-engine.git
+2. cd beacon-engine
+3. docker-compose up
 ```
+
+Entrar em localhost:8080
 
 ## Projetos relacionados
 
