@@ -11,12 +11,20 @@ A poposta deste  trabalho é uma arquitetura flexível para uso interno no [Inme
 objetivo é propor um processo conceitual onde cada etapa tem suas responsabilidades bem definidas onde uma configuração inicial padrão é fornecida com custo zero de configuração,
 mas que permita pontos de configuração e pontos de extensão que serão detalhados mais a frente.
 
-## O que é randonness beacon
+## Definição de Beacon
 
 De maneira resumida, o modelo de operação do protocolo NISTR funciona da segunde forma. Primeiro, a cada minuto, 512 bits de entropia são gerados e um registro
 único de tempo é adicionado. Segundo, todos os números recebidos no mesmo timestamp são combinados (um hash de todos os valores concatenados) e os demais campos do
 protocolo são calculados para formar uma cadeia. Terceiro, o novo pulso é assinado e armazenado no banco de dados. Neste momento o pulso já se torna disponível para
 utilização.  
+
+Segundo [(BONNEAU; CLARK; GOLDFEDER, 2015;](https://eprint.iacr.org/2015/1015)[CopenhagenInterpretation)](http://www.copenhagen-interpretation.com/home/cryptography/cryptographic-beacons), beacons devem atender as seguintes características:
+%Segundo \cite{cryptoeprint:2015:1015,Kelsey2018,CopenhagenInterpretation}, beacons devem atender as seguintes características:
+
+* **Imprevisível:** Nenhum adversário pode ser capaz de prever qualquer informação sobre o número até que ele se torne público;
+* **Imparcial:** Um pulso deve ser estatisticamente próximo a uma sequência aleatória uniforme;	
+*	**Amostragem universal:** após a publicação, qualquer parte tem acesso irrestrito a ele;
+*	**Universalmente verificável:** Pode ser verificável por qualquer usuário após a publicação.
 
 ## Modules
 
@@ -56,7 +64,7 @@ Todas as imagens docker podem ser encontadas aqui: https://hub.docker.com/u/lpco
 
 ## Building from Source
 
-* Criar uma pasta para o projeto (Ex.: beacon) e clonar os repositórios dentro da nova pasta(input, engine, interface e libs). 
+1. Criar uma pasta para o projeto (Ex.: beacon) e clonar os repositórios dentro da nova pasta(input, engine, interface e libs). 
 Ao final, as pastas devem ter o seguinte formato:
 ```
 beacon
@@ -66,14 +74,14 @@ beacon
   ├── beacon-libs
 ```
 
-* Instalar a depenência beacon libs
+2. Instalar as libs compartilhadas
 
 ```
 cd beacon\beacon-libs
 mvn clean install
 ```
 
-* Executar ou compilar os projetos
+3. Executar ou compilar os projetos
 
 ````
 cd /beacon/<projeto>/
@@ -81,18 +89,17 @@ Executar: mvn spring-boot:run
 Compilar: nvn clean package -DskipTests
 ````
 
-* Instalar e criar dois bancos no mysql:
+4 Criar dois bancos de dados no mysql:
 ```
 Bancos: beacon-input e beacon2
 Usuario: root e senha 123456
 ````
 
-2. Instalar a fila de mensagens RabbitMq e importar as configurações da 
+5. Instalar a fila de mensagens RabbitMq e importar as configurações da 
 rquivo [definitions.json](https://github.com/leandrofpk/beacon-engine/blob/master/docker-files/definitions.json). A 
 interface de administração possui uma funcionalidade para importação.
 
 <!--https://gist.github.com/lucianfialhobp/14326023cb7f661eaf80 -->
-
 
 ## Projetos relacionados
 
@@ -103,4 +110,5 @@ interface de administração possui uma funcionalidade para importação.
 
 ## Arquitetura da solução
 
-![Teste](https://github.com/leandrofpk/beacon-engine/blob/master/docs/c4-beacon-conteiner-v1.png)
+![Arquitetura Randomness Beacon](https://github.com/leandrofpk/beacon-engine/blob/master/docs/c4-beacon-conteiner-v1.png)
+
