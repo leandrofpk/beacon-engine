@@ -19,7 +19,6 @@ protocolo são calculados para formar uma cadeia. Terceiro, o novo pulso é assi
 utilização.  
 
 Segundo [(BONNEAU; CLARK; GOLDFEDER, 2015;](https://eprint.iacr.org/2015/1015)[CopenhagenInterpretation)](http://www.copenhagen-interpretation.com/home/cryptography/cryptographic-beacons), beacons devem atender as seguintes características:
-%Segundo \cite{cryptoeprint:2015:1015,Kelsey2018,CopenhagenInterpretation}, beacons devem atender as seguintes características:
 
 * **Imprevisível:** Nenhum adversário pode ser capaz de prever qualquer informação sobre o número até que ele se torne público;
 * **Imparcial:** Um pulso deve ser estatisticamente próximo a uma sequência aleatória uniforme;	
