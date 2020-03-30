@@ -107,6 +107,9 @@ interface de administração possui uma funcionalidade para importação.
 ## Como o beacon funciona?
 <!-- Página 62 - Design da solução  -->
 
+O processo de geração de um pulso se inicia no microserviço entrada, passa pela fila, pelo microserviço motor até que finalmente o novo pulso é exposto externamente por intermédio do microserviço interface. É importante lembrar que todos os eventos
+acontecem regularmente em tempos definidos. Exemplo, a geração do pulso ocorre uma vez a cada minuto exatamente no segundo 51. A seguir, as responsabilidades de cada conteiner apresentado na figura acima serão detalhados obedecendo a ordem cronológica dos eventos.
+
 1.  **Microserviço entrada:** Envio regular **(segundo 50.** Ex.: 10:00:50, 10:01:50...)
 
     1.  Recupera os dados da entropia;
