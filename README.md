@@ -70,7 +70,7 @@ beacon
   ├── beacon-engine
   ├── beacon-input
   ├── beacon-interface
-  ├── beacon-libs
+  └── beacon-libs
 ```
 
 2. Instalar as libs compartilhadas
@@ -100,14 +100,44 @@ interface de administração possui uma funcionalidade para importação.
 
 <!--https://gist.github.com/lucianfialhobp/14326023cb7f661eaf80 -->
 
-## Projetos relacionados
-
- * [Beacon Input](https://github.com/leandrofpk/beacon-input)
- * [Beacon Engine](https://github.com/leandrofpk/beacon-engine)
- * [Beacon Interface](https://github.com/leandrofpk/beacon-interface) 
- * [Beacon libs](https://github.com/leandrofpk/beacon-libs)
-
 ## Arquitetura da solução
 
 ![Arquitetura Randomness Beacon](https://github.com/leandrofpk/beacon-engine/blob/master/docs/c4-beacon-conteiner-v1.png)
+
+## Como o beacon funciona?
+<!-- Página 62 - Design da solução  -->
+
+1.  **Microserviço entrada:** Envio regular **(segundo 50.** Ex.: 10:00:50, 10:01:50...)
+
+    1.  Recupera os dados da entropia;
+
+    2.  Adiciona um timeStamp;
+
+    3.  Armazena em banco de dados local;
+
+    4.  Envia para a fila.
+
+2.  **Microserviço entrada:** Reenvio **(segundo 51)**
+
+    1.  Tentativa de reenvio de todos os pulsos que tiveram problemas no envio regular.
+
+3.  **Fila de mensagens:** Armazena os pulsos na ordem de chegada.
+
+    1.  Os registros são mantidos na fila até serem lidos pelo motor;
+
+    2.  Após a confirmação de leitura, os registros são apagados automaticamente;
+
+4.  **Microserviço motor (segundo 00)**
+
+    1.  Recupera todos os valores da fila;
+
+    2.  Ordena por timeStamp, realiza a combinação das diversas fontes de entropia, realiza o encadeamento dos pulsos, assina digitalmente e armazena no banco de dados.
+
+5.  **Microserviço interface**
+
+    1.  Permite que todos os números sejam acessados assim que forem gravados no banco de dados;
+
+    2.  É executado sob demanda.
+
+
 
